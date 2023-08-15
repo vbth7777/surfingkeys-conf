@@ -1180,7 +1180,7 @@ actions.yt.getCurrentTimestampMarkdownLink = () =>
   })
 //nhentai
 actions.nh = {
-  imagesPerPageForViewer: 30,
+  imagesPerPageForViewer: 50,
 }
 actions.nh.getIdFromUrl = (url) => {
   const match = url.match(/nhentai\.net\/g\/(\d+)/)
@@ -1483,7 +1483,7 @@ actions.iw = {
   ]
 };
 actions.iw.getSocket = () => {
-  return null;
+  return actions.iw.socket;
 }
 actions.iw.setSocket = () => {
   actions.iw.socket = new WebSocket('ws://localhost:9790');
