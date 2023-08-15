@@ -1276,6 +1276,42 @@ maps["ikea.com"] = [
       actions.openLink("/us/en/customer-service/track-manage-order/"),
   },
 ]
+maps["nhentai.net"] = [
+  {
+    alias: "r",
+    description: "Read Comic",
+    callback: () => util.createHints('a[href*="/g/"]', (el) => {
+      const id = actions.nh.getIdFromUrl(el.href)
+      actions.nh.createViewer(id);
+    }),
+  },
+  {
+    alias: "k",
+    description: "Read Current Comic",
+    callback: () => {
+      const id = actions.nh.getIdFromUrl(window.location.href)
+      actions.nh.createViewer(id);
+    },
+  },
+  {
+    alias: "f",
+    description: "Favorite Comic",
+    callback: () => {
+      let btn = document.querySelector('.tth-favorite-btn') || document.querySelector('#favorite');
+      Front.showBanner(btn.innerText.trim().toLowerCase().replace('favorite', "favorited"));
+      btn.click();
+    },
+  }
+]
+maps["iwara.tv"] = [
+  {
+    alias: "v",
+    description: "Copy And View Video By MPV",
+    callback: () => {
+      actions.iw.
+    }
+  }
+]
 
 const registerDOI = (
   domain,

@@ -84,10 +84,9 @@ actions.getDnsInfoUrl = ({
   hostname = window.location.hostname,
   all = false,
 } = {}) =>
-  `${ddossierUrl}?dom_dns=true&addr=${hostname}${
-    all
-      ? "?dom_whois=true&dom_dns=true&traceroute=true&net_whois=true&svc_scan=true"
-      : ""
+  `${ddossierUrl}?dom_dns=true&addr=${hostname}${all
+    ? "?dom_whois=true&dom_dns=true&traceroute=true&net_whois=true&svc_scan=true"
+    : ""
   }`
 
 actions.getGoogleCacheUrl = ({ href = window.location.href } = {}) =>
@@ -457,17 +456,17 @@ actions.gh.parseRepo = (url = window.location.href, rootOnly = false) => {
     !ghReservedNames.check(user)
   return cond
     ? {
-        type: "repo",
-        user,
-        repo,
-        owner: user,
-        name: repo,
-        href: url,
-        url: u,
-        repoBase: `${user}/${repo}`,
-        repoRoot: isRoot,
-        repoPath: rest,
-      }
+      type: "repo",
+      user,
+      repo,
+      owner: user,
+      name: repo,
+      href: url,
+      url: u,
+      repoBase: `${user}/${repo}`,
+      repoRoot: isRoot,
+      repoPath: rest,
+    }
     : null
 }
 
@@ -484,14 +483,14 @@ actions.gh.parseUser = (url = window.location.href, rootOnly = false) => {
     !ghReservedNames.check(user)
   return cond
     ? {
-        type: "user",
-        name: user,
-        user,
-        href: url,
-        url: u,
-        userRoot: isRoot,
-        userPath: rest,
-      }
+      type: "user",
+      name: user,
+      user,
+      href: url,
+      url: u,
+      userRoot: isRoot,
+      userPath: rest,
+    }
     : null
 }
 
@@ -527,9 +526,8 @@ actions.gh.parseFile = (url = window.location.href) => {
   }
   f.rawUrl = f.isDirectory
     ? null
-    : `https://raw.githubusercontent.com/${f.user}/${f.repo}/${
-        f.commitHash
-      }/${f.filePath.join("/")}`
+    : `https://raw.githubusercontent.com/${f.user}/${f.repo}/${f.commitHash
+    }/${f.filePath.join("/")}`
   return f
 }
 
@@ -552,13 +550,13 @@ actions.gh.parseCommit = (url = window.location.href) => {
     !ghReservedNames.check(user)
   return cond
     ? {
-        type: "commit",
-        user,
-        repo,
-        commitHash,
-        href: url,
-        url: u,
-      }
+      type: "commit",
+      user,
+      repo,
+      commitHash,
+      href: url,
+      url: u,
+    }
     : null
 }
 
@@ -579,19 +577,19 @@ actions.gh.parseIssue = (url = window.location.href) => {
     !ghReservedNames.check(user)
   return cond
     ? {
-        href: url,
-        url: u,
-        ...(isRoot
-          ? {
-              type: "issues",
-              issuePath: rest,
-            }
-          : {
-              type: "issue",
-              number: rest[0],
-              issuePath: rest,
-            }),
-      }
+      href: url,
+      url: u,
+      ...(isRoot
+        ? {
+          type: "issues",
+          issuePath: rest,
+        }
+        : {
+          type: "issue",
+          number: rest[0],
+          issuePath: rest,
+        }),
+    }
     : null
 }
 
@@ -612,19 +610,19 @@ actions.gh.parsePull = (url = window.location.href) => {
     !ghReservedNames.check(user)
   return cond
     ? {
-        href: url,
-        url: u,
-        ...(isRoot
-          ? {
-              type: "pulls",
-              pullPath: rest,
-            }
-          : {
-              type: "pull",
-              number: rest[0],
-              pullPath: rest,
-            }),
-      }
+      href: url,
+      url: u,
+      ...(isRoot
+        ? {
+          type: "pulls",
+          pullPath: rest,
+        }
+        : {
+          type: "pull",
+          number: rest[0],
+          pullPath: rest,
+        }),
+    }
     : null
 }
 
@@ -986,8 +984,7 @@ actions.nt = {}
 actions.nt.adjustTemp = (dir) =>
   document
     .querySelector(
-      `button[data-test='thermozilla-controller-controls-${
-        dir > 0 ? "in" : "de"
+      `button[data-test='thermozilla-controller-controls-${dir > 0 ? "in" : "de"
       }crement-button']`
     )
     .click()
@@ -1177,11 +1174,314 @@ actions.yt.getCurrentTimestampLink = () =>
 
 actions.yt.getCurrentTimestampMarkdownLink = () =>
   actions.getMarkdownLink({
-    title: `${
-      document.querySelector("#ytd-player .ytp-title").innerText
-    } @ ${actions.yt.getCurrentTimestampHuman()} - YouTube`,
+    title: `${document.querySelector("#ytd-player .ytp-title").innerText
+      } @ ${actions.yt.getCurrentTimestampHuman()} - YouTube`,
     href: actions.yt.getCurrentTimestampLink(),
   })
+//nhentai
+actions.nh = {
+  imagesPerPageForViewer: 30,
+}
+actions.nh.getIdFromUrl = (url) => {
+  const match = url.match(/nhentai\.net\/g\/(\d+)/)
+  return match ? match[1] : null
+}
+actions.nh.createViewer = async (idGallery) => {
+  const urls = await fetch('https://nhentai.net/api/gallery/' + idGallery).then(res => res.json()).then(data => {
+    const mediaId = data.media_id;
+    const pages = data.num_pages;
+    const images = [];
+    for (let i = 1; i <= pages; i++) {
+      images.push(`https://i7.nhentai.net/galleries/${mediaId}/${i}.jpg`)
+    }
+    return images;
+  })
+  const imagesPerPage = actions.nh.imagesPerPageForViewer;
+  //   let sizePercent = 50;
+  let sizeImage = '50vw';
+  let page = 1;
+  const totalPage = Math.ceil(urls.length / imagesPerPage);
+  const containerBox = document.createElement('div');
+  containerBox.style.position = 'fixed';
+  containerBox.style.top = '0';
+  containerBox.style.left = '0';
+  containerBox.style.right = '0';
+  containerBox.style.bottom = '0';
+  containerBox.style.borderRadius = '10px'
+  containerBox.style.margin = '20px';
+  containerBox.style.backgroundColor = '#000'
+  containerBox.style.float = 'left'
+  containerBox.style.zIndex = '9999'
+  containerBox.addEventListener('close', () => {
+  })
+  const removeContainerBox = () => {
+    document.body.style.overflow = "auto";
+    containerBox.remove();
+  }
+
+  const closeBtn = document.createElement('button');
+  closeBtn.style.position = 'absolute';
+  closeBtn.style.top = '0';
+  closeBtn.style.right = '0';
+  closeBtn.innerHTML = "×";
+  closeBtn.style.backgroundColor = 'rgba(0,0,0,0.1)';
+  closeBtn.style.border = 'none';
+  closeBtn.style.color = '#fff';
+  closeBtn.style.fontSize = '1.5rem';
+  closeBtn.style.fontWeight = 'bold';
+  closeBtn.style.borderRadius = '50%';
+  closeBtn.style.width = '2rem';
+  closeBtn.style.height = '2rem';
+  closeBtn.style.padding = '0';
+  closeBtn.style.cursor = 'pointer';
+  closeBtn.style.margin = '10px';
+
+  closeBtn.onclick = () => {
+    removeContainerBox();
+  }
+  const infoBox = document.createElement('div');
+  infoBox.style.position = 'absolute';
+  infoBox.style.top = '0';
+  infoBox.style.left = '0';
+  infoBox.style.display = 'flex'
+  infoBox.style.flexDirection = 'column'
+  const favoriteBtn = document.createElement('button');
+  favoriteBtn.className = 'tth-favorite-btn'
+  favoriteBtn.innerHTML = "Loading...";
+  favoriteBtn.style.backgroundColor = '#ED2553'
+  favoriteBtn.style.border = 'none';
+  favoriteBtn.style.color = '#fff';
+  favoriteBtn.style.fontSize = '1.5rem';
+  favoriteBtn.style.fontWeight = 'bold';
+  favoriteBtn.style.borderRadius = '10px';
+  favoriteBtn.style.padding = '0';
+  favoriteBtn.style.cursor = 'pointer';
+  favoriteBtn.style.margin = '10px';
+  favoriteBtn.style.padding = '10px';
+  favoriteBtn.style.fontSize = '1.4rem';
+  const favoriteMethod = 'favorite';
+  const unfavoriteMethod = 'unfavorite';
+  favoriteBtn.onclick = () => {
+    const state = favoriteBtn.innerHTML != favoriteMethod ? unfavoriteMethod : favoriteMethod
+    favoriteBtn.disabled = true;
+
+    fetch('https://nhentai.net/api/gallery/' + idGallery + '/' + state, {
+      method: 'post',
+      headers: {
+        "X-Csrftoken": document.cookie.replace(/.+=/g, '')
+      }
+    }).then(res => {
+      favoriteBtn.innerHTML = favoriteBtn.innerHTML == favoriteMethod ? unfavoriteMethod : favoriteMethod;
+      favoriteBtn.disabled = false;
+    })
+  }
+  fetch('https://nhentai.net/g/' + idGallery).then(res => res.text()).then(data => {
+    const parser = new DOMParser();
+    const dom = parser.parseFromString(data, 'text/html');
+    favoriteBtn.innerHTML = dom.querySelector('#favorite').innerText.toLowerCase().includes(unfavoriteMethod) ? unfavoriteMethod : favoriteMethod;
+  })
+  const createDetailInfoBox = (str) => {
+    const textBox = document.createElement('a');
+    textBox.style.padding = '5px';
+    textBox.style.margin = '5px';
+    textBox.style.border = '2px solid #ccc'
+    fetch('https://nhentai.net/api/gallery/' + idGallery).then(res => res.json()).then(data => {
+      const tags = data.tags;
+      for (let item of data.tags) {
+        if (item.type == str.toLowerCase()) {
+          textBox.innerText = str + ': \n' + item.name;
+          textBox.href = item.url;
+          return;
+        }
+      }
+      textBox.innerText = str + ': None'
+      textBox.style.cursor = 'default';
+    })
+    return textBox;
+  }
+  infoBox.appendChild(favoriteBtn)
+  infoBox.appendChild(createDetailInfoBox('artist'))
+  infoBox.appendChild(createDetailInfoBox('group'))
+  infoBox.appendChild(createDetailInfoBox('parody'))
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      removeContainerBox();
+    }
+  });
+  const updateTotalPage = () => {
+    document.querySelectorAll('.tth-total-page').forEach(el => {
+      el.innerHTML = `${page}/${totalPage}`;
+    })
+  }
+  const nextPageHandler = () => {
+    imgBox.scrollTop = 0;
+    if (page < totalPage) {
+      page++;
+      updatePage();
+      updateTotalPage();
+    }
+  }
+  const prevPageHandler = () => {
+    imgBox.scrollTop = 0;
+    if (page > 0) {
+      page--;
+      updatePage();
+      updateTotalPage();
+    }
+  }
+  const createPagination = () => {
+    const pagination = document.createElement('div');
+    pagination.style.padding = '10px';
+    pagination.style.alignItems = 'center';
+    pagination.style.color = '#fff';
+    pagination.style.fontSize = '1.5rem';
+    pagination.style.fontWeight = 'bold';
+    pagination.style.borderRadius = '10px'
+    pagination.style.float = 'left'
+    pagination.style.display = 'flex';
+    pagination.style.justifyContent = 'center';
+    pagination.style.width = '100%';
+    const totalPageElement = document.createElement('p');
+    totalPageElement.style.margin = '0 10px';
+    totalPageElement.className = 'tth-total-page';
+    totalPageElement.innerHTML = `${page}/${totalPage}`;
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = 'Next';
+    nextBtn.onclick = () => {
+      nextPageHandler();
+    }
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = 'Prev';
+    prevBtn.onclick = () => {
+      prevPageHandler();
+    }
+    updateTotalPage()
+    pagination.appendChild(prevBtn);
+    pagination.appendChild(totalPageElement);
+    pagination.appendChild(nextBtn);
+    return pagination
+  }
+  const paginationTop = createPagination();
+  const paginationBottom = createPagination();
+  const imgBox = document.createElement('div');
+  imgBox.className = 'tth-images-area'
+  imgBox.style.position = 'relative';
+  imgBox.style.width = '100%';
+  imgBox.style.height = '100%';
+  imgBox.style.overflowY = 'auto';
+  imgBox.style.display = 'flex';
+  imgBox.style.alignItems = 'center';
+  imgBox.style.flexDirection = 'column';
+  imgBox.style.float = 'left'
+  imgBox.style.borderRadius = '10px'
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') {
+      nextPageHandler();
+    }
+    else if (e.key === 'ArrowLeft') {
+      prevPageHandler();
+    }
+    else if (e.key === 'ArrowDown') {
+      //   sizePercent += 10;
+      sizeImage = (Number(sizeImage.replace(/[a-z]+$/, '')) - 10) + sizeImage.match(/[a-z]+$/g)[0]
+      Array.from(imgBox.querySelectorAll('img')).forEach(el => {
+        console.log(sizeImage)
+        el.style.width = sizeImage//sizePercent + '%';
+      })
+    }
+    else if (e.key === 'ArrowUp') {
+      //   sizePercent -= 10;
+      sizeImage = (Number(sizeImage.replace(/[a-z]+$/, '')) + 10) + sizeImage.match(/[a-z]+$/g)[0]
+      Array.from(imgBox.querySelectorAll('img')).forEach(el => {
+        console.log(sizeImage)
+        el.style.width = sizeImage//sizePercent + '%';
+      })
+    }
+  });
+  const updateImgBox = () => {
+    imgBox.innerHTML = '';
+    const imagesNumber = imagesPerPage * (page - 1);
+    imgBox.appendChild(paginationTop)
+    for (let i = 0; i < imagesPerPage; i++) {
+      if (imagesNumber + i >= urls.length) {
+        break;
+      }
+      const div = document.createElement('div')
+      div.style.position = 'relative'
+      const img = document.createElement('img');
+      img.src = urls[imagesNumber + i];
+      img.style.position = 'absolute'
+      img.style.top = '0';
+      img.style.left = '0';
+      img.style.width = sizeImage//sizePercent + '%';
+      img.style.height = 'auto';
+      img.style.objectFit = 'cover';
+      img.loading = 'lazy';
+      img.onerror = () => {
+        if (img.src.includes('i5') && img.src.includes('jpg')) {
+          img.src = img.src.replace('i5', 'i3');
+        }
+        else if (img.src.includes('i3') && img.src.includes('png')) {
+          img.src = img.src.replace('png', 'jpg');
+        }
+        else if (img.src.includes('i5') && img.src.includes('png')) {
+          img.src = img.src.replace('i5', 'i3');
+        }
+        else if (img.src.includes('i7') && img.src.includes('png')) {
+          img.src = img.src.replace('i7', 'i5');
+        }
+        else if (img.src.includes('jpg')) {
+          img.src = img.src.replace('jpg', 'png');
+        }
+      }
+      const imgTemp = document.createElement('img');
+      imgTemp.src = img.src.replace('.jpg', 't.jpg').replace(/\/\/i\d+/g, '//t3');
+      imgTemp.onerror = () => {
+        if (imgTemp.src.includes('t7') && imgTemp.src.includes('jpg')) {
+          imgTemp.src = imgTemp.src.replace('t7', 't5');
+        }
+        else if (imgTemp.src.includes('t7') && imgTemp.src.includes('png')) {
+          imgTemp.src = imgTemp.src.replace('png', 'jpg');
+        }
+        else if (imgTemp.src.includes('t5') && imgTemp.src.includes('png')) {
+          imgTemp.src = imgTemp.src.replace('t5', 't7');
+        }
+        else if (imgTemp.src.includes('t3') && imgTemp.src.includes('png')) {
+          imgTemp.src = imgTemp.src.replace('t3', 't5');
+        }
+        else if (imgTemp.src.includes('jpg')) {
+          imgTemp.src = imgTemp.src.replace('jpg', 'png');
+        }
+      }
+      imgTemp.style.width = sizeImage//sizePercent + '%';
+      imgTemp.style.height = 'auto';
+      imgTemp.style.objectFit = 'cover';
+
+      div.appendChild(imgTemp)
+      div.appendChild(img)
+      imgBox.appendChild(div);
+    }
+    imgBox.appendChild(paginationBottom);
+  }
+  const updatePage = () => {
+    updateImgBox();
+  }
+  updatePage();
+  containerBox.appendChild(imgBox);
+  containerBox.appendChild(closeBtn);
+  containerBox.appendChild(infoBox);
+  document.body.style.overflow = "hidden";
+  document.body.appendChild(containerBox);
+  Hints.create("tth-images-area", Hints.dispatchMouseClick);
+}
+//iwara
+actions.iw = {};
+actions.iw.getIdIwara = (url) => {
+  const match = url.match(/iwara.tv\/video\/([^\/]+)/)
+  return match ? match[1] : url
+}
+
 
 // DOI
 actions.doi = {}
