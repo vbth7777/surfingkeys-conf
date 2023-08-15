@@ -1308,7 +1308,18 @@ maps["iwara.tv"] = [
     alias: "v",
     description: "Copy And View Video By MPV",
     callback: () => {
-      actions.iw.
+      util.createHints('a[href*="/video/"]', (el) => {
+        const id = actions.iw.getIdIwara(el.href);
+        actions.iw.copyAndPlayVideo(id);
+      })
+    }
+  },
+  {
+    alias: "cv",
+    description: "Copy And View Current Video By MPV",
+    callback: () => {
+      const id = actions.iw.getIdIwara(window.location.href);
+      actions.iw.copyAndPlayVideo(id);
     }
   }
 ]

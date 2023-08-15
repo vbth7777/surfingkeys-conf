@@ -1386,7 +1386,6 @@ actions.nh.createViewer = async (idGallery) => {
       //   sizePercent += 10;
       sizeImage = (Number(sizeImage.replace(/[a-z]+$/, '')) - 10) + sizeImage.match(/[a-z]+$/g)[0]
       Array.from(imgBox.querySelectorAll('img')).forEach(el => {
-        console.log(sizeImage)
         el.style.width = sizeImage//sizePercent + '%';
       })
     }
@@ -1394,7 +1393,6 @@ actions.nh.createViewer = async (idGallery) => {
       //   sizePercent -= 10;
       sizeImage = (Number(sizeImage.replace(/[a-z]+$/, '')) + 10) + sizeImage.match(/[a-z]+$/g)[0]
       Array.from(imgBox.querySelectorAll('img')).forEach(el => {
-        console.log(sizeImage)
         el.style.width = sizeImage//sizePercent + '%';
       })
     }
@@ -1476,11 +1474,120 @@ actions.nh.createViewer = async (idGallery) => {
   Hints.create("tth-images-area", Hints.dispatchMouseClick);
 }
 //iwara
-actions.iw = {};
+actions.iw = {
+  socket: null,
+  vidResolution: [
+    'Source',
+    '540p',
+    '360p'
+  ]
+};
+actions.iw.getAndSetSocket = () => {
+  if (actions.iw.socket) {
+    return actions.iw.socket;
+  }
+  actions.iw.socket = new WebSocket('ws://localhost:9790');
+  actions.iw.socket = actions.iw.socket.addEventListener('message', (res) => {
+    const data = JSON.parse(res.data)
+    if (data.isContinue) {
+      Array.from(document.querySelectorAll('div.videoTeaser')).forEach(el => {
+        if (el.querySelector('a').href.includes(data.url))
+          el.style.backgroundColor = ''
+      })
+    }
+  })
+  return actions.iw.socket;
+}
+
 actions.iw.getIdIwara = (url) => {
   const match = url.match(/iwara.tv\/video\/([^\/]+)/)
   return match ? match[1] : url
 }
+actions.iw.runWithMpv = (url, pageUrl = null) => {
+  fetch('http://localhost:9789', {
+    method: 'post',
+    body: new URLSearchParams({ url, pageUrl })
+  }).catch(err => console.error(err))
+}
+actions.iw.getJSON = (url, callback, xVersionHeader = '', headers = {}) => {
+  if (xVersionHeader) {
+    headers = {
+      ...headers,
+      'x-version': xVersionHeader,
+    }
+  }
+  fetch(url, {
+    headers: {
+      "Authorization": "Bearer " + localStorage.token,
+      ...headers
+    }
+  })
+    .then(response => response.json())
+    .then(data => callback(null, data))
+  return;
+};
+
+actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
+  const changeColorForPlayingUrl = (id) => {
+    Array.from(document.querySelectorAll('div.videoTeaser>a')).forEach(el => {
+      if (el.href.includes(id)) {
+        el.parentElement.style.backgroundColor = 'blue';
+      }
+    })
+  }
+  const getFileId = (url) => {
+    return url.match(/file\/.+\?/g)[0].replace(/file\/|\?/g, '')
+  }
+  const getExpire = (url) => {
+    return url.match("expires=.+&")[0].replace(/expires=|&/g, '');
+  }
+  actions.iw.getAndSetSocket();
+  changeColorForPlayingUrl(id)
+  actions.iw.getJSON(`https://api.iwara.tv/video/${id}`, async (status, res) => {
+    if (status) {
+      api.Front.showBanner('Error: ', status);
+      return;
+    }
+    if (res.message && (res?.message?.trim()?.toLowerCase()?.includes('notfound') || res?.message?.trim()?.toLowerCase()?.includes('private'))) {
+      api.Front.showPopup(res.message + ' for ' + id)
+      api.Clipboard.write('https://www.iwara.tv/' + id)
+      return;
+    }
+    else if (res.message) {
+      copyIwaraVideo(id, index, isPlayWithMpv);
+      return;
+    }
+    if (res.embedUrl && !res.fileUrl) {
+      api.Clipboard.write(res.embedUrl);
+      return;
+    }
+    const fileUrl = res.fileUrl;
+    const fileId = getFileId(fileUrl)
+    if (!fileId || !fileUrl) {
+      api.Front.showPopup('Not found requrement');
+      return;
+    }
+    // console.log((fileId + '_' + getExpire(fileUrl) + '_5nFp9kmbNnHdAFhaqMvt'))
+    actions.iw.getJSON(fileUrl, (status2, res2) => {
+      const json = res2;
+      // console.log(json)
+      let i = json.length - 1;
+      for (let j = 0; j < json.length; j++) {
+        if (actions.iw.vidResolution[index].toLowerCase().indexOf(json[j].name.toLowerCase()) != -1) {
+          i = j;
+          break;
+        }
+      }
+      const uri = 'https:' + json[i].src.download;
+      api.Clipboard.write(uri)
+      if (isPlayWithMpv) {
+        api.Front.showBanner('Opening mpv...');
+        actions.iw.runWithMpv(uri, 'https://www.iwara.tv/video/' + id);
+      }
+    }, await util.convertToSHA1(fileId + '_' + getExpire(fileUrl) + '_5nFp9kmbNnHdAFhaqMvt'))
+  })
+}
+
 
 
 // DOI

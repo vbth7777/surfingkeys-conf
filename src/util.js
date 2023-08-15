@@ -117,8 +117,8 @@ util.urlItem = (title, url, { desc = null, query = null } = {}) => {
   const descItems =
     desc && desc.length > 0
       ? (Array.isArray(desc) ? desc : [desc]).map(
-          (d) => util.htmlNode`<div>${d}</div>`
-        )
+        (d) => util.htmlNode`<div>${d}</div>`
+      )
       : []
   return util.suggestionItem({ url: url, query: query ?? title })`
     <div>
@@ -195,9 +195,16 @@ util.prettyDate = (date) => {
       Math.round(dayDiff / 365),
       "year",
     ]
-  return `${count ?? ""}${count ? " " : ""}${unit}${
-    (count ?? 0) > 1 ? "s" : ""
-  }${count ? " ago" : ""}`
+  return `${count ?? ""}${count ? " " : ""}${unit}${(count ?? 0) > 1 ? "s" : ""
+    }${count ? " ago" : ""}`
+}
+util.convertToSHA1 = async (str) => {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(str);
+  const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
 }
 
 export default util
