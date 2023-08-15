@@ -206,5 +206,20 @@ util.convertToSHA1 = async (str) => {
   const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   return hashHex;
 }
+util.playWithMpv = (url, pageUrl = null) => {
+  fetch('http://localhost:9789', {
+    method: 'post',
+    body: new URLSearchParams({ url, pageUrl })
+  }).catch(err => console.error(err))
+}
+util.openUrlsInClipboardWithMpv = async () => {
+  api.Clipboard.read(function(res) {
+    const urls = res.data.split('\n');
+    for (const url of urls) {
+      util.playWithMpv(url);
+    }
+  })
+
+}
 
 export default util

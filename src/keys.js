@@ -296,6 +296,11 @@ maps.global = [
   //   description: "Open AWS service",
   //   callback:    actions.omnibar.aws,
   // },
+  {
+    alias: "cm",
+    description: "Play Urls In Clipboard With MPV",
+    callback: () => util.openUrlsInClipboardWithMpv(),
+  },
 ]
 
 maps["amazon.com"] = [
@@ -1320,6 +1325,20 @@ maps["iwara.tv"] = [
     callback: () => {
       const id = actions.iw.getIdIwara(window.location.href);
       actions.iw.copyAndPlayVideo(id);
+    }
+  },
+  {
+    alias: "k",
+    description: "Like And Show Playlist",
+    callback: () => {
+      actions.iw.showPlaylistMenu();
+    }
+  },
+  {
+    alias: "m",
+    description: "Play All Videos In Clipboard By MPV",
+    callback: () => {
+      actions.iw.playUrlsInClipboardWithMpv();
     }
   }
 ]
