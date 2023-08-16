@@ -11,6 +11,7 @@ const {
   Front,
   removeSearchAlias,
   addSearchAlias,
+  Hints
 } = api
 
 const registerKey = (domain, mapObj, siteleader) => {
@@ -90,6 +91,7 @@ const registerSearchEngines = (searchEngines, searchleader) =>
 
 const main = async () => {
   window.surfingKeys = api
+  Hints.style('font-family: Arial;background: #fff;border-color: #000; color: #000; font-size:12px;')
   if (conf.settings) {
     Object.assign(
       settings,
