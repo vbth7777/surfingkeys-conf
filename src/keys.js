@@ -301,6 +301,27 @@ maps.global = [
     description: "Play Urls In Clipboard With MPV",
     callback: () => util.openUrlsInClipboardWithMpv(),
   },
+  {
+    alias: ";x",
+    description: "Remove Element",
+    callback: () => {
+      util.createHints("*", (element) => element.remove());
+    },
+  },
+  {
+    alias: ";r",
+    description: "Get Full Text From Element",
+    callback: () => {
+      util.createHints("*", (element) => Front.showPopup(element.innerText));
+    },
+  },
+  {
+    alias: "om",
+    description: "Open Current Video By MPV",
+    callback: () => {
+      util.createHints("*[[href]]", el => util.playWithMpv(el.href));
+    }
+  },
 ]
 
 maps["amazon.com"] = [
@@ -491,6 +512,21 @@ maps["youtube.com"] = [
     description: "Copy YouTube video markdown link for current time",
     callback: () =>
       Clipboard.write(actions.yt.getCurrentTimestampMarkdownLink()),
+  },
+  {
+    alias: "cl",
+    description: "Like And Show Playlist For Current Video",
+    callback: () => {
+      actions.yt.clickLikeButtonYoutube();
+      actions.yt.clickPlaylistButtonYoutube();
+    }
+  },
+  {
+    alias: "l",
+    description: "Show Playlist",
+    callback: () => {
+      actions.yt.showPlaylist();
+    }
   },
 ]
 
@@ -1339,6 +1375,13 @@ maps["iwara.tv"] = [
     description: "Play All Videos In Clipboard By MPV",
     callback: () => {
       actions.iw.playUrlsInClipboardWithMpv();
+    }
+  },
+  {
+    alias: "pa",
+    description: "Play All Videos On The Page By MPV",
+    callback: () => {
+      actions.iw.playUrlsOnPageWithMpv();
     }
   }
 ]

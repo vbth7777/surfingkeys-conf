@@ -1178,6 +1178,47 @@ actions.yt.getCurrentTimestampMarkdownLink = () =>
       } @ ${actions.yt.getCurrentTimestampHuman()} - YouTube`,
     href: actions.yt.getCurrentTimestampLink(),
   })
+actions.yt.clickLikeButtonYoutube = () => {
+  document.querySelector("#segmented-like-button > ytd-toggle-button-renderer > yt-button-shape > button > yt-touch-feedback-shape > div").click();
+}
+actions.yt.checkSaveButtonTextOnYoutube = (text) => {
+  return text.indexOf('lưu') != -1 || text.indexOf('save') != -1 || text.indexOf('playlist') != -1 || text.indexOf('danh sách phát') != -1
+}
+actions.yt.clickPlaylistButtonYoutube = () => {
+  let outBtns = Array.from(document.querySelectorAll("#flexible-item-buttons > ytd-button-renderer button"));
+  let isOut = false;
+  for (let btn of outBtns) {
+    const text = btn.ariaLabel.trim().toLowerCase()
+    if (actions.yt.checkSaveButtonTextOnYoutube(text)) {
+      btn.click();
+      isOut = true;
+      break;
+    }
+  }
+  if (isOut) return;
+  document.querySelector("#button-shape > button").click()
+  let btns = document.querySelectorAll('.ytd-popup-container ytd-menu-service-item-renderer');
+  for (let btn of btns) {
+    const text = btn.innerText.trim().toLowerCase()
+    if (actions.yt.checkSaveButtonTextOnYoutube(text)) {
+      btn.click();
+      break;
+    }
+  }
+}
+actions.yt.showPlaylist = () => {
+  util.createHints('#details', async (el) => {
+    const menuBtn = el.querySelector('#menu button');
+    if (!menuBtn) {
+      return;
+    }
+    menuBtn.click();
+    await util.sleep(100);
+    document.querySelector("#items > ytd-menu-service-item-renderer:nth-child(3)").click()
+  })
+}
+
+
 //nhentai
 actions.nh = {
   imagesPerPageForViewer: 50,
@@ -1750,6 +1791,23 @@ actions.iw.playUrlsInClipboardWithMpv = () => {
       }
     }
   })
+}
+actions.iw.playUrlsOnPageWithMpv = () => {
+  let index = 0;
+  const urls = Array.from(document.querySelectorAll('a[href*="/video/"]'))
+    .map(a => actions.iw.getIdIwara(a.href))
+    .filter((item, pos, self) => self.indexOf(item) == pos);
+  actions.iw.copyAndPlayVideo(urls[0])
+  actions.iw.getSocket().onmessage = (res) => {
+    const data = JSON.parse(res.data)
+    if (data.isContinue) {
+      actions.iw.copyAndPlayVideo(urls[++index]);
+    }
+    else if (index == urls.length - 1) {
+      actions.iw.getSocket().close();
+    }
+  }
+
 }
 
 

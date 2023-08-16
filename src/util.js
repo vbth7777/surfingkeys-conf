@@ -212,6 +212,9 @@ util.playWithMpv = (url, pageUrl = null) => {
     body: new URLSearchParams({ url, pageUrl })
   }).catch(err => console.error(err))
 }
+util.sleep = (ms) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 util.openUrlsInClipboardWithMpv = async () => {
   api.Clipboard.read(function(res) {
     const urls = res.data.split('\n');
@@ -219,7 +222,6 @@ util.openUrlsInClipboardWithMpv = async () => {
       util.playWithMpv(url);
     }
   })
-
 }
 
 export default util
