@@ -28,16 +28,16 @@ const escapeHTML = (text) =>
   String(text).replace(
     /[&<>"'`=/]/g,
     (s) =>
-      ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;",
-        "/": "&#x2F;",
-        "`": "&#x60;",
-        "=": "&#x3D;",
-      }[s])
+    ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+      "/": "&#x2F;",
+      "`": "&#x60;",
+      "=": "&#x3D;",
+    }[s])
   )
 
 const { WEBPACK_MODE } = process.env
@@ -61,12 +61,12 @@ const getSources = (() => {
     // Create stubs for document methods which are used by uhtml
     const oldDocument = global.document
     global.document = {
-      createDocumentFragment: function () {},
-      createElement: function () {},
-      createElementNS: function () {},
-      createTextNode: function () {},
-      createTreeWalker: function () {},
-      importNode: function () {},
+      createDocumentFragment: function() { },
+      createElement: function() { },
+      createElementNS: function() { },
+      createTextNode: function() { },
+      createTreeWalker: function() { },
+      importNode: function() { },
     }
     sources = await Object.fromEntries(
       await Promise.all(
@@ -269,11 +269,10 @@ task(
     }, Promise.resolve(""))
 
     const year = new Date().getFullYear()
-    const copyrightYears = `${
-      copyrightYearOne !== year
+    const copyrightYears = `${copyrightYearOne !== year
         ? `${copyrightYearOne}-${year}`
         : copyrightYearOne
-    }`
+      }`
     let copyright = `<p><h4>Author</h4>&copy; ${copyrightYears} ${parseContributor(
       pkg.author
     )}</p>`

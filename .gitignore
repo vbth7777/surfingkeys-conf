@@ -33,7 +33,7 @@ bower_components
 .lock-wscript
 
 # Build files
-build/
+#build/
 .cache/
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
