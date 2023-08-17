@@ -207,6 +207,7 @@ util.convertToSHA1 = async (str) => {
   return hashHex;
 }
 util.playWithMpv = (url, pageUrl = null) => {
+  api.Front.showBanner('Openning with mpv...')
   fetch('http://localhost:9789', {
     method: 'post',
     body: new URLSearchParams({ url, pageUrl })

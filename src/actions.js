@@ -33,6 +33,18 @@ actions.moveTabNextToTab = (targetId, nextTo, leftOf = false) =>
 //   await actions.moveTabNextToTab(cutTabEvent.tabId, curTab, leftOf)
 // }
 
+actions.getDOM = (url, callback) => {
+  fetch(url)
+    .then(res => res.text())
+    .then(data => {
+      const parser = new DOMParser();
+      const htmlDocument = parser.parseFromString(data, 'text/html');
+      callback(null, htmlDocument);
+    })
+    .catch(error => {
+      callback(error, null);
+    });
+}
 actions.dispatchEvents = (type, node, ...eventTypes) =>
   eventTypes.forEach((t) => {
     const e = document.createEvent(type)
@@ -1710,8 +1722,16 @@ actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
   }
   if (!actions.iw.getSocket()) {
     actions.iw.setSocket();
-  };
-  changeColorForPlayingUrl(id)
+    const socket = actions.iw.getSocket();
+    const handleOpen = () => {
+      changeColorForPlayingUrl(id);
+      socket.removeEventListener('open', handleOpen);
+    }
+    socket.addEventListener('open', handleOpen)
+  }
+  else {
+    changeColorForPlayingUrl(id)
+  }
   actions.iw.getJSON(`https://api.iwara.tv/video/${id}`, async (status, res) => {
     if (status) {
       api.Front.showBanner('Error: ', status);
@@ -1809,8 +1829,53 @@ actions.iw.playUrlsOnPageWithMpv = () => {
   }
 
 }
+actions.iw.GoToMmdFansVid = (title, isSearching = true) => {
+  if (isSearching) {
+    api.Front.showBanner('Searching...')
+    // originalTitle = title;
+  };
+  actions.getDOM(encodeURI('https://mmdfans.net/?query=' + title), function(s, res) {
+    if (s) {
+      api.Front.showPopup('Error:' + s)
+      return;
+    }
+    const doc = res;
+    const videos = doc.querySelectorAll('.mdui-col > a')
+    console.log(doc)
+    console.log(videos)
+    if (!videos || videos.length < 1) {
+      const titleBackup = title;
+      title = title.replace(/ [^ ]*$/, "")
+      if (!title || titleBackup == title) {
+        api.Front.showPopup("Not found video")
+        return;
+      }
+      api.Front.showBanner('Not found, searching ' + title)
+      actions.iw.GoToMmdFansVid(title, false)
+      return;
+    }
+    let index = 0;
+    if (videos.length > 1) {
+      api.Front.showBanner('Result have above 1 video');
+      const vids = Array.from(doc.querySelectorAll('.mdui-grid-tile'))
+      for (let i in vids) {
+        if (vids[i].innerText.indexOf(title) != -1) {
+          index = i;
+        }
+      }
+    }
 
+    let openUrl = "https://mmdfans.net/" + videos[index].href.match(/mmd\/.+/ig)[0];
+    console.log(openUrl)
+    window.open(openUrl);
 
+  })
+}
+actions.iw.getVideoTitle = async (id) => {
+  return await fetch(`https://api.iwara.tv/video/${id}`)
+    .then((response) => response.json())
+    .then(data => data.title);
+}
 
 // DOI
 actions.doi = {}

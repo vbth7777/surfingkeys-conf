@@ -317,11 +317,19 @@ maps.global = [
   },
   {
     alias: "om",
-    description: "Open Current Video By MPV",
+    description: "Open Url By MPV",
     callback: () => {
-      util.createHints("*[[href]]", el => util.playWithMpv(el.href));
+      util.createHints("*[href]", el => util.playWithMpv(el.href));
     }
   },
+  {
+    alias: "oc",
+    description: "Open All Urls In Clipboard By MPV",
+    callback: () => {
+      util.openUrlsInClipboardWithMpv();
+    }
+  },
+
 ]
 
 maps["amazon.com"] = [
@@ -1371,8 +1379,9 @@ maps["iwara.tv"] = [
     }
   },
   {
-    alias: "m",
-    description: "Play All Videos In Clipboard By MPV",
+    leader: "",
+    alias: "oc",
+    description: "Play All Urls In Clipboard By MPV",
     callback: () => {
       actions.iw.playUrlsInClipboardWithMpv();
     }
@@ -1383,7 +1392,32 @@ maps["iwara.tv"] = [
     callback: () => {
       actions.iw.playUrlsOnPageWithMpv();
     }
+  },
+  {
+    alias: "m",
+    description: "Search The Video On MMDFans",
+    callback: async () => {
+      const el = document.querySelector('.page-video__details > .text');
+      if (el) {
+        actions.iw.GoToMmdFansVid(el.innerText);
+        return;
+      }
+      const title = await actions.iw.getVideoTitle(actions.iw.getIdIwara(document.location.href))
+      console.log(title)
+      actions.iw.GoToMmdFansVid(title);
+
+    }
   }
+
+]
+maps["mmdfans.net"] = [
+  {
+    alias: "v",
+    description: "Copy And View Current Video By MPV",
+    callback: () => {
+      util.playWithMpv(document.querySelector('#mmd-player .mdui-video-fluid source').src);
+    }
+  },
 ]
 
 const registerDOI = (
