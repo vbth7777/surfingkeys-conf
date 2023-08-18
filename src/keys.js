@@ -522,6 +522,7 @@ maps["youtube.com"] = [
       Clipboard.write(actions.yt.getCurrentTimestampMarkdownLink()),
   },
   {
+    leader: "",
     alias: "cl",
     description: "Like And Show Playlist For Current Video",
     callback: () => {
@@ -530,6 +531,7 @@ maps["youtube.com"] = [
     }
   },
   {
+    leader: "",
     alias: "l",
     description: "Show Playlist",
     callback: () => {
