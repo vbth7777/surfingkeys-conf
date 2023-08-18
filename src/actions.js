@@ -1219,7 +1219,7 @@ actions.yt.clickPlaylistButtonYoutube = () => {
   }
 }
 actions.yt.showPlaylist = () => {
-  util.createHints('#details', async (el) => {
+  util.createHints('#dismissible', async (el) => {
     const menuBtn = el.querySelector('#menu button');
     if (!menuBtn) {
       return;
