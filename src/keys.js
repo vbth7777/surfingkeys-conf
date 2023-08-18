@@ -1421,6 +1421,50 @@ maps["mmdfans.net"] = [
     }
   },
 ]
+maps["erommdtube.com"] = [
+  {
+    alias: "ci",
+    description: "Open Current Video With Iwara",
+    callback: () => {
+      actions.em.openCurrentVideoWithIwara();
+    }
+  },
+  {
+    alias: "i",
+    description: "Open With Iwara",
+    callback: () => {
+      actions.em.openWithIwara();
+    }
+  },
+  {
+    alias: "cf",
+    description: "Open Current Video With MMDFans",
+    callback: () => {
+      actions.em.openCurrentVideoWithMMDFans();
+    }
+  },
+  {
+    alias: "f",
+    description: "Open With MMDFans",
+    callback: () => {
+      actions.em.openWithMMDFans();
+    }
+  },
+  {
+    alias: "cm",
+    description: "Open Current Video With MPV",
+    callback: () => {
+      actions.em.openCurrentVideoWithMPV();
+    }
+  },
+  {
+    alias: "m",
+    description: "Open With MPV",
+    callback: () => {
+      actions.em.openVideoWithMPV();
+    }
+  }
+]
 
 const registerDOI = (
   domain,
