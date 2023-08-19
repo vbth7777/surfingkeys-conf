@@ -216,13 +216,5 @@ util.playWithMpv = (url, pageUrl = null) => {
 util.sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-util.openUrlsInClipboardWithMpv = async () => {
-  api.Clipboard.read(function(res) {
-    const urls = res.data.split('\n');
-    for (const url of urls) {
-      util.playWithMpv(url);
-    }
-  })
-}
 
 export default util

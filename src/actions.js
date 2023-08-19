@@ -65,6 +65,29 @@ actions.scrollToHash = (hash = null) => {
   }
   e.scrollIntoView({ behavior: "smooth" })
 }
+actions.openUrlsInClipboardWithMpv = async () => {
+  api.Clipboard.read(function(res) {
+    const urls = res.data.split('\n');
+    for (const url of urls) {
+      if (url.includes('iwara')) {
+        actions.iw.copyAndPlayVideo(url.match(/video\/.+(\/)?/)[0].replace(/video\/|\/.+/g, ''));
+      }
+      else if (url.includes('erommdtube') || url.includes('oreno3d')) {
+        actions.getDOM(url, function(err, htmlDocument) {
+          if (err) {
+            console.log(err);
+            return;
+          }
+          const urlIw = htmlDocument.querySelector('[href*="iwara.tv"]');
+          util.playWithMpv(actions.iw.copyAndPlayVideo(urlIw.href));
+        })
+      }
+      else {
+        util.playWithMpv(url);
+      }
+    }
+  })
+}
 
 // URL Manipulation/querying
 // -------------------------

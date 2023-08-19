@@ -326,7 +326,7 @@ maps.global = [
     alias: "oc",
     description: "Open All Urls In Clipboard By MPV",
     callback: () => {
-      util.openUrlsInClipboardWithMpv();
+      actions.openUrlsInClipboardWithMpv();
     }
   },
 
@@ -1381,14 +1381,6 @@ maps["iwara.tv"] = [
     }
   },
   {
-    leader: "",
-    alias: "oc",
-    description: "Play All Urls In Clipboard By MPV",
-    callback: () => {
-      actions.iw.playUrlsInClipboardWithMpv();
-    }
-  },
-  {
     alias: "pa",
     description: "Play All Videos On The Page By MPV",
     callback: () => {
@@ -1422,6 +1414,50 @@ maps["mmdfans.net"] = [
   },
 ]
 maps["erommdtube.com"] = [
+  {
+    alias: "ci",
+    description: "Open Current Video With Iwara",
+    callback: () => {
+      actions.em.openCurrentVideoWithIwara();
+    }
+  },
+  {
+    alias: "i",
+    description: "Open With Iwara",
+    callback: () => {
+      actions.em.openWithIwara();
+    }
+  },
+  {
+    alias: "cf",
+    description: "Open Current Video With MMDFans",
+    callback: () => {
+      actions.em.openCurrentVideoWithMMDFans();
+    }
+  },
+  {
+    alias: "f",
+    description: "Open With MMDFans",
+    callback: () => {
+      actions.em.openWithMMDFans();
+    }
+  },
+  {
+    alias: "cm",
+    description: "Open Current Video With MPV",
+    callback: () => {
+      actions.em.openCurrentVideoWithMPV();
+    }
+  },
+  {
+    alias: "m",
+    description: "Open With MPV",
+    callback: () => {
+      actions.em.openVideoWithMPV();
+    }
+  }
+]
+maps["oreno3d.com"] = [
   {
     alias: "ci",
     description: "Open Current Video With Iwara",
