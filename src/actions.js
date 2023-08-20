@@ -79,7 +79,8 @@ actions.openUrlsInClipboardWithMpv = async () => {
             return;
           }
           const urlIw = htmlDocument.querySelector('[href*="iwara.tv"]');
-          util.playWithMpv(actions.iw.copyAndPlayVideo(urlIw.href));
+          const id = actions.iw.getIdIwara(urlIw.href);
+          util.playWithMpv(actions.iw.copyAndPlayVideo(id));
         })
       }
       else {
