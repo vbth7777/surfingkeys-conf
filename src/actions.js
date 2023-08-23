@@ -1567,10 +1567,14 @@ actions.iw.setSocket = () => {
   actions.iw.socket.addEventListener('message', (res) => {
     const data = JSON.parse(res.data)
     if (data.isContinue) {
-      Array.from(document.querySelectorAll('div.videoTeaser')).forEach(el => {
-        if (el.querySelector('a').href.includes(data.url))
-          el.style.backgroundColor = ''
-      })
+      const video = document.querySelector(`[href*="${actions.iw.getIdIwara(data.url)} "]`)
+      if (video) {
+        video.style.backgroundColor = ''
+      }
+      // Array.from(document.querySelectorAll('div.videoTeaser')).forEach(el => {
+      //   if (el.querySelector('a').href.includes(data.url))
+      //     el.style.backgroundColor = ''
+      // })
     }
   })
 }
