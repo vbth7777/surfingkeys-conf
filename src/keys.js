@@ -7,7 +7,7 @@ import util from "./util.js"
 const { categories } = help
 
 const { Clipboard, Front } = api
-
+const playVideoMPVAlias = "om";
 // Remove undesired default mappings
 const unmaps = {
   mappings: [
@@ -316,10 +316,12 @@ maps.global = [
     },
   },
   {
-    alias: "om",
+    alias: playVideoMPVAlias,
     description: "Open Url By MPV",
     callback: () => {
-      util.createHints("*[href]", el => util.playWithMpv(el.href));
+      util.createHints("*[href]", el => {
+        util.playWithMpv(el.href)
+      });
     }
   },
   {
@@ -1356,7 +1358,8 @@ maps["nhentai.net"] = [
 ]
 maps["iwara.tv"] = [
   {
-    alias: "v",
+    leader: "",
+    alias: playVideoMPVAlias,
     description: "Copy And View Video By MPV",
     callback: () => {
       util.createHints('a[href*="/video/"]', (el) => {
@@ -1450,7 +1453,8 @@ maps["erommdtube.com"] = [
     }
   },
   {
-    alias: "m",
+    leader: "",
+    alias: playVideoMPVAlias,
     description: "Open With MPV",
     callback: () => {
       actions.em.openVideoWithMPV();
@@ -1462,42 +1466,43 @@ maps["oreno3d.com"] = [
     alias: "ci",
     description: "Open Current Video With Iwara",
     callback: () => {
-      actions.em.openCurrentVideoWithIwara();
+      actions.or.openCurrentVideoWithIwara();
     }
   },
   {
     alias: "i",
     description: "Open With Iwara",
     callback: () => {
-      actions.em.openWithIwara();
+      actions.or.openWithIwara();
     }
   },
   {
     alias: "cf",
     description: "Open Current Video With MMDFans",
     callback: () => {
-      actions.em.openCurrentVideoWithMMDFans();
+      actions.or.openCurrentVideoWithMMDFans();
     }
   },
   {
     alias: "f",
     description: "Open With MMDFans",
     callback: () => {
-      actions.em.openWithMMDFans();
+      actions.or.openWithMMDFans();
     }
   },
   {
     alias: "cm",
     description: "Open Current Video With MPV",
     callback: () => {
-      actions.em.openCurrentVideoWithMPV();
+      actions.or.openCurrentVideoWithMPV();
     }
   },
   {
-    alias: "m",
+    leader: "",
+    alias: playVideoMPVAlias,
     description: "Open With MPV",
     callback: () => {
-      actions.em.openVideoWithMPV();
+      actions.or.openVideoWithMPV();
     }
   }
 ]
