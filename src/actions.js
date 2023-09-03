@@ -1358,21 +1358,28 @@ actions.nh.createViewer = async (idGallery) => {
     favoriteBtn.innerHTML = dom.querySelector('#favorite').innerText.toLowerCase().includes(unfavoriteMethod) ? unfavoriteMethod : favoriteMethod;
   })
   const createDetailInfoBox = (str) => {
-    const textBox = document.createElement('a');
+    const textBox = document.createElement('div');
     textBox.style.padding = '5px';
     textBox.style.margin = '5px';
     textBox.style.border = '2px solid #ccc'
+    textBox.style.maxWidth = '200px';
+    textBox.style.minWidth = '100px';
     fetch('https://nhentai.net/api/gallery/' + idGallery).then(res => res.json()).then(data => {
       const tags = data.tags;
-      for (let item of data.tags) {
+      textBox.innerText = str + ': ';
+      for (let item of tags) {
         if (item.type == str.toLowerCase()) {
-          textBox.innerText = str + ': \n' + item.name;
+          textBox.innerHTML += `<a href="${item.url}">${item.name}</a>, `;
           textBox.href = item.url;
-          return;
         }
       }
-      textBox.innerText = str + ': None'
-      textBox.style.cursor = 'default';
+      if (textBox.innerText == str + ': ') {
+        textBox.innerText = str + ': None'
+        textBox.style.cursor = 'default';
+      }
+      else {
+        textBox.innerHTML = textBox.innerHTML.slice(0, -2);
+      }
     })
     return textBox;
   }
@@ -1380,6 +1387,7 @@ actions.nh.createViewer = async (idGallery) => {
   infoBox.appendChild(createDetailInfoBox('artist'))
   infoBox.appendChild(createDetailInfoBox('group'))
   infoBox.appendChild(createDetailInfoBox('parody'))
+  infoBox.appendChild(createDetailInfoBox('tag'))
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
