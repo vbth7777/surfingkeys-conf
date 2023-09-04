@@ -1575,7 +1575,7 @@ actions.iw.setSocket = () => {
   actions.iw.socket.addEventListener('message', (res) => {
     const data = JSON.parse(res.data)
     if (data.isContinue) {
-      const video = document.querySelector(`[href*="${actions.iw.getIdIwara(data.url)} "]`)
+      const video = document.querySelector(`[href*="${actions.iw.getIdIwara(data.url)}"]`)
       if (video) {
         video.parentElement.style.backgroundColor = ''
       }
