@@ -1577,7 +1577,7 @@ actions.iw.setSocket = () => {
     if (data.isContinue) {
       const video = document.querySelector(`[href*="${actions.iw.getIdIwara(data.url)} "]`)
       if (video) {
-        video.style.backgroundColor = ''
+        video.parentElement.style.backgroundColor = ''
       }
       // Array.from(document.querySelectorAll('div.videoTeaser')).forEach(el => {
       //   if (el.querySelector('a').href.includes(data.url))
