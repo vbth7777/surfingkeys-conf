@@ -1380,6 +1380,7 @@ actions.nh.createViewer = async (idGallery) => {
     else {
       textBox.innerHTML = textBox.innerHTML.slice(0, -2);
     }
+    return textBox;
   }
   infoBox.appendChild(favoriteBtn)
   infoBox.appendChild(createDetailInfoBox('artist'))
