@@ -1264,15 +1264,16 @@ actions.nh.getIdFromUrl = (url) => {
   return match ? match[1] : null
 }
 actions.nh.createViewer = async (idGallery) => {
-  const urls = await fetch('https://nhentai.net/api/gallery/' + idGallery).then(res => res.json()).then(data => {
-    const mediaId = data.media_id;
-    const pages = data.num_pages;
+  const nhApi = await fetch('https://nhentai.net/api/gallery/' + idGallery).then(res => res.json());
+  const urls = (() => {
+    const mediaId = nhApi.media_id;
+    const pages = nhApi.num_pages;
     const images = [];
     for (let i = 1; i <= pages; i++) {
       images.push(`https://i7.nhentai.net/galleries/${mediaId}/${i}.jpg`)
     }
     return images;
-  })
+  })();
   const imagesPerPage = actions.nh.imagesPerPageForViewer;
   //   let sizePercent = 50;
   let sizeImage = '50vw';
@@ -1364,24 +1365,21 @@ actions.nh.createViewer = async (idGallery) => {
     textBox.style.border = '2px solid #ccc'
     textBox.style.maxWidth = '200px';
     textBox.style.minWidth = '100px';
-    fetch('https://nhentai.net/api/gallery/' + idGallery).then(res => res.json()).then(data => {
-      const tags = data.tags;
-      textBox.innerText = str + ': ';
-      for (let item of tags) {
-        if (item.type == str.toLowerCase()) {
-          textBox.innerHTML += `<a href="${item.url}">${item.name}</a>, `;
-          textBox.href = item.url;
-        }
+    const tags = nhApi.tags;
+    textBox.innerText = str + ': ';
+    for (let item of tags) {
+      if (item.type == str.toLowerCase()) {
+        textBox.innerHTML += `<a href="${item.url}">${item.name}</a>, `;
+        textBox.href = item.url;
       }
-      if (textBox.innerText == str + ': ') {
-        textBox.innerText = str + ': None'
-        textBox.style.cursor = 'default';
-      }
-      else {
-        textBox.innerHTML = textBox.innerHTML.slice(0, -2);
-      }
-    })
-    return textBox;
+    }
+    if (textBox.innerText == str + ': ') {
+      textBox.innerText = str + ': None'
+      textBox.style.cursor = 'default';
+    }
+    else {
+      textBox.innerHTML = textBox.innerHTML.slice(0, -2);
+    }
   }
   infoBox.appendChild(favoriteBtn)
   infoBox.appendChild(createDetailInfoBox('artist'))
