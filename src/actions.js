@@ -1767,6 +1767,11 @@ actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
   else {
     changeColorForPlayingUrl(id)
   }
+
+  const urlVideo = 'https://www.iwara.tv/' + id;
+  api.Clipboard.write(urlVideo);
+  util.playWithMpv(urlVideo);
+  return;
   actions.iw.getJSON(`https://api.iwara.tv/video/${id}`, async (status, res) => {
     if (status) {
       api.Front.showBanner('Error: ', status);
