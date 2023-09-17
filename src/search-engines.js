@@ -1286,6 +1286,7 @@ completions.iw.callback = (response) => {
       url: `https://www.iwara.tv/videos/${vid.id}`,
     })`
     <div>
+      <div><img src="https://i.iwara.tv/image/thumbnail/${vid.file.id}/thumbnail-11.jpg"/></div>
       <div><strong>${vid.title}</strong></div>
       <div><span style="font-size: 0.9em; opacity: 70%">${vid.user.name}</span></div>
     </div>

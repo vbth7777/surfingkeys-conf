@@ -194,6 +194,7 @@
         </div>
      `))]},Oe.iw={alias:"iw",name:"Iwara",search:"https://www.iwara.tv/search?query=",compl:"https://api.iwara.tv/search?type=video&page=0&query="},Oe.iw.callback=e=>JSON.parse(e.text).results.map((e=>Se({url:`https://www.iwara.tv/videos/${e.id}`})`
     <div>
+      <div><img src="https://i.iwara.tv/image/thumbnail/${e.file.id}/thumbnail-11.jpg"/></div>
       <div><strong>${e.title}</strong></div>
       <div><span style="font-size: 0.9em; opacity: 70%">${e.user.name}</span></div>
     </div>
