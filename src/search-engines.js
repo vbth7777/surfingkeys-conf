@@ -1282,14 +1282,17 @@ completions.iw = {
 completions.iw.callback = (response) => {
   const res = JSON.parse(response.text)
   return res.results.map(vid => {
+    console.log(vid)
     return suggestionItem({
       url: `https://www.iwara.tv/videos/${vid.id}`,
     })`
-    <div>
-      <div><img src="https://i.iwara.tv/image/thumbnail/${vid.file.id}/thumbnail-11.jpg"/></div>
-      <div><strong>${vid.title}</strong></div>
-      <div><span style="font-size: 0.9em; opacity: 70%">${vid.user.name}</span></div>
-    </div>
+      <div style="padding:5px;display:grid;grid-template-columns:60px 1fr;grid-gap:15px">
+        <img style="width:60px" src="${`https://i.iwara.tv/image/thumbnail/${vid?.file?.id}/thumbnail-11.jpg`}">
+        <div>
+          <div class="title"><strong>${vid.title}</strong></div>
+          <div class="title">${vid.user.name}</div>
+        </div>
+      </div>
   `
   })
 }
