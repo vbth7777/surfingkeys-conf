@@ -34,12 +34,10 @@ const googleCustomSearch = (opts) => {
   }
   return {
     favicon,
-    compl: `https://www.googleapis.com/customsearch/v1?key=${
-      priv.keys.google_cs
-    }&cx=${priv.keys[`google_cx_${opts.alias}`]}&q=`,
-    search: `https://cse.google.com/cse/publicurl?cx=${
-      priv.keys[`google_cx_${opts.alias}`]
-    }&q=`,
+    compl: `https://www.googleapis.com/customsearch/v1?key=${priv.keys.google_cs
+      }&cx=${priv.keys[`google_cx_${opts.alias}`]}&q=`,
+    search: `https://cse.google.com/cse/publicurl?cx=${priv.keys[`google_cx_${opts.alias}`]
+      }&q=`,
     callback: (response) =>
       JSON.parse(response.text).items.map(
         (s) => suggestionItem({ url: s.link })`
@@ -421,8 +419,7 @@ completions.un.callback = (response) => {
       .split(" ")
       .map(
         (word) =>
-          `${word[0]?.toUpperCase() ?? ""}${
-            word.length > 1 ? word.slice(1) : ""
+          `${word[0]?.toUpperCase() ?? ""}${word.length > 1 ? word.slice(1) : ""
           }`
       )
       .join(" ")
@@ -790,8 +787,7 @@ completions.ka = {
       }
       return suggestionItem({ url: u.href })`
       <div style="padding: 5px; display: grid; grid-template-columns: 32px 1fr; grid-gap: 15px">
-        <img style="width: 32px" src="${
-          r.img ? new URL(r.img, "https://kagi.com") : wpDefaultIcon
+        <img style="width: 32px" src="${r.img ? new URL(r.img, "https://kagi.com") : wpDefaultIcon
         }" />
         <div>
           <div class="title"><strong>${r.t}</strong></div>
@@ -907,8 +903,8 @@ completions.ho.callback = (response) =>
     return suggestionItem({ url: s.url })`
     <div>
       <div class="title" style="font-size: 1.1em; font-weight: bold">${htmlPurify(
-        s.item
-      )}</div>
+      s.item
+    )}</div>
       ${pkgInfo}
       <div style="padding: 0.5em">${htmlPurify(s.docs)}</div>
     </div>
@@ -1021,8 +1017,8 @@ completions.np.callback = (response) =>
     const date = s.package?.date ? prettyDate(new Date(s.package.date)) : ""
     const flags = s.flags
       ? Object.keys(s.flags).map(
-          (f) => htmlNode`[<span style='color:#ff4d00'>⚑</span> ${f}] `
-        )
+        (f) => htmlNode`[<span style='color:#ff4d00'>⚑</span> ${f}] `
+      )
       : []
     return suggestionItem({ url: s.package.links.npm })`
       <div>
@@ -1154,7 +1150,7 @@ completions.re.callback = async (response, { query }) => {
     const thumb = data.thumbnail?.match(/^https?:\/\//)
       ? data.thumbnail
       : completions.re.thumbs[data.thumbnail] ??
-        completions.re.thumbs["default"]
+      completions.re.thumbs["default"]
     const relDate = prettyDate(new Date(parseInt(data.created, 10) * 1000))
     return suggestionItem({
       url: encodeURI(`https://reddit.com${data.permalink}`),
@@ -1163,20 +1159,15 @@ completions.re.callback = async (response, { query }) => {
         <img style="width: 70px; height: 50px; margin-right: 0.8em" alt="thumbnail" src="${thumb}">
         <div>
           <div>
-            <strong><span style="font-size: 1.2em; margin-right: 0.2em">↑</span>${
-              data.score
-            }</strong> ${
-      data.title
-    } <span style="font-size: 0.8em; opacity: 60%">(${data.domain})</span>
+            <strong><span style="font-size: 1.2em; margin-right: 0.2em">↑</span>${data.score
+      }</strong> ${data.title
+      } <span style="font-size: 0.8em; opacity: 60%">(${data.domain})</span>
           </div>
           <div>
-            <span style="font-size: 0.8em"><span style="color: opacity: 70%">r/${
-              data.subreddit
-            }</span> • <span style="color: opacity: 70%">${
-      data.num_comments ?? "unknown"
-    }</span> <span style="opacity: 60%">comments</span> • <span style="opacity: 60%">submitted ${relDate} by</span> <span style="color: opacity: 70%">${
-      data.author
-    }</span></span>
+            <span style="font-size: 0.8em"><span style="color: opacity: 70%">r/${data.subreddit
+      }</span> • <span style="color: opacity: 70%">${data.num_comments ?? "unknown"
+      }</span> <span style="opacity: 60%">comments</span> • <span style="opacity: 60%">submitted ${relDate} by</span> <span style="color: opacity: 70%">${data.author
+      }</span></span>
           </div>
         </div>
       </div>
@@ -1203,8 +1194,7 @@ completions.yt.callback = (response) =>
             url: `https://youtube.com/channel/${s.id.channelId}`,
           })`
           <div style="display: flex; flex-direction: row">
-            <img style="${`width: ${thumb.width ?? 120}px; height: ${
-              thumb.height ?? 90
+            <img style="${`width: ${thumb.width ?? 120}px; height: ${thumb.height ?? 90
             }px; margin-right: 0.8em`}" alt="thumbnail" src="${thumb.url}">
             <div>
               <div>
@@ -1225,8 +1215,7 @@ completions.yt.callback = (response) =>
             url: `https://youtu.be/${encodeURIComponent(s.id.videoId)}`,
           })`
           <div style="display: flex; flex-direction: row">
-            <img style="${`width: ${thumb.width ?? 120}px; height: ${
-              thumb.height ?? 90
+            <img style="${`width: ${thumb.width ?? 120}px; height: ${thumb.height ?? 90
             }px; margin-right: 0.8em`}" alt="thumbnail" src="${thumb.url}">
             <div>
               <div>
@@ -1236,9 +1225,8 @@ completions.yt.callback = (response) =>
                 <span>${htmlPurify(s.snippet.description)}</span>
               </div>
               <div>
-                <span style="font-size: 0.8em"><span style="opacity: 70%">video</span> <span style="opacity: 60%">by</span> <span style="opacity: 70%">${
-                  s.snippet.channelTitle
-                }</span> • <span style="opacity: 70%">${relDate}</span></span>
+                <span style="font-size: 0.8em"><span style="opacity: 70%">video</span> <span style="opacity: 60%">by</span> <span style="opacity: 70%">${s.snippet.channelTitle
+            }</span> • <span style="opacity: 70%">${relDate}</span></span>
               </div>
             </div>
           </div>
@@ -1285,5 +1273,9 @@ completions.hf.callback = (response) => {
     ),
   ]
 }
-
+completions.iw = {
+  alias: "iw",
+  name: "Iwara",
+  search: "https://www.iwara.tv/search?query=",
+}
 export default completions
