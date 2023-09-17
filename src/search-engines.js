@@ -1277,5 +1277,19 @@ completions.iw = {
   alias: "iw",
   name: "Iwara",
   search: "https://www.iwara.tv/search?query=",
+  compl: "https://api.iwara.tv/search?type=video&page=0&query="
+}
+completions.iw.callback = (response) => {
+  const res = JSON.parse(response.text)
+  return res.results.map(vid => {
+    return suggestionItem({
+      url: `https://www.iwara.tv/videos/${vid.id}`,
+    })`
+    <div>
+      <div><strong>${vid.title}</strong></div>
+      <div><span style="font-size: 0.9em; opacity: 70%">${vid.user.name}</span></div>
+    </div>
+  `
+  })
 }
 export default completions
