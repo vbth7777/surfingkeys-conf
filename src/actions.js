@@ -1342,6 +1342,8 @@ actions.nh.createViewer = async (idGallery) => {
   favoriteBtn.onclick = () => {
     const state = favoriteBtn.innerHTML != favoriteMethod ? unfavoriteMethod : favoriteMethod
     favoriteBtn.disabled = true;
+    favoriteBtn.style.opacity = 0.5;
+    favoriteBtn.style.cursor = 'default';
 
     fetch('https://nhentai.net/api/gallery/' + idGallery + '/' + state, {
       method: 'post',
@@ -1351,6 +1353,8 @@ actions.nh.createViewer = async (idGallery) => {
     }).then(res => {
       favoriteBtn.innerHTML = favoriteBtn.innerHTML == favoriteMethod ? unfavoriteMethod : favoriteMethod;
       favoriteBtn.disabled = false;
+      favoriteBtn.style.opacity = 1;
+      favoriteBtn.style.cursor = 'pointer';
     })
   }
   fetch('https://nhentai.net/g/' + idGallery).then(res => res.text()).then(data => {
