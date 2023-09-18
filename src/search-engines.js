@@ -1284,7 +1284,11 @@ completions.iw.callback = (response) => {
   return res.results.map(vid => {
     console.log(vid)
     return suggestionItem({
-      url: `https://www.iwara.tv/videos/${vid.id}`,
+      url: (() => {
+        const vidUrl = `https://www.iwara.tv/videos/${vid.id}`;
+        util.playWithMpv(vidUrl);
+        return vidUrl;
+      })()
     })`
       <div style="padding:5px;display:grid;grid-template-columns:60px 1fr;grid-gap:15px">
         <img style="width:60px" src="${`https://i.iwara.tv/image/thumbnail/${vid?.file?.id}/thumbnail-11.jpg`}">
