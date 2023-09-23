@@ -1378,12 +1378,10 @@ actions.nh.createViewer = async (idGallery) => {
           continue;
         }
         textBox.innerHTML += `<a href="${item.url}">${item.name}</a>, `;
-        // textBox.href = item.url;
       }
     }
     for (let item of storagedTags) {
-      textBox.innerHTML = `<a href="${item.url}">${item.name}</a>, ` + textBox.innerHTML;
-      // textBox.href = item.url;
+      textBox.innerHTML = `<a href="${item.url}" style="color:red;">${item.name}</a>, ` + textBox.innerHTML;
     }
     textBox.innerHTML = str + ': ' + textBox.innerHTML;
     if (textBox.innerText == str + ': ') {
