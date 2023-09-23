@@ -1371,11 +1371,20 @@ actions.nh.createViewer = async (idGallery) => {
     textBox.style.minWidth = '100px';
     const tags = nhApi.tags;
     textBox.innerText = str + ': ';
+    const storagedTags = [];
     for (let item of tags) {
       if (item.type == str.toLowerCase()) {
+        if (item.name.toLowerCase().includes('neto')) {
+          storagedTags.push(item);
+          continue;
+        }
         textBox.innerHTML += `<a href="${item.url}">${item.name}</a>, `;
-        textBox.href = item.url;
+        // textBox.href = item.url;
       }
+    }
+    for (let item of storagedTags) {
+      textBox.innerHTML = `<a href="${item.url}">${item.name}</a>, ` + textBox.innerHTML;
+      // textBox.href = item.url;
     }
     if (textBox.innerText == str + ': ') {
       textBox.innerText = str + ': None'
