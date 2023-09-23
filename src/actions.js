@@ -1370,7 +1370,6 @@ actions.nh.createViewer = async (idGallery) => {
     textBox.style.maxWidth = '200px';
     textBox.style.minWidth = '100px';
     const tags = nhApi.tags;
-    textBox.innerText = str + ': ';
     const storagedTags = [];
     for (let item of tags) {
       if (item.type == str.toLowerCase()) {
@@ -1386,6 +1385,7 @@ actions.nh.createViewer = async (idGallery) => {
       textBox.innerHTML = `<a href="${item.url}">${item.name}</a>, ` + textBox.innerHTML;
       // textBox.href = item.url;
     }
+    textBox.innerText = str + ': ';
     if (textBox.innerText == str + ': ') {
       textBox.innerText = str + ': None'
       textBox.style.cursor = 'default';
