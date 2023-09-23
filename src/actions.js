@@ -1385,7 +1385,7 @@ actions.nh.createViewer = async (idGallery) => {
       textBox.innerHTML = `<a href="${item.url}">${item.name}</a>, ` + textBox.innerHTML;
       // textBox.href = item.url;
     }
-    textBox.innerText = str + ': ';
+    textBox.innerHTML = str + ': ' + textBox.innerHTML;
     if (textBox.innerText == str + ': ') {
       textBox.innerText = str + ': None'
       textBox.style.cursor = 'default';
