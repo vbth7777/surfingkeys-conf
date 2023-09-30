@@ -1779,7 +1779,7 @@ actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
     changeColorForPlayingUrl(id)
   }
 
-  const urlVideo = 'https://www.iwara.tv/' + id;
+  const urlVideo = 'https://www.iwara.tv/video/' + id;
   // api.Clipboard.write(urlVideo);
   util.playWithMpv(urlVideo);
   return;
