@@ -1780,7 +1780,7 @@ actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
   }
 
   const urlVideo = 'https://www.iwara.tv/' + id;
-  api.Clipboard.write(urlVideo);
+  // api.Clipboard.write(urlVideo);
   util.playWithMpv(urlVideo);
   return;
   actions.iw.getJSON(`https://api.iwara.tv/video/${id}`, async (status, res) => {
