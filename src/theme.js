@@ -35,6 +35,10 @@ export default `
   #sk_omnibar .separator {
     padding-left: 8px !important;
   }
+  .sk_theme .url{
+    color: #fff;
+    opacity:0.8;
+  }
 
   @media (prefers-color-scheme: light) {
     body {
