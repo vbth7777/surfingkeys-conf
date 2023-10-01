@@ -1286,11 +1286,11 @@ completions.iw.callback = (response) => {
     return suggestionItem({
       url: `https://www.iwara.tv/videos/${vid.id}`
     })`
-      <div style="padding:5px;display:grid;grid-template-columns:60px 1fr;grid-gap:15px">
-        <img style="width:100px" src="${`https://i.iwara.tv/image/thumbnail/${vid?.file?.id}/thumbnail-11.jpg`}">
-        <div>
-          <div class="title"><strong>${vid.title}</strong></div>
-          <div class="title">${vid.user.name}</div>
+      <div style="padding:5px;position:relative">
+        <img style="width:200px; display:inline-block" src="${`https://i.iwara.tv/image/thumbnail/${vid?.file?.id}/thumbnail-11.jpg`}">
+        <div style="position:absolute; display:inline-block; margin-left:10px;">
+          <div ><strong>${vid.title}</strong></div>
+          <div style="margin-top:10px;opacity:0.7">${vid.user.name}</div>
         </div>
       </div>
   `
