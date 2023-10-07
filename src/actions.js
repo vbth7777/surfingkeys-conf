@@ -1827,6 +1827,14 @@ actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
     }, await util.convertToSHA1(fileId + '_' + getExpire(fileUrl) + '_5nFp9kmbNnHdAFhaqMvt'))
   })
 }
+actions.iw.likeCurrentVideo = (id) => {
+  fetch(`https://api.iwara.tv/video/${id}/like`, {
+    method: 'post',
+    headers: {
+      'Authorization': 'Bearer ' + localStorage.accessToken
+    }
+  })
+}
 actions.iw.showPlaylistMenu = () => {
   util.createHints("*[href*='video/']", async function(element) {
     let checkBoxes = [];

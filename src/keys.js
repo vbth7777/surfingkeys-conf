@@ -1384,6 +1384,17 @@ maps["iwara.tv"] = [
     }
   },
   {
+    alias: "pk",
+    description: "Like And Show Playlist For Current Video",
+    callback: () => {
+      Array.from(document.querySelectorAll('button')).forEach(el => {
+        if (el.innerText.toLowerCase().includes('like')) {
+          el.click();
+        }
+      })
+    }
+  },
+  {
     alias: "pa",
     description: "Play All Videos On The Page By MPV",
     callback: () => {
