@@ -1447,7 +1447,7 @@ maps["iwara.tv"] = [
         }
       }
     }
-
+  }
 ]
 maps["mmdfans.net"] = [
   {
