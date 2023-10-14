@@ -20,6 +20,16 @@ util.promisify = promisify
 const runtime = promisify(RUNTIME)
 util.runtime = runtime
 
+util.getHTML = async (url) => {
+  const html = await runtime("request", { url })
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(html.text, "text/html")
+  return doc
+}
+util.getJSON = async (url) => {
+  const json = await runtime("request", { url })
+  return JSON.parse(json.text)
+}
 util.runtimeHttpRequest = async (url, opts) => {
   const res = await runtime("request", { ...opts, url })
   return res.text
@@ -210,7 +220,7 @@ util.playWithMpv = (url, pageUrl = null, accessToken = null) => {
   api.Front.showBanner('Openning with mpv...')
   fetch('http://localhost:9789', {
     method: 'post',
-    body: new URLSearchParams({ url, pageUrl,accessToken })
+    body: new URLSearchParams({ url, pageUrl, accessToken })
   }).catch(err => console.error(err))
 }
 util.sleep = (ms) => {
