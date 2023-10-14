@@ -1443,11 +1443,13 @@ actions.nh.createViewer = async (idGallery) => {
     totalPageElement.innerHTML = `${page}/${totalPage}`;
     const nextBtn = document.createElement('button');
     nextBtn.innerHTML = 'Next';
+    nextBtn.className = 'tth-next-btn'
     nextBtn.onclick = () => {
       nextPageHandler();
     }
     const prevBtn = document.createElement('button');
     prevBtn.innerHTML = 'Prev';
+    prevBtn.className = 'tth-prev-btn'
     prevBtn.onclick = () => {
       prevPageHandler();
     }

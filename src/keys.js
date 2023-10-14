@@ -1331,6 +1331,22 @@ maps["ikea.com"] = [
 ]
 maps["nhentai.net"] = [
   {
+    alias: "h",
+    leader:"",
+    description: "Prev Page",
+    callback: () =>  {
+      document.querySelector('.tth-prev-btn').click();
+    }
+  },
+  {
+    alias: "l",
+    leader:"",
+    description: "Next Page",
+    callback: () =>  {
+      document.querySelector('.tth-next-btn').click();
+    }
+  },
+  {
     alias: "r",
     description: "Read Comic",
     callback: () => util.createHints('a[href*="/g/"]', (el) => {
