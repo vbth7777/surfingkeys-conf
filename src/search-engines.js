@@ -1297,4 +1297,29 @@ completions.iw.callback = (response) => {
   `
   })
 }
+completions.mdf = {
+  alias: "mdf",
+  name: "Mmdfans",
+  search: "https://mmdfans.net/?query=",
+  compl: "https://mmdfans.net/?query=",
+}
+completions.mdf.callback = (response) => {
+  const parser = new DOMParser();
+  const res = parser.parseFromString(response.text, "text/html")
+  return Array.from(res.querySelectorAll('.mdui-col')).map(vid => {
+    console.log(vid)
+    const href = vid.querySelector('a').href;
+    const img = vid.querySelector('img').src;
+    return suggestionItem({
+      url: href
+    })`
+      <div style="padding:5px;position:relative">
+        <img style="width:200px; display:inline-block" src="${img}">
+        <div style="position:absolute; display:inline-block; margin-left:10px;">
+          <div ><strong>${vid.querySelector('.mdui-grid-tile-title')}</strong></div>
+        </div>
+      </div>
+  `
+  })
+}
 export default completions

@@ -1332,17 +1332,17 @@ maps["ikea.com"] = [
 maps["nhentai.net"] = [
   {
     alias: "h",
-    leader:"",
+    leader: "",
     description: "Prev Page",
-    callback: () =>  {
+    callback: () => {
       document.querySelector('.tth-prev-btn').click();
     }
   },
   {
     alias: "l",
-    leader:"",
+    leader: "",
     description: "Next Page",
-    callback: () =>  {
+    callback: () => {
       document.querySelector('.tth-next-btn').click();
     }
   },
