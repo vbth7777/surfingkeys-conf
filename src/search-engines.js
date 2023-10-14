@@ -1297,13 +1297,13 @@ completions.iw.callback = (response) => {
   `
   })
 }
-completions.mdf = {
-  alias: "mdf",
+completions.mf = {
+  alias: "mf",
   name: "Mmdfans",
   search: "https://mmdfans.net/?query=",
   compl: "https://mmdfans.net/?query=",
 }
-completions.mdf.callback = (response) => {
+completions.mf.callback = (response) => {
   const parser = new DOMParser();
   const res = parser.parseFromString(response.text, "text/html")
   return Array.from(res.querySelectorAll('.mdui-col')).map(vid => {
