@@ -206,11 +206,11 @@ util.convertToSHA1 = async (str) => {
   const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   return hashHex;
 }
-util.playWithMpv = (url, pageUrl = null) => {
+util.playWithMpv = (url, pageUrl = null, accessToken = null) => {
   api.Front.showBanner('Openning with mpv...')
   fetch('http://localhost:9789', {
     method: 'post',
-    body: new URLSearchParams({ url, pageUrl })
+    body: new URLSearchParams({ url, pageUrl,accessToken })
   }).catch(err => console.error(err))
 }
 util.sleep = (ms) => {
