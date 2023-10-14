@@ -1433,7 +1433,7 @@ maps["iwara.tv"] = [
         })
       }
       if (profileId) {
-        const idUser = (await util.getJSON('https://api.iwara.tv/profile/' = profileId)).user.id;
+        const idUser = (await util.getJSON('https://api.iwara.tv/profile/' + profileId)).user.id;
         let page = 0;
         let maxPage = true;
         while (page != maxPage) {
