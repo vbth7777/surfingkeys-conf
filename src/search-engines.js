@@ -1307,9 +1307,9 @@ completions.mf.callback = (response) => {
   const parser = new DOMParser();
   const res = parser.parseFromString(response.text, "text/html")
   return Array.from(res.querySelectorAll('.mdui-col')).map(vid => {
-    console.log(vid)
     const href = vid.querySelector('a').href;
     const img = 'https://mmdfans.net' + vid.querySelector('img').getAttribute('src')
+    console.log(img)
     return suggestionItem({
       url: href
     })`
