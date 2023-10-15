@@ -1309,7 +1309,7 @@ completions.mf.callback = (response) => {
   return Array.from(res.querySelectorAll('.mdui-col')).map(vid => {
     console.log(vid)
     const href = vid.querySelector('a').href;
-    const img = 'https://mmdfans.net/' + vid.querySelector('img').getAttribute('src')
+    const img = 'https://mmdfans.net' + vid.querySelector('img').getAttribute('src')
     return suggestionItem({
       url: href
     })`

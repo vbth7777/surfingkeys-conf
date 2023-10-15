@@ -200,7 +200,7 @@
           <div style="margin-top:10px;opacity:0.7">${e.user.name}</div>
         </div>
       </div>
-  `))),Oe.mf={alias:"mf",name:"Mmdfans",search:"https://mmdfans.net/?query=",compl:"https://mmdfans.net/?query="},Oe.mf.callback=e=>{const t=(new DOMParser).parseFromString(e.text,"text/html");return Array.from(t.querySelectorAll(".mdui-col")).map((e=>{console.log(e);const t=e.querySelector("a").href,a="https://mmdfans.net/"+e.querySelector("img").getAttribute("src");return Se({url:t})`
+  `))),Oe.mf={alias:"mf",name:"Mmdfans",search:"https://mmdfans.net/?query=",compl:"https://mmdfans.net/?query="},Oe.mf.callback=e=>{const t=(new DOMParser).parseFromString(e.text,"text/html");return Array.from(t.querySelectorAll(".mdui-col")).map((e=>{console.log(e);const t=e.querySelector("a").href,a="https://mmdfans.net"+e.querySelector("img").getAttribute("src");return Se({url:t})`
       <div style="padding:5px;position:relative">
         <img style="width:200px; display:inline-block" src="${a}">
         <div style="position:absolute; display:inline-block; margin-left:10px;">
