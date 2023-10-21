@@ -1390,7 +1390,7 @@ maps["iwara.tv"] = [
     callback: () => {
       // const id = actions.iw.getIdIwara(window.location.href);
       // actions.iw.copyAndPlayVideo(id);
-      util.playWithMpv(document.querySelector(".videoPlayer"").src)
+      util.playWithMpv(document.querySelector(".videoPlayer").src)
     }
   },
   {
