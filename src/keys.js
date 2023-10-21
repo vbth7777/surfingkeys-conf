@@ -1388,8 +1388,9 @@ maps["iwara.tv"] = [
     alias: "cv",
     description: "Copy And View Current Video By MPV",
     callback: () => {
-      const id = actions.iw.getIdIwara(window.location.href);
-      actions.iw.copyAndPlayVideo(id);
+      // const id = actions.iw.getIdIwara(window.location.href);
+      // actions.iw.copyAndPlayVideo(id);
+      util.playWithMpv(document.querySelector(".videoPlayer"").src)
     }
   },
   {
@@ -1432,38 +1433,38 @@ maps["iwara.tv"] = [
 
     }
   },
-  // {
-  //   alias: "u",
-  //   description: "Play All Video Of User",
-  //   callback: async () => {
-  //     const getProfileID = (url) => {
-  //       return url.match(/profile\/([^\/]*)/)[1];
-  //     }
-  //     let profileId = null;
-  //     if (window.location.href.includes('profile')) {
-  //       profileId = getProfileID(window.location.href);
-  //     }
-  //     else {
-  //       await util.createHints('a[href*="/profile/"]', async (el) => {
-  //         profileId = getProfileID(el.href);
-  //       })
-  //     }
-  //     if (profileId) {
-  //       const idUser = (await util.getJSON('https://api.iwara.tv/profile/' + profileId)).user.id;
-  //       let page = 0;
-  //       let maxPage = true;
-  //       while (page != maxPage) {
-  //         const url = `https://api.iwara.tv/videos?sort=date&page=${page++}&user=${idUser}`
-  //         const json = await util.getJSON(url);
-  //         maxPage = maxPage !== true ? parseInt(json.count / json.limit) : maxPage;
-  //         const videos = json.results;
-  //         for (let vid of videos) {
-  //           actions.iw.copyAndPlayVideo(vid.id);
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
+  {
+    alias: "u",
+    description: "Play All Video Of User",
+    callback: async () => {
+      const getProfileID = (url) => {
+        return url.match(/profile\/([^\/])*/)
+      }
+      let profileId = null;
+      if (window.location.href.includes('profile')) {
+        profileId = getProfileID(window.location.href);
+      }
+      else {
+        await util.createHints('a[href*="/profile/"]', async (el) => {
+          profileId = getProfileID(el.href);
+        })
+      }
+      if (profileId) {
+        const idUser = (await util.getJSON('https://api.iwara.tv/profile/' + profileId)).user.id;
+        let page = 0;
+        let maxPage = true;
+        while (page != maxPage) {
+          const url = `https://api.iwara.tv/videos?sort=date&page=${page++}&user=${idUser}`
+          const json = await util.getJSON(url);
+          maxPage = maxPage !== true ? parseInt(json.count / json.limit) : maxPage;
+          const videos = json.results;
+          for (let vid of videos) {
+            actions.iw.copyAndPlayVideo(vid.id);
+          }
+        }
+      }
+    }
+  }
 ]
 maps["mmdfans.net"] = [
   {
