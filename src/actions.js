@@ -1258,6 +1258,7 @@ actions.yt.showPlaylist = () => {
 //nhentai
 actions.nh = {
   imagesPerPageForViewer: 50,
+  removeReaderArea: null
 }
 actions.nh.getIdFromUrl = (url) => {
   const match = url.match(/nhentai\.net\/g\/(\d+)/)
@@ -1296,6 +1297,7 @@ actions.nh.createViewer = async (idGallery) => {
     document.body.style.overflow = "auto";
     containerBox.remove();
   }
+  actions.nh.removeReaderArea = removeContainerBox
 
   const closeBtn = document.createElement('button');
   closeBtn.style.position = 'absolute';
@@ -1569,6 +1571,7 @@ actions.nh.createViewer = async (idGallery) => {
   document.body.style.overflow = "hidden";
   document.body.appendChild(containerBox);
   Hints.create("tth-images-area", Hints.dispatchMouseClick);
+  actions.nh.readArea = containerBox;
 }
 //iwara
 actions.iw = {

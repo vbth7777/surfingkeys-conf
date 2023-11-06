@@ -1355,6 +1355,14 @@ maps["nhentai.net"] = [
     }),
   },
   {
+    leader: "",
+    alias: "q",
+    description: "Quit Comic",
+    callback: () => util.createHints('a[href*="/g/"]', (el) => {
+      actions.nh?.removeReaderArea()
+    }),
+  },
+  {
     alias: "k",
     description: "Read Current Comic",
     callback: () => {
