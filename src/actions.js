@@ -1297,7 +1297,7 @@ actions.nh.createViewer = async (idGallery) => {
     document.body.style.overflow = "auto";
     containerBox.remove();
   }
-  actions.nh.removeReaderArea = removeContainerBox
+  actions.nh.removeReaderArea = removeContainerBox;
 
   const closeBtn = document.createElement('button');
   closeBtn.style.position = 'absolute';
