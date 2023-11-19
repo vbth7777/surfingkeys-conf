@@ -1420,10 +1420,20 @@ maps["iwara.tv"] = [
     }
   },
   {
-    alias: "pa",
-    description: "Play All Videos On The Page By MPV",
+    alias: "paq",
+    description: "Play All Videos On The Page By MPV By Queue",
     callback: () => {
       actions.iw.playUrlsOnPageWithMpv();
+    }
+  },
+  {
+    alias: "paa",
+    description: "Play All Videos On The Page By MPV",
+    callback: () => {
+      const vids = document.querySelectorAll('a[href*="iwara.tv/video"]')
+      for (let vid of vids) {
+        util.playWithMpv(vid.href, null, localStorage.accessToken);
+      }
     }
   },
   {

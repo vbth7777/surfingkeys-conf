@@ -80,7 +80,7 @@ actions.openUrlsInClipboardWithMpv = async () => {
           }
           const urlIw = htmlDocument.querySelector('[href*="iwara.tv"]');
           const id = actions.iw.getIdIwara(urlIw.href);
-          util.playWithMpv(actions.iw.copyAndPlayVideo(id));
+          actions.iw.copyAndPlayVideo(id);
         })
       }
       else {
