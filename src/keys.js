@@ -540,6 +540,19 @@ maps["youtube.com"] = [
       actions.yt.showPlaylist();
     }
   },
+  {
+    leader: "",
+    alias: "ofm",
+    description: "Open async video in mpv",
+    callback: () => {
+      api.Front.showBanner(`Openning with mpv (${url})...`)
+      fetch('http://localhost:9789/async-run', {
+        method: 'post',
+        body: new URLSearchParams({ url })
+      }).catch(err => console.error(err))
+    }
+  },
+
 ]
 
 maps["vimeo.com"] = [
