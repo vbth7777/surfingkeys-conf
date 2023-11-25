@@ -545,7 +545,7 @@ maps["youtube.com"] = [
     alias: "ofm",
     description: "Open async video in mpv",
     callback: () => {
-      utils.createHints("*", el => {
+      utils.createHints("*[href]", el => {
         const url = el.href
         api.Front.showBanner(`Openning with mpv (${url})...`)
         fetch('http://localhost:9789/async-run', {
