@@ -1476,10 +1476,20 @@ maps["iwara.tv"] = [
     }
   },
   {
-    alias: "pv",
+    alias: "pvp",
     description: "Preview All Videos On Page",
     callback: async () => {
       const event = new MouseEvent('mouseover', {
+        bubbles: true,
+      });
+      Array.from(document.querySelectorAll(".videoTeaser__thumbnail")).forEach(el => el.dispatchEvent(event))
+    }
+  },
+  {
+    alias: "pvs",
+    description: "Stop Preview All Videos On Page",
+    callback: async () => {
+      const event = new MouseEvent('mouseout', {
         bubbles: true,
       });
       Array.from(document.querySelectorAll(".videoTeaser__thumbnail")).forEach(el => el.dispatchEvent(event))
