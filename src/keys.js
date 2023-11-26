@@ -1479,16 +1479,19 @@ maps["iwara.tv"] = [
     alias: "vp",
     description: "Preview All Videos On Page",
     callback: async () => {
-      const event = new MouseEvent('mouseover', {
-        bubbles: true,
-      });
-      Array.from(document.querySelectorAll(".videoTeaser__thumbnail")).forEach(el => el.dispatchEvent(event))
+      actions.iw.previewIntervalId = setInterval(() => {
+        const event = new MouseEvent('mouseover', {
+          bubbles: true,
+        });
+        Array.from(document.querySelectorAll(".videoTeaser__thumbnail")).forEach(el => el.dispatchEvent(event))
+      }, 1000)
     }
   },
   {
     alias: "vs",
     description: "Stop Preview All Videos On Page",
     callback: async () => {
+      clearInterval(actions.iw.previewIntervalId);
       const event = new MouseEvent('mouseout', {
         bubbles: true,
       });
