@@ -1476,7 +1476,7 @@ maps["iwara.tv"] = [
     }
   },
   {
-    alias: "pvp",
+    alias: "vp",
     description: "Preview All Videos On Page",
     callback: async () => {
       const event = new MouseEvent('mouseover', {
@@ -1486,7 +1486,7 @@ maps["iwara.tv"] = [
     }
   },
   {
-    alias: "pvs",
+    alias: "vs",
     description: "Stop Preview All Videos On Page",
     callback: async () => {
       const event = new MouseEvent('mouseout', {
