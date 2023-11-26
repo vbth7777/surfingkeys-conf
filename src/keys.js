@@ -1479,6 +1479,9 @@ maps["iwara.tv"] = [
     alias: "vp",
     description: "Preview All Videos On Page",
     callback: async () => {
+      if (actions.iw.reviewIntervalId) {
+        clearInterval(actions.iw.reviewIntervalId);
+      }
       actions.iw.previewIntervalId = setInterval(() => {
         const event = new MouseEvent('mouseover', {
           bubbles: true,
@@ -1492,6 +1495,7 @@ maps["iwara.tv"] = [
     description: "Stop Preview All Videos On Page",
     callback: async () => {
       clearInterval(actions.iw.previewIntervalId);
+      actions.iw.previewIntervalId = null;
       const event = new MouseEvent('mouseout', {
         bubbles: true,
       });
