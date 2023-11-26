@@ -1476,6 +1476,16 @@ maps["iwara.tv"] = [
     }
   },
   {
+    alias: "pv",
+    description: "Preview All Videos On Page",
+    callback: async () => {
+      const event = new MouseEvent('mouseover', {
+        bubbles: true,
+      });
+      Array.from(document.querySelectorAll(".videoTeaser__thumbnail")).forEach(el => el.dispatchEvent(event))
+    }
+  },
+  {
     alias: "u",
     description: "Play All Video Of User",
     callback: async () => {
