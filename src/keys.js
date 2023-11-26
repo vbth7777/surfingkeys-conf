@@ -1394,6 +1394,14 @@ maps["nhentai.net"] = [
       Front.showBanner(btn.innerText.trim().toLowerCase().replace('favorite', "favorited"));
       btn.click();
     },
+  },
+  {
+    leader: "",
+    alias: "q",
+    description: "Quit Reader Box",
+    callback: () => {
+      actions.nh.removeReaderArea();
+    },
   }
 ]
 maps["iwara.tv"] = [
