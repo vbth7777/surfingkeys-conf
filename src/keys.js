@@ -1427,7 +1427,7 @@ maps["iwara.tv"] = [
   },
   {
     alias: "k",
-    description: "Like And Show Playlist",
+    description: "Show Playlist",
     callback: () => {
       actions.iw.showPlaylistMenu();
     }
