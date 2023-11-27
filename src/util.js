@@ -223,6 +223,12 @@ util.playWithMpv = (url, pageUrl = null, accessToken = null) => {
     body: new URLSearchParams({ url, pageUrl, accessToken })
   }).catch(err => console.error(err))
 }
+util.playAsyncWithMpv = (url) => {
+  fetch('http://localhost:9789/async-run', {
+    method: 'post',
+    body: new URLSearchParams({ url })
+  })
+}
 util.sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
