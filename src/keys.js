@@ -40,6 +40,7 @@ const unmaps = {
     "p",
     "<Ctrl-j>",
     "<Ctrl-h>",
+    "x"
   ],
   searchAliases: {
     s: ["g", "d", "b", "e", "w", "s", "h", "y"],
@@ -1798,9 +1799,6 @@ const { hostname } = window.location
 if (hostname.includes("pixiv")) {
   unmaps.mappings.push("z")
   unmaps.mappings.push("d")
-}
-if (hostname.includes("youtube")) {
-  unmaps.mappings.push("x")
 }
 export default {
   unmaps,
