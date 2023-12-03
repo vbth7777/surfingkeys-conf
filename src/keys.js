@@ -1799,6 +1799,8 @@ const { hostname } = window.location
 if (hostname.includes("pixiv")) {
   unmaps.mappings.push("z")
   unmaps.mappings.push("d")
+  unmaps.mappings.push("s")
+  unmaps.mappings.push("e")
 }
 export default {
   unmaps,
