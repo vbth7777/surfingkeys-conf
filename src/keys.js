@@ -47,10 +47,6 @@ const unmaps = {
   },
 }
 //Configurate for specific sites
-const { hostname } = window.location
-if (hostname === "www.pixiv.net") {
-  unmaps.mappings.push("z")
-}
 
 const maps = {}
 
