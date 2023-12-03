@@ -46,13 +46,11 @@ const unmaps = {
     s: ["g", "d", "b", "e", "w", "s", "h", "y"],
   },
 }
-  //Configurate for specific sites
-  (() => {
-    const { hostname } = window.location
-    if (hostname.includes("pixiv")) {
-      unmaps.mappings.push("z")
-    }
-  })()
+//Configurate for specific sites
+const { hostname } = window.location
+if (hostname.includes("pixiv")) {
+  unmaps.mappings.push("z")
+}
 
 const maps = {}
 
