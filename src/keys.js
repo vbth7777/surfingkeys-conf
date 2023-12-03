@@ -40,13 +40,11 @@ const unmaps = {
     "p",
     "<Ctrl-j>",
     "<Ctrl-h>",
-    "x"
   ],
   searchAliases: {
     s: ["g", "d", "b", "e", "w", "s", "h", "y"],
   },
 }
-//Configurate for specific sites
 
 const maps = {}
 
@@ -58,7 +56,7 @@ maps.global = [
     description: "Open a link in non-active new tab",
   },
   {
-    alias: "zf",
+    alias: "of",
     category: categories.mouseClick,
     description: "Open link URL in vim editor",
     callback: actions.previewLink,
@@ -1795,6 +1793,15 @@ const aliases = {
   ],
 }
 
+//Configurate for specific sites
+const { hostname } = window.location
+if (hostname.includes("pixiv")) {
+  unmaps.mappings.push("z")
+  unmaps.mappings.push("d")
+}
+if (hostname.includes("youtube")) {
+  unmaps.mappings.push("x")
+}
 export default {
   unmaps,
   maps,
