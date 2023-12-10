@@ -1511,10 +1511,10 @@ actions.nh.createViewer = async (idGallery) => {
       img.style.position = 'absolute'
       img.style.top = '0';
       img.style.left = '0';
-      // img.style.width = sizeImage//sizePercent + '%';
+      img.style.width = sizeImage//sizePercent + '%';
       // img.style.height = 'auto';
       img.onload = () => {
-        img.style.width = sizeImage//sizePercent + '%';
+        // img.style.width = sizeImage//sizePercent + '%';
         img.style.height = img.height;
       }
       img.style.objectFit = 'cover';
