@@ -1215,7 +1215,7 @@ actions.yt.getCurrentTimestampMarkdownLink = () =>
     href: actions.yt.getCurrentTimestampLink(),
   })
 actions.yt.clickLikeButtonYoutube = () => {
-  document.querySelector("#segmented-like-button > ytd-toggle-button-renderer > yt-button-shape > button > yt-touch-feedback-shape > div").click();
+  document.querySelector("#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > like-button-view-model > toggle-button-view-model > button > yt-touch-feedback-shape > div > div.yt-spec-touch-feedback-shape__fill").click();
 }
 actions.yt.checkSaveButtonTextOnYoutube = (text) => {
   return text.indexOf('lưu') != -1 || text.indexOf('save') != -1 || text.indexOf('playlist') != -1 || text.indexOf('danh sách phát') != -1
