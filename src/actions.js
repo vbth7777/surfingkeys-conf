@@ -1220,8 +1220,9 @@ actions.yt.clickLikeButtonYoutube = () => {
 actions.yt.checkSaveButtonTextOnYoutube = (text) => {
   return text.indexOf('lưu') != -1 || text.indexOf('save') != -1 || text.indexOf('playlist') != -1 || text.indexOf('danh sách phát') != -1
 }
-actions.yt.clickPlaylistButtonYoutube = () => {
+actions.yt.clickPlaylistButtonYoutube = async () => {
   document.querySelector("#button-shape > button").click()
+  await util.sleep(1000)
   let btns = document.querySelectorAll('.ytd-popup-container ytd-menu-service-item-renderer');
   for (let btn of btns) {
     const text = btn.innerText.trim().toLowerCase()
