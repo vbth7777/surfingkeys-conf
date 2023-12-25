@@ -1221,6 +1221,15 @@ actions.yt.checkSaveButtonTextOnYoutube = (text) => {
   return text.indexOf('lưu') != -1 || text.indexOf('save') != -1 || text.indexOf('playlist') != -1 || text.indexOf('danh sách phát') != -1
 }
 actions.yt.clickPlaylistButtonYoutube = () => {
+  document.querySelector("#button-shape > button").click()
+  let btns = document.querySelectorAll('.ytd-popup-container ytd-menu-service-item-renderer');
+  for (let btn of btns) {
+    const text = btn.innerText.trim().toLowerCase()
+    if (actions.yt.checkSaveButtonTextOnYoutube(text)) {
+      btn.click();
+      break;
+    }
+  }
   let outBtns = Array.from(document.querySelectorAll("#flexible-item-buttons > ytd-button-renderer button"));
   let isOut = false;
   for (let btn of outBtns) {
@@ -1231,16 +1240,7 @@ actions.yt.clickPlaylistButtonYoutube = () => {
       break;
     }
   }
-  if (isOut) return;
-  document.querySelector("#button-shape > button").click()
-  let btns = document.querySelectorAll('.ytd-popup-container ytd-menu-service-item-renderer');
-  for (let btn of btns) {
-    const text = btn.innerText.trim().toLowerCase()
-    if (actions.yt.checkSaveButtonTextOnYoutube(text)) {
-      btn.click();
-      break;
-    }
-  }
+  // if (isOut) return;
 }
 actions.yt.showPlaylist = () => {
   util.createHints('#dismissible', async (el) => {
