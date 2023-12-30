@@ -1232,16 +1232,13 @@ actions.yt.clickPlaylistButtonYoutube = async () => {
     }
   }
   let outBtns = Array.from(document.querySelectorAll("#flexible-item-buttons > ytd-button-renderer button"));
-  let isOut = false;
   for (let btn of outBtns) {
     const text = btn.ariaLabel.trim().toLowerCase()
     if (actions.yt.checkSaveButtonTextOnYoutube(text)) {
       btn.click();
-      isOut = true;
       break;
     }
   }
-  // if (isOut) return;
 }
 actions.yt.showPlaylist = () => {
   util.createHints('#dismissible', async (el) => {
