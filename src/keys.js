@@ -535,6 +535,22 @@ maps["youtube.com"] = [
   },
   {
     leader: "",
+    alias: "cvl",
+    description: "Like And Show Playlist For Current Video",
+    callback: () => {
+      actions.yt.clickLikeButtonYoutube();
+    }
+  },
+  {
+    leader: "",
+    alias: "cpl",
+    description: "Like And Show Playlist For Current Video",
+    callback: () => {
+      actions.yt.clickPlaylistButtonYoutube();
+    }
+  },
+  {
+    leader: "",
     alias: "l",
     description: "Show Playlist",
     callback: () => {
