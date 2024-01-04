@@ -333,6 +333,21 @@ maps.global = [
     }
   },
 
+  {
+    leader: "",
+    alias: "ofm",
+    description: "Open async video in mpv",
+    callback: () => {
+      util.createHints("*[href]", async function(el) {
+        const url = el.href
+        api.Front.showBanner(`Openning with mpv (${url})...`)
+        fetch('http://localhost:9789/async-run', {
+          method: 'post',
+          body: new URLSearchParams({ url })
+        }).catch(err => console.error(err))
+      })
+    }
+  },
 ]
 
 maps["amazon.com"] = [
@@ -555,21 +570,6 @@ maps["youtube.com"] = [
     description: "Show Playlist",
     callback: () => {
       actions.yt.showPlaylist();
-    }
-  },
-  {
-    leader: "",
-    alias: "ofm",
-    description: "Open async video in mpv",
-    callback: () => {
-      util.createHints("*[href]", async function(el) {
-        const url = el.href
-        api.Front.showBanner(`Openning with mpv (${url})...`)
-        fetch('http://localhost:9789/async-run', {
-          method: 'post',
-          body: new URLSearchParams({ url })
-        }).catch(err => console.error(err))
-      })
     }
   },
 
