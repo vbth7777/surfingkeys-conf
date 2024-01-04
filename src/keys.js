@@ -334,7 +334,6 @@ maps.global = [
   },
 
   {
-    leader: "",
     alias: "ofm",
     description: "Open async video in mpv",
     callback: () => {
