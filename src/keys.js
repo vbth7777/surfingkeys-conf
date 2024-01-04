@@ -334,7 +334,7 @@ maps.global = [
   },
 
   {
-    alias: "ofm",
+    alias: "ovm",
     description: "Open async video in mpv",
     callback: () => {
       util.createHints("*[href]", async function(el) {
