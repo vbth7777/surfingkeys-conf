@@ -1504,6 +1504,9 @@ actions.nh.createViewer = async (idGallery) => {
       }
       const div = document.createElement('div')
       div.style.position = 'relative'
+      let server = [3, 5, 7];
+      let counter = 0;
+      let format = 'jpg';
       const img = document.createElement('img');
       img.src = urls[imagesNumber + i];
       img.style.position = 'absolute'
@@ -1518,27 +1521,35 @@ actions.nh.createViewer = async (idGallery) => {
       img.style.objectFit = 'cover';
       img.loading = 'lazy';
       img.onerror = () => {
-        if (img.src.includes('i5') && img.src.includes('jpg')) {
-          img.src = img.src.replace('i5', 'i3');
+        const changeServer = (serverNumber, format) => {
+          return img.src.replace(/\/\/i\d+/g, '//i' + serverNumber).replace(/\.(jpg|png)$/, format);
         }
-        else if (img.src.includes('i3') && img.src.includes('png')) {
-          img.src = img.src.replace('png', 'jpg');
+        changeServer(server[++counter], format)
+        if (server[counter] == 7) {
+          format = 'png';
+          counter = -1;
         }
-        else if (img.src.includes('i5') && img.src.includes('png')) {
-          img.src = img.src.replace('i5', 'i3');
-        }
-        else if (img.src.includes('i7') && img.src.includes('png')) {
-          img.src = img.src.replace('i7', 'i5');
-        }
-        else if (img.src.includes('jpg')) {
-          img.src = img.src.replace('jpg', 'png');
-        }
+
+        // if (img.src.includes('i5') && img.src.includes('jpg')) {
+        //   img.src = img.src.replace('i5', 'i3');
+        // }
+        // else if (img.src.includes('i3') && img.src.includes('png')) {
+        //   img.src = img.src.replace('png', 'jpg');
+        // }
+        // else if (img.src.includes('i5') && img.src.includes('png')) {
+        //   img.src = img.src.replace('i5', 'i3');
+        // }
+        // else if (img.src.includes('i7') && img.src.includes('png')) {
+        //   img.src = img.src.replace('i7', 'i5');
+        // }
+        // else if (img.src.includes('jpg')) {
+        //   img.src = img.src.replace('jpg', 'png');
+        // }
       }
+      counter = 0;
+      format = 'jpg';
       const imgTemp = document.createElement('img');
       imgTemp.src = img.src.replace('.jpg', 't.jpg').replace(/\/\/i\d+/g, '//t3');
-      let server = [3, 5, 7];
-      let counter = 0;
-      let format = 'jpg';
       imgTemp.onerror = () => {
         const changeServer = (serverNumber, format) => {
           return img.src.replace(/\/\/i\d+/g, '//i' + serverNumber).replace(/\.(jpg|png)$/, format);
