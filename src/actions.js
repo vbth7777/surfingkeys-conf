@@ -1536,22 +1536,35 @@ actions.nh.createViewer = async (idGallery) => {
       }
       const imgTemp = document.createElement('img');
       imgTemp.src = img.src.replace('.jpg', 't.jpg').replace(/\/\/i\d+/g, '//t3');
+      let server = [3, 5, 7];
+      let counter = 0;
+      let format = 'jpg';
       imgTemp.onerror = () => {
-        if (imgTemp.src.includes('t7') && imgTemp.src.includes('jpg')) {
-          imgTemp.src = imgTemp.src.replace('t7', 't5');
+        const changeServer = (serverNumber, format) => {
+          return img.src.replace(/\/\/i\d+/g, '//i' + serverNumber).replace(/\.(jpg|png)$/, format);
         }
-        else if (imgTemp.src.includes('t7') && imgTemp.src.includes('png')) {
-          imgTemp.src = imgTemp.src.replace('png', 'jpg');
+        changeServer(server[++counter], format)
+        if (server[counter] == 7) {
+          format = 'png';
+          counter = -1;
         }
-        else if (imgTemp.src.includes('t5') && imgTemp.src.includes('png')) {
-          imgTemp.src = imgTemp.src.replace('t5', 't7');
-        }
-        else if (imgTemp.src.includes('t3') && imgTemp.src.includes('png')) {
-          imgTemp.src = imgTemp.src.replace('t3', 't5');
-        }
-        else if (imgTemp.src.includes('jpg')) {
-          imgTemp.src = imgTemp.src.replace('jpg', 'png');
-        }
+
+        // if (imgTemp.src.includes('t7') && imgTemp.src.includes('jpg')) {
+        //   imgTemp.src = imgTemp.src.replace('t7', 't5');
+        // }
+        // else if (imgTemp.src.includes('t7') && imgTemp.src.includes('png')) {
+        //   imgTemp.src = imgTemp.src.replace('png', 'jpg');
+        // }
+        // else if (imgTemp.src.includes('t5') && imgTemp.src.includes('png')) {
+        //   imgTemp.src = imgTemp.src.replace('t5', 't7');
+        // }
+        // else if (imgTemp.src.includes('t3') && imgTemp.src.includes('png')) {
+        //   imgTemp.src = imgTemp.src.replace('t3', 't5');
+        // }
+        // else if (imgTemp.src.includes('jpg')) {
+        //   imgTemp.src = imgTemp.src.replace('jpg', 'png');
+        //   alert('ERROR: ' + imgTemp.src)
+        // }
       }
       imgTemp.style.width = sizeImage//sizePercent + '%';
       imgTemp.style.height = 'auto';
