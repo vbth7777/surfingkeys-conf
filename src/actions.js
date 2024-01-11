@@ -1525,7 +1525,7 @@ actions.nh.createViewer = async (idGallery) => {
           return img.src.replace(/\/\/i\d+/g, '//i' + serverNumber).replace(/\.(jpg|png)$/, format);
         }
         img.src = changeServer(server[++counter], format)
-        if (server[counter] == 7) {
+        if (counter >= 2) {
           format = 'png';
           counter = -1;
         }
@@ -1556,7 +1556,7 @@ actions.nh.createViewer = async (idGallery) => {
         }
         console.log(imgTemp.src, changeServer(server[++counter], format))
         imgTemp.src = changeServer(server[++counter], format)
-        if (server[counter] == 7) {
+        if (counter >= 2) {
           format = 'png';
           counter = -1;
         }
