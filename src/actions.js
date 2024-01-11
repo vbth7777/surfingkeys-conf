@@ -1521,14 +1521,14 @@ actions.nh.createViewer = async (idGallery) => {
       img.style.objectFit = 'cover';
       img.loading = 'lazy';
       img.onerror = () => {
-        // const changeServer = (serverNumber, format) => {
-        //   return img.src.replace(/\/\/i\d+/g, '//i' + serverNumber).replace(/\.(jpg|png)$/, format);
-        // }
-        // img.src = changeServer(server[++counter], format)
-        // if (counter >= 2) {
-        //   format = 'png';
-        //   counter = -1;
-        // }
+        const changeServer = (serverNumber, format) => {
+          return img.src.replace(/\/\/i\d+/g, '//i' + serverNumber).replace(/\.(jpg|png)$/, '.' + format);
+        }
+        img.src = changeServer(server[++counter], format)
+        if (counter >= 2) {
+          format = 'png';
+          counter = -1;
+        }
 
         // if (img.src.includes('i5') && img.src.includes('jpg')) {
         //   img.src = img.src.replace('i5', 'i3');
@@ -1549,12 +1549,11 @@ actions.nh.createViewer = async (idGallery) => {
       counter = 0;
       format = 'jpg';
       const imgTemp = document.createElement('img');
-      imgTemp.src = img.src.replace('.jpg', 't.jpg').replace('.png', 't.png').replace(/\/\/i\d+/g, '//t3');
+      imgTemp.src = img.src.replace('.jpg', 't.jpg').replace('.png', 't.png').replace(/\/\/i\d+/g, '//i3');
       imgTemp.onerror = () => {
         const changeServer = (serverNumber, format) => {
           return img.src.replace(/\/\/i\d+/g, '//i' + serverNumber).replace(/\.(jpg|png)$/, '.' + format);
         }
-        console.log(imgTemp.src, counter)
         imgTemp.src = changeServer(server[++counter], format)
         if (counter >= 2) {
           format = 'png';
