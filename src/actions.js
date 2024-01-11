@@ -1410,16 +1410,16 @@ actions.nh.createViewer = async (idGallery) => {
     })
   }
   const nextPageHandler = () => {
-    imgBox.scrollTop = 0;
     if (page < totalPage) {
+      imgBox.scrollTop = 0;
       page++;
       updatePage();
       updateTotalPage();
     }
   }
   const prevPageHandler = () => {
-    imgBox.scrollTop = 0;
     if (page > 0) {
+      imgBox.scrollTop = 0;
       page--;
       updatePage();
       updateTotalPage();
