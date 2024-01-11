@@ -1549,7 +1549,7 @@ actions.nh.createViewer = async (idGallery) => {
       counter = 0;
       format = 'jpg';
       const imgTemp = document.createElement('img');
-      imgTemp.src = img.src.replace('.jpg', 't.jpg').replace(/\/\/i\d+/g, '//t3');
+      imgTemp.src = img.src.replace('.jpg', 't.jpg').replace('.png', 't.png').replace(/\/\/i\d+/g, '//t3');
       imgTemp.onerror = () => {
         const changeServer = (serverNumber, format) => {
           return img.src.replace(/\/\/i\d+/g, '//i' + serverNumber).replace(/\.(jpg|png)$/, format);
@@ -1559,6 +1559,7 @@ actions.nh.createViewer = async (idGallery) => {
           format = 'png';
           counter = -1;
         }
+        console.log(counter, format)
 
         // if (imgTemp.src.includes('t7') && imgTemp.src.includes('jpg')) {
         //   imgTemp.src = imgTemp.src.replace('t7', 't5');
