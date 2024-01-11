@@ -1551,10 +1551,10 @@ actions.nh.createViewer = async (idGallery) => {
       const imgTemp = document.createElement('img');
       imgTemp.src = img.src.replace('.jpg', 't.jpg').replace('.png', 't.png').replace(/\/\/i\d+/g, '//t3');
       imgTemp.onerror = () => {
-        console.log(imgTemp.src)
         const changeServer = (serverNumber, format) => {
           return img.src.replace(/\/\/i\d+/g, '//i' + serverNumber).replace(/\.(jpg|png)$/, format);
         }
+        console.log(imgTemp.src, changeServer(server[++counter], format))
         imgTemp.src = changeServer(server[++counter], format)
         if (server[counter] == 7) {
           format = 'png';
