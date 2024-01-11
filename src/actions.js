@@ -1524,7 +1524,7 @@ actions.nh.createViewer = async (idGallery) => {
         const changeServer = (serverNumber, format) => {
           return img.src.replace(/\/\/i\d+/g, '//i' + serverNumber).replace(/\.(jpg|png)$/, format);
         }
-        changeServer(server[++counter], format)
+        img.src = changeServer(server[++counter], format)
         if (server[counter] == 7) {
           format = 'png';
           counter = -1;
@@ -1555,7 +1555,7 @@ actions.nh.createViewer = async (idGallery) => {
         const changeServer = (serverNumber, format) => {
           return img.src.replace(/\/\/i\d+/g, '//i' + serverNumber).replace(/\.(jpg|png)$/, format);
         }
-        changeServer(server[++counter], format)
+        imgTemp.src = changeServer(server[++counter], format)
         if (server[counter] == 7) {
           format = 'png';
           counter = -1;
