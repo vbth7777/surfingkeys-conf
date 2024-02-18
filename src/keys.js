@@ -1817,6 +1817,9 @@ if (hostname.includes("pixiv")) {
   unmaps.mappings.push("s")
   unmaps.mappings.push("e")
 }
+if (hostname.includes("youtube")) {
+  unmaps.mappings.push("l")
+}
 export default {
   unmaps,
   maps,

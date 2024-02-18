@@ -1357,6 +1357,7 @@ actions.nh.createViewer = async (idGallery) => {
       favoriteBtn.style.cursor = 'pointer';
     })
   }
+  //check state favorite
   fetch('https://nhentai.net/g/' + idGallery).then(res => res.text()).then(data => {
     const parser = new DOMParser();
     const dom = parser.parseFromString(data, 'text/html');
