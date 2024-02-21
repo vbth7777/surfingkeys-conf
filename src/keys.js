@@ -540,7 +540,7 @@ maps["youtube.com"] = [
   },
   {
     leader: "",
-    alias: "cl",
+    alias: "ll",
     description: "Like And Show Playlist For Current Video",
     callback: () => {
       actions.yt.clickLikeButtonYoutube();
@@ -549,23 +549,23 @@ maps["youtube.com"] = [
   },
   {
     leader: "",
-    alias: "cvl",
-    description: "Like And Show Playlist For Current Video",
+    alias: "lcl",
+    description: "Like For Current Video",
     callback: () => {
       actions.yt.clickLikeButtonYoutube();
     }
   },
   {
     leader: "",
-    alias: "cpl",
-    description: "Like And Show Playlist For Current Video",
+    alias: "lcp",
+    description: "Show Playlist For Current Video",
     callback: () => {
       actions.yt.clickPlaylistButtonYoutube();
     }
   },
   {
     leader: "",
-    alias: "l",
+    alias: "la",
     description: "Show Playlist",
     callback: () => {
       actions.yt.showPlaylist();
@@ -1816,9 +1816,6 @@ if (hostname.includes("pixiv")) {
   unmaps.mappings.push("d")
   unmaps.mappings.push("s")
   unmaps.mappings.push("e")
-}
-if (hostname.includes("youtube")) {
-  unmaps.mappings.push("l")
 }
 export default {
   unmaps,
