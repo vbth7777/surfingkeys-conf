@@ -539,8 +539,8 @@ maps["youtube.com"] = [
       Clipboard.write(actions.yt.getCurrentTimestampMarkdownLink()),
   },
   {
-    leader: "l",
-    alias: "l",
+    leader: "",
+    alias: "cl",
     description: "Like And Show Playlist For Current Video",
     callback: () => {
       actions.yt.clickLikeButtonYoutube();
@@ -548,24 +548,24 @@ maps["youtube.com"] = [
     }
   },
   {
-    leader: "l",
-    alias: "cl",
-    description: "Like For Current Video",
+    leader: "",
+    alias: "cvl",
+    description: "Like And Show Playlist For Current Video",
     callback: () => {
       actions.yt.clickLikeButtonYoutube();
     }
   },
   {
-    leader: "l",
-    alias: "cp",
-    description: "Show Playlist For Current Video",
+    leader: "",
+    alias: "cpl",
+    description: "Like And Show Playlist For Current Video",
     callback: () => {
       actions.yt.clickPlaylistButtonYoutube();
     }
   },
   {
-    leader: "l",
-    alias: "a",
+    leader: "",
+    alias: "l",
     description: "Show Playlist",
     callback: () => {
       actions.yt.showPlaylist();
