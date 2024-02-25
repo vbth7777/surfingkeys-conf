@@ -461,7 +461,7 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
       img.style.width = sizeImage//sizePercent + '%';
       // img.style.height = 'auto';
       img.style.objectFit = 'cover';
-      img.loading = 'lazy';
+      // img.loading = 'lazy';
       img.onerror = events.imageErrorEvent;
 
       const imgTemp = document.createElement('img');
