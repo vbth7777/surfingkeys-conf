@@ -1422,9 +1422,12 @@ maps["nhentai.net"] = [
 ]
 maps["anchira.to"] = [
   {
-    leader: "",
-    description: "Open With MPV",
+    alias: "r",
+    description: "Read Comic",
     callback: () => {
+      util.createHints('a[href*="/g/"]', (el) => {
+        actions.ah.createViewer(el.href.match(/\/g\/(.+)/)[1]);
+      })
     }
   }
 ]

@@ -26,9 +26,10 @@ util.getHTML = async (url) => {
   const doc = parser.parseFromString(html.text, "text/html")
   return doc
 }
-util.getJSON = async (url) => {
-  const json = await runtime("request", { url })
-  return JSON.parse(json.text)
+util.getJSON = async (url, headers = null) => {
+
+  const res = await runtime("request", { url, headers })
+  return JSON.parse(res.text)
 }
 util.runtimeHttpRequest = async (url, opts) => {
   const res = await runtime("request", { ...opts, url })
@@ -232,7 +233,7 @@ util.playAsyncWithMpv = (url) => {
 util.sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-util.createComicViewer = async (images, imagesPerPage, previewImages, infomations, callback, callbackEvents) => {
+util.createComicViewer = async (images, imagesPerPage, previewImages, infomations, callback) => {
   const urls = images;
   const events = {
     imageErrorEvent: null,
@@ -263,7 +264,6 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
     containerBox.remove();
   }
   events.removeContainerBox = removeContainerBox;
-  callbackEvents(events)
 
   const closeBtn = document.createElement('button');
   closeBtn.style.position = 'absolute';
@@ -307,13 +307,14 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
   favoriteBtn.style.fontSize = '1.4rem';
 
   const createDetailInfoBox = (str) => {
+    //infomations = {name, url, type}
     const textBox = document.createElement('div');
     textBox.style.padding = '5px';
     textBox.style.margin = '5px';
     textBox.style.border = '2px solid #ccc'
     textBox.style.maxWidth = '200px';
     textBox.style.minWidth = '100px';
-     const tags = infomations;
+    const tags = infomations;
     const storagedTags = [];
     for (let item of tags) {
       if (item.type == str.toLowerCase()) {
@@ -465,10 +466,10 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
       img.onerror = events.imageErrorEvent;
 
       const imgTemp = document.createElement('img');
-      if(!previewImages){
+      if (!previewImages) {
         imgTemp.src = urls[imagesNumber + i];
       }
-      else{
+      else {
         imgTemp.src = previewImages[imagesNumber + i]
       }
       imgTemp.onerror = events.previewImageErrorEvent
@@ -479,7 +480,7 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
       img.onload = () => {
         // img.style.width = sizeImage//sizePercent + '%';
         img.style.height = img.height;
-        if(!imgTemp.complete) {
+        if (!imgTemp.complete) {
           imgTemp.src = img.src;
         }
       }
@@ -499,7 +500,7 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
   document.body.style.overflow = "hidden";
   document.body.appendChild(containerBox);
   Hints.create("tth-images-area", Hints.dispatchMouseClick);
-  callback({favoriteBtn, artistBox, groupBox, parodyBox, tagBox, paginationTop, paginationBottom, containerBox, events});
+  callback({ favoriteBtn, artistBox, groupBox, parodyBox, tagBox, paginationTop, paginationBottom, containerBox, events });
   updatePage();
 }
 

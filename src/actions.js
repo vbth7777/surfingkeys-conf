@@ -1266,18 +1266,18 @@ actions.nh.createViewer = async (idGallery) => {
   const nhApi = await fetch('https://nhentai.net/api/gallery/' + idGallery).then(res => res.json());
   const mediaId = nhApi.media_id;
   const types = nhApi.images.pages.map((e => {
-    if(e.t == 'j'){
+    if (e.t == 'j') {
       return 'jpg';
     }
-    else if (e.t == 'p'){
+    else if (e.t == 'p') {
       return 'png';
     }
   }));
-  const images = await (async ()=> {
+  const images = await (async () => {
     const urls = (() => {
       const images = [];
       for (let i = 0; i < types.length; i++) {
-        images.push(`https://i7.nhentai.net/galleries/${mediaId}/${i+1}.${types[i]||'png'}`)
+        images.push(`https://i7.nhentai.net/galleries/${mediaId}/${i + 1}.${types[i] || 'png'}`)
       }
       return images;
     })();
@@ -1287,7 +1287,7 @@ actions.nh.createViewer = async (idGallery) => {
     const urls = (() => {
       const images = [];
       for (let i = 0; i < types.length; i++) {
-        images.push(`https://t3.nhentai.net/galleries/${mediaId}/${i+1}t.${types[i]||'png'}`)
+        images.push(`https://t3.nhentai.net/galleries/${mediaId}/${i + 1}t.${types[i] || 'png'}`)
       }
       return images;
     })();
@@ -1296,7 +1296,7 @@ actions.nh.createViewer = async (idGallery) => {
   const infomations = await (async () => {
     return nhApi.tags;
   })();
-  util.createComicViewer(images, 50, previewImages, infomations , (components) => {
+  util.createComicViewer(images, 50, previewImages, infomations, (components) => {
     actions.nh.readArea = components.containerBox;
     actions.nh.removeReaderArea = components.events.removeContainerBox;
     const favoriteMethod = 'favorite';
@@ -1326,7 +1326,7 @@ actions.nh.createViewer = async (idGallery) => {
       const dom = parser.parseFromString(data, 'text/html');
       favoriteBtn.innerHTML = dom.querySelector('#favorite').innerText.toLowerCase().includes(unfavoriteMethod) ? unfavoriteMethod : favoriteMethod;
     })
-    const server = [3,5,7]
+    const server = [3, 5, 7]
     let formatToggle = false
     let counter = 0
 
@@ -1336,7 +1336,7 @@ actions.nh.createViewer = async (idGallery) => {
       // if (counter >= 2 && format == 'jpg') {
       //   return;
       // }
-      if(retryCounter >= 2){
+      if (retryCounter >= 2) {
         return;
       }
 
@@ -1344,10 +1344,10 @@ actions.nh.createViewer = async (idGallery) => {
       const changeServer = (serverNumber) => {
         return img.src.replace(/\/\/i\d+/g, '//i' + serverNumber);
       }
-      if(counter >= 2){
+      if (counter >= 2) {
         counter = 0
       }
-      else{
+      else {
         counter++;
       }
       img.src = changeServer(server[counter])
@@ -1361,17 +1361,17 @@ actions.nh.createViewer = async (idGallery) => {
       // if (counter >= 2 && format == 'jpg') {
       //   return;
       // }
-      if(retryCounter >= 2){
+      if (retryCounter >= 2) {
         return;
       }
       const imgTemp = e.srcElement;
       const changeServer = (serverNumber) => {
         return imgTemp.src.replace(/\/\/t\d+/g, '//t' + serverNumber);
       }
-      if(counter >= 2){
+      if (counter >= 2) {
         counter = 0
       }
-      else{
+      else {
         counter++;
       }
       imgTemp.src = changeServer(server[counter])
@@ -1380,8 +1380,84 @@ actions.nh.createViewer = async (idGallery) => {
       }
 
     }
-  }, (events) => {
+  })
+}
+//anchira
+actions.ah = {}
+actions.ah.getImages = async (idGallery) => {
+  const json = await fetch('https://anchira.to/api/v1/library/' + idGallery + '/data', {
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'User-Agent': "Mozilla/5.0 (Windows; Windows NT 10.0;) AppleWebKit/603.21 (KHTML, like Gecko) Chrome/47.0.1437.111 Safari/536.2 Edge/12.94565"
+    }
+  }).then(res => res.json());
 
+  const images = [];
+
+  const names = json.names;
+  const id = json.id;
+  const key = json.key;
+  const hash = json.hash;
+
+  for (let name of names) {
+    images.push(`https://kisakisexo.xyz/${id}/${key}/${hash}/b/${name}`)
+  }
+  return images;
+}
+actions.ah.createViewer = async (idGallery) => {
+  const data = await fetch('https://anchira.to/api/v1/library/' + idGallery, {
+    headers: {
+      "X-Requested-With": "XMLHttpRequest"
+    }
+  }).then(res => res.json())
+  const images = await actions.ah.getImages(idGallery);
+  const pages = data.pages;
+  const previewImages = await (async () => {
+    const urls = (() => {
+      const images = [];
+      for (let i = 0; i < pages; i++) {
+        images.push(`https://kisakisexo.xyz/${idGallery}/s/${i + 1}`)
+      }
+      return images;
+    })();
+    return urls;
+  })();
+  const infomations = await (async () => {
+    const info = [];
+    const tags = data.tags;
+    for (let tag of tags) {
+      if (!tag.namespace) {
+        info.push({
+          type: 'tag',
+          name: tag.name,
+          url: 'https://anchira.to/?s=tag:' + encodeURIComponent(tag.name)
+        })
+      }
+      else if (tag.namespace == 1) {
+        info.push({
+          type: 'artist',
+          name: tag.name,
+          url: 'https://anchira.to/?s=artist:' + encodeURIComponent(tag.name)
+        })
+      }
+      else if (tag.namespace == 2) {
+        info.push({
+          type: 'group',
+          name: tag.name,
+          url: 'https://anchira.to/?s=circle:' + encodeURIComponent(tag.name)
+        })
+      }
+      else if (tag.namespace == 3) {
+        info.push({
+          type: 'parody',
+          name: tag.name,
+          url: 'https://anchira.to/?s=parody:' + encodeURIComponent(tag.name)
+        })
+      }
+    }
+    return info;
+  })();
+  util.createComicViewer(images, 50, previewImages, infomations, (components) => {
   })
 }
 //iwara
