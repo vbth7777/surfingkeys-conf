@@ -1420,6 +1420,14 @@ maps["nhentai.net"] = [
     },
   }
 ]
+maps["anchira.to"] = [
+  {
+    leader: "",
+    description: "Open With MPV",
+    callback: () => {
+    }
+  }
+]
 maps["iwara.tv"] = [
   {
     leader: "",

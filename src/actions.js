@@ -1262,350 +1262,438 @@ actions.nh.getIdFromUrl = (url) => {
   const match = url.match(/nhentai\.net\/g\/(\d+)/)
   return match ? match[1] : null
 }
+// actions.nh.createViewer = async (idGallery) => {
+//   const nhApi = await fetch('https://nhentai.net/api/gallery/' + idGallery).then(res => res.json());
+//   const urls = (() => {
+//     const mediaId = nhApi.media_id;
+//     const pages = nhApi.num_pages;
+//     const images = [];
+//     for (let i = 1; i <= pages; i++) {
+//       images.push(`https://i7.nhentai.net/galleries/${mediaId}/${i}.jpg`)
+//     }
+//     return images;
+//   })();
+//   const imagesPerPage = actions.nh.imagesPerPageForViewer;
+//   //   let sizePercent = 50;
+//   let sizeImage = '50vw';
+//   let page = 1;
+//   const totalPage = Math.ceil(urls.length / imagesPerPage);
+//   const containerBox = document.createElement('div');
+//   containerBox.style.position = 'fixed';
+//   containerBox.style.top = '0';
+//   containerBox.style.left = '0';
+//   containerBox.style.right = '0';
+//   containerBox.style.bottom = '0';
+//   containerBox.style.borderRadius = '10px'
+//   containerBox.style.margin = '20px';
+//   containerBox.style.backgroundColor = '#000'
+//   containerBox.style.float = 'left'
+//   containerBox.style.zIndex = '9999'
+//   containerBox.addEventListener('close', () => {
+//   })
+//   const removeContainerBox = () => {
+//     document.body.style.overflow = "auto";
+//     containerBox.remove();
+//   }
+//   actions.nh.removeReaderArea = removeContainerBox;
+//
+//   const closeBtn = document.createElement('button');
+//   closeBtn.style.position = 'absolute';
+//   closeBtn.style.top = '0';
+//   closeBtn.style.right = '0';
+//   closeBtn.innerHTML = "×";
+//   closeBtn.style.backgroundColor = 'rgba(0,0,0,0.1)';
+//   closeBtn.style.border = 'none';
+//   closeBtn.style.color = '#fff';
+//   closeBtn.style.fontSize = '1.5rem';
+//   closeBtn.style.fontWeight = 'bold';
+//   closeBtn.style.borderRadius = '50%';
+//   closeBtn.style.width = '2rem';
+//   closeBtn.style.height = '2rem';
+//   closeBtn.style.padding = '0';
+//   closeBtn.style.cursor = 'pointer';
+//   closeBtn.style.margin = '10px';
+//
+//   closeBtn.onclick = () => {
+//     removeContainerBox();
+//   }
+//   const infoBox = document.createElement('div');
+//   infoBox.style.position = 'absolute';
+//   infoBox.style.top = '0';
+//   infoBox.style.left = '0';
+//   infoBox.style.display = 'flex'
+//   infoBox.style.flexDirection = 'column'
+//   const favoriteBtn = document.createElement('button');
+//   favoriteBtn.className = 'tth-favorite-btn'
+//   favoriteBtn.innerHTML = "Loading...";
+//   favoriteBtn.style.backgroundColor = '#ED2553'
+//   favoriteBtn.style.border = 'none';
+//   favoriteBtn.style.color = '#fff';
+//   favoriteBtn.style.fontSize = '1.5rem';
+//   favoriteBtn.style.fontWeight = 'bold';
+//   favoriteBtn.style.borderRadius = '10px';
+//   favoriteBtn.style.padding = '0';
+//   favoriteBtn.style.cursor = 'pointer';
+//   favoriteBtn.style.margin = '10px';
+//   favoriteBtn.style.padding = '10px';
+//   favoriteBtn.style.fontSize = '1.4rem';
+//   const favoriteMethod = 'favorite';
+//   const unfavoriteMethod = 'unfavorite';
+//   favoriteBtn.onclick = () => {
+//     const state = favoriteBtn.innerHTML != favoriteMethod ? unfavoriteMethod : favoriteMethod
+//     favoriteBtn.disabled = true;
+//     favoriteBtn.style.opacity = 0.5;
+//     favoriteBtn.style.cursor = 'default';
+//
+//     fetch('https://nhentai.net/api/gallery/' + idGallery + '/' + state, {
+//       method: 'post',
+//       headers: {
+//         "X-Csrftoken": document.cookie.replace(/.+=/g, '')
+//       }
+//     }).then(res => {
+//       favoriteBtn.innerHTML = favoriteBtn.innerHTML == favoriteMethod ? unfavoriteMethod : favoriteMethod;
+//       favoriteBtn.disabled = false;
+//       favoriteBtn.style.opacity = 1;
+//       favoriteBtn.style.cursor = 'pointer';
+//     })
+//   }
+//   //check state favorite
+//   fetch('https://nhentai.net/g/' + idGallery).then(res => res.text()).then(data => {
+//     const parser = new DOMParser();
+//     const dom = parser.parseFromString(data, 'text/html');
+//     favoriteBtn.innerHTML = dom.querySelector('#favorite').innerText.toLowerCase().includes(unfavoriteMethod) ? unfavoriteMethod : favoriteMethod;
+//   })
+//   const createDetailInfoBox = (str) => {
+//     const textBox = document.createElement('div');
+//     textBox.style.padding = '5px';
+//     textBox.style.margin = '5px';
+//     textBox.style.border = '2px solid #ccc'
+//     textBox.style.maxWidth = '200px';
+//     textBox.style.minWidth = '100px';
+//     const tags = nhApi.tags;
+//     const storagedTags = [];
+//     for (let item of tags) {
+//       if (item.type == str.toLowerCase()) {
+//         if (item.name.toLowerCase().includes('neto')) {
+//           storagedTags.push(item);
+//           continue;
+//         }
+//         textBox.innerHTML += `<a href="${item.url}">${item.name}</a>, `;
+//       }
+//     }
+//     for (let item of storagedTags) {
+//       textBox.innerHTML = `<a href="${item.url}" style="color:red;">${item.name}</a>, ` + textBox.innerHTML;
+//     }
+//     textBox.innerHTML = str + ': ' + textBox.innerHTML;
+//     if (textBox.innerText == str + ': ') {
+//       textBox.innerText = str + ': None'
+//       textBox.style.cursor = 'default';
+//     }
+//     else {
+//       textBox.innerHTML = textBox.innerHTML.slice(0, -2);
+//     }
+//     return textBox;
+//   }
+//   infoBox.appendChild(favoriteBtn)
+//   infoBox.appendChild(createDetailInfoBox('artist'))
+//   infoBox.appendChild(createDetailInfoBox('group'))
+//   infoBox.appendChild(createDetailInfoBox('parody'))
+//   infoBox.appendChild(createDetailInfoBox('tag'))
+//
+//   document.addEventListener('keydown', (e) => {
+//     if (e.key === 'Escape') {
+//       removeContainerBox();
+//     }
+//   });
+//   const updateTotalPage = () => {
+//     document.querySelectorAll('.tth-total-page').forEach(el => {
+//       el.innerHTML = `${page}/${totalPage}`;
+//     })
+//   }
+//   const nextPageHandler = () => {
+//     if (page < totalPage) {
+//       imgBox.scrollTop = 0;
+//       page++;
+//       updatePage();
+//       updateTotalPage();
+//     }
+//   }
+//   const prevPageHandler = () => {
+//     if (page > 0) {
+//       imgBox.scrollTop = 0;
+//       page--;
+//       updatePage();
+//       updateTotalPage();
+//     }
+//   }
+//   const createPagination = () => {
+//     const pagination = document.createElement('div');
+//     pagination.style.padding = '10px';
+//     pagination.style.alignItems = 'center';
+//     pagination.style.color = '#fff';
+//     pagination.style.fontSize = '1.5rem';
+//     pagination.style.fontWeight = 'bold';
+//     pagination.style.borderRadius = '10px'
+//     pagination.style.float = 'left'
+//     pagination.style.display = 'flex';
+//     pagination.style.justifyContent = 'center';
+//     pagination.style.width = '100%';
+//     const totalPageElement = document.createElement('p');
+//     totalPageElement.style.margin = '0 10px';
+//     totalPageElement.className = 'tth-total-page';
+//     totalPageElement.innerHTML = `${page}/${totalPage}`;
+//     const nextBtn = document.createElement('button');
+//     nextBtn.innerHTML = 'Next';
+//     nextBtn.className = 'tth-next-btn'
+//     nextBtn.onclick = () => {
+//       nextPageHandler();
+//     }
+//     const prevBtn = document.createElement('button');
+//     prevBtn.innerHTML = 'Prev';
+//     prevBtn.className = 'tth-prev-btn'
+//     prevBtn.onclick = () => {
+//       prevPageHandler();
+//     }
+//     updateTotalPage()
+//     pagination.appendChild(prevBtn);
+//     pagination.appendChild(totalPageElement);
+//     pagination.appendChild(nextBtn);
+//     return pagination
+//   }
+//   const paginationTop = createPagination();
+//   const paginationBottom = createPagination();
+//   const imgBox = document.createElement('div');
+//   imgBox.className = 'tth-images-area'
+//   imgBox.style.position = 'relative';
+//   imgBox.style.width = '100%';
+//   imgBox.style.height = '100%';
+//   imgBox.style.overflowY = 'auto';
+//   imgBox.style.display = 'flex';
+//   imgBox.style.alignItems = 'center';
+//   imgBox.style.flexDirection = 'column';
+//   imgBox.style.float = 'left'
+//   imgBox.style.borderRadius = '10px'
+//   document.addEventListener('keydown', (e) => {
+//     if (e.key === 'ArrowRight') {
+//       nextPageHandler();
+//     }
+//     else if (e.key === 'ArrowLeft') {
+//       prevPageHandler();
+//     }
+//     else if (e.key === 'ArrowDown') {
+//       //   sizePercent += 10;
+//       sizeImage = (Number(sizeImage.replace(/[a-z]+$/, '')) - 10) + sizeImage.match(/[a-z]+$/g)[0]
+//       Array.from(imgBox.querySelectorAll('img')).forEach(el => {
+//         el.style.width = sizeImage//sizePercent + '%';
+//       })
+//     }
+//     else if (e.key === 'ArrowUp') {
+//       //   sizePercent -= 10;
+//       sizeImage = (Number(sizeImage.replace(/[a-z]+$/, '')) + 10) + sizeImage.match(/[a-z]+$/g)[0]
+//       Array.from(imgBox.querySelectorAll('img')).forEach(el => {
+//         el.style.width = sizeImage//sizePercent + '%';
+//       })
+//     }
+//   });
+//   const updateImgBox = () => {
+//     imgBox.innerHTML = '';
+//     const imagesNumber = imagesPerPage * (page - 1);
+//     imgBox.appendChild(paginationTop)
+//     for (let i = 0; i < imagesPerPage; i++) {
+//       if (imagesNumber + i >= urls.length) {
+//         break;
+//       }
+//       const div = document.createElement('div')
+//       div.style.position = 'relative'
+//       let server = [3, 5, 7];
+//       let counter = 0;
+//       let format = 'jpg';
+//       const img = document.createElement('img');
+//       img.src = urls[imagesNumber + i];
+//       img.style.position = 'absolute'
+//       img.style.top = '0';
+//       img.style.left = '0';
+//       img.style.width = sizeImage//sizePercent + '%';
+//       // img.style.height = 'auto';
+//       img.onload = () => {
+//         // img.style.width = sizeImage//sizePercent + '%';
+//         img.style.height = img.height;
+//       }
+//       img.style.objectFit = 'cover';
+//       img.loading = 'lazy';
+//       img.onerror = () => {
+//         const changeServer = (serverNumber, format) => {
+//           return img.src.replace(/\/\/i\d+/g, '//i' + serverNumber).replace(/\.(jpg|png)$/, '.' + format);
+//         }
+//         img.src = changeServer(server[++counter], format)
+//         if (counter >= 2 && format == 'png') {
+//           return;
+//         }
+//         if (counter >= 2) {
+//           format = 'png';
+//           counter = -1;
+//         }
+//       }
+//       counter = 0;
+//       format = 'jpg';
+//       const imgTemp = document.createElement('img');
+//       imgTemp.src = img.src.replace('.jpg', 't.jpg').replace('.png', 't.png').replace(/\/\/i\d+/g, '//t3');
+//       imgTemp.onerror = () => {
+//         const changeServer = (serverNumber, format) => {
+//           return img.src.replace(/\/\/i\d+/g, '//t' + serverNumber).replace(/\.(jpg|png)$/, 't.' + format);
+//         }
+//         imgTemp.src = changeServer(server[++counter], format)
+//         if (counter >= 2 && format == 'png') {
+//           return;
+//         }
+//         if (counter >= 2) {
+//           format = 'png';
+//           counter = -1;
+//         }
+//       }
+//       imgTemp.style.width = sizeImage//sizePercent + '%';
+//       imgTemp.style.height = 'auto';
+//       imgTemp.style.objectFit = 'cover';
+//
+//       div.appendChild(imgTemp)
+//       div.appendChild(img)
+//       imgBox.appendChild(div);
+//     }
+//     imgBox.appendChild(paginationBottom);
+//   }
+//   const updatePage = () => {
+//     updateImgBox();
+//   }
+//   updatePage();
+//   containerBox.appendChild(imgBox);
+//   containerBox.appendChild(closeBtn);
+//   containerBox.appendChild(infoBox);
+//   document.body.style.overflow = "hidden";
+//   document.body.appendChild(containerBox);
+//   Hints.create("tth-images-area", Hints.dispatchMouseClick);
+//   actions.nh.readArea = containerBox;
+// }
 actions.nh.createViewer = async (idGallery) => {
   const nhApi = await fetch('https://nhentai.net/api/gallery/' + idGallery).then(res => res.json());
-  const urls = (() => {
-    const mediaId = nhApi.media_id;
-    const pages = nhApi.num_pages;
-    const images = [];
-    for (let i = 1; i <= pages; i++) {
-      images.push(`https://i7.nhentai.net/galleries/${mediaId}/${i}.jpg`)
+  const mediaId = nhApi.media_id;
+  const types = nhApi.images.pages.map((e => {
+    if(e.t == 'j'){
+      return 'jpg';
     }
-    return images;
+    else if (e.t == 'p'){
+      return 'png';
+    }
+  }));
+  const images = await (async ()=> {
+    const urls = (() => {
+      const images = [];
+      for (let i = 0; i < types.length; i++) {
+        images.push(`https://i7.nhentai.net/galleries/${mediaId}/${i+1}.${types[i]||'png'}`)
+      }
+      return images;
+    })();
+    return urls;
   })();
-  const imagesPerPage = actions.nh.imagesPerPageForViewer;
-  //   let sizePercent = 50;
-  let sizeImage = '50vw';
-  let page = 1;
-  const totalPage = Math.ceil(urls.length / imagesPerPage);
-  const containerBox = document.createElement('div');
-  containerBox.style.position = 'fixed';
-  containerBox.style.top = '0';
-  containerBox.style.left = '0';
-  containerBox.style.right = '0';
-  containerBox.style.bottom = '0';
-  containerBox.style.borderRadius = '10px'
-  containerBox.style.margin = '20px';
-  containerBox.style.backgroundColor = '#000'
-  containerBox.style.float = 'left'
-  containerBox.style.zIndex = '9999'
-  containerBox.addEventListener('close', () => {
-  })
-  const removeContainerBox = () => {
-    document.body.style.overflow = "auto";
-    containerBox.remove();
-  }
-  actions.nh.removeReaderArea = removeContainerBox;
-
-  const closeBtn = document.createElement('button');
-  closeBtn.style.position = 'absolute';
-  closeBtn.style.top = '0';
-  closeBtn.style.right = '0';
-  closeBtn.innerHTML = "×";
-  closeBtn.style.backgroundColor = 'rgba(0,0,0,0.1)';
-  closeBtn.style.border = 'none';
-  closeBtn.style.color = '#fff';
-  closeBtn.style.fontSize = '1.5rem';
-  closeBtn.style.fontWeight = 'bold';
-  closeBtn.style.borderRadius = '50%';
-  closeBtn.style.width = '2rem';
-  closeBtn.style.height = '2rem';
-  closeBtn.style.padding = '0';
-  closeBtn.style.cursor = 'pointer';
-  closeBtn.style.margin = '10px';
-
-  closeBtn.onclick = () => {
-    removeContainerBox();
-  }
-  const infoBox = document.createElement('div');
-  infoBox.style.position = 'absolute';
-  infoBox.style.top = '0';
-  infoBox.style.left = '0';
-  infoBox.style.display = 'flex'
-  infoBox.style.flexDirection = 'column'
-  const favoriteBtn = document.createElement('button');
-  favoriteBtn.className = 'tth-favorite-btn'
-  favoriteBtn.innerHTML = "Loading...";
-  favoriteBtn.style.backgroundColor = '#ED2553'
-  favoriteBtn.style.border = 'none';
-  favoriteBtn.style.color = '#fff';
-  favoriteBtn.style.fontSize = '1.5rem';
-  favoriteBtn.style.fontWeight = 'bold';
-  favoriteBtn.style.borderRadius = '10px';
-  favoriteBtn.style.padding = '0';
-  favoriteBtn.style.cursor = 'pointer';
-  favoriteBtn.style.margin = '10px';
-  favoriteBtn.style.padding = '10px';
-  favoriteBtn.style.fontSize = '1.4rem';
-  const favoriteMethod = 'favorite';
-  const unfavoriteMethod = 'unfavorite';
-  favoriteBtn.onclick = () => {
-    const state = favoriteBtn.innerHTML != favoriteMethod ? unfavoriteMethod : favoriteMethod
-    favoriteBtn.disabled = true;
-    favoriteBtn.style.opacity = 0.5;
-    favoriteBtn.style.cursor = 'default';
-
-    fetch('https://nhentai.net/api/gallery/' + idGallery + '/' + state, {
-      method: 'post',
-      headers: {
-        "X-Csrftoken": document.cookie.replace(/.+=/g, '')
+  const previewImages = await (async () => {
+    const urls = (() => {
+      const images = [];
+      for (let i = 0; i < types.length; i++) {
+        images.push(`https://t3.nhentai.net/galleries/${mediaId}/${i+1}t.${types[i]||'png'}`)
       }
-    }).then(res => {
-      favoriteBtn.innerHTML = favoriteBtn.innerHTML == favoriteMethod ? unfavoriteMethod : favoriteMethod;
-      favoriteBtn.disabled = false;
-      favoriteBtn.style.opacity = 1;
-      favoriteBtn.style.cursor = 'pointer';
-    })
-  }
-  //check state favorite
-  fetch('https://nhentai.net/g/' + idGallery).then(res => res.text()).then(data => {
-    const parser = new DOMParser();
-    const dom = parser.parseFromString(data, 'text/html');
-    favoriteBtn.innerHTML = dom.querySelector('#favorite').innerText.toLowerCase().includes(unfavoriteMethod) ? unfavoriteMethod : favoriteMethod;
-  })
-  const createDetailInfoBox = (str) => {
-    const textBox = document.createElement('div');
-    textBox.style.padding = '5px';
-    textBox.style.margin = '5px';
-    textBox.style.border = '2px solid #ccc'
-    textBox.style.maxWidth = '200px';
-    textBox.style.minWidth = '100px';
-    const tags = nhApi.tags;
-    const storagedTags = [];
-    for (let item of tags) {
-      if (item.type == str.toLowerCase()) {
-        if (item.name.toLowerCase().includes('neto')) {
-          storagedTags.push(item);
-          continue;
+      return images;
+    })();
+    return urls;
+  })();
+  const infomations = await (async () => {
+    return nhApi.tags;
+  })();
+  util.createComicViewer(images, 50, previewImages, infomations , (components) => {
+    actions.nh.readArea = components.containerBox;
+    actions.nh.removeReaderArea = components.events.removeContainerBox;
+    const favoriteMethod = 'favorite';
+    const unfavoriteMethod = 'unfavorite';
+    const favoriteBtn = components.favoriteBtn;
+    favoriteBtn.onclick = () => {
+      const state = favoriteBtn.innerHTML != favoriteMethod ? unfavoriteMethod : favoriteMethod
+      favoriteBtn.disabled = true;
+      favoriteBtn.style.opacity = 0.5;
+      favoriteBtn.style.cursor = 'default';
+
+      fetch('https://nhentai.net/api/gallery/' + idGallery + '/' + state, {
+        method: 'post',
+        headers: {
+          "X-Csrftoken": document.cookie.replace(/.+=/g, '')
         }
-        textBox.innerHTML += `<a href="${item.url}">${item.name}</a>, `;
-      }
-    }
-    for (let item of storagedTags) {
-      textBox.innerHTML = `<a href="${item.url}" style="color:red;">${item.name}</a>, ` + textBox.innerHTML;
-    }
-    textBox.innerHTML = str + ': ' + textBox.innerHTML;
-    if (textBox.innerText == str + ': ') {
-      textBox.innerText = str + ': None'
-      textBox.style.cursor = 'default';
-    }
-    else {
-      textBox.innerHTML = textBox.innerHTML.slice(0, -2);
-    }
-    return textBox;
-  }
-  infoBox.appendChild(favoriteBtn)
-  infoBox.appendChild(createDetailInfoBox('artist'))
-  infoBox.appendChild(createDetailInfoBox('group'))
-  infoBox.appendChild(createDetailInfoBox('parody'))
-  infoBox.appendChild(createDetailInfoBox('tag'))
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      removeContainerBox();
-    }
-  });
-  const updateTotalPage = () => {
-    document.querySelectorAll('.tth-total-page').forEach(el => {
-      el.innerHTML = `${page}/${totalPage}`;
-    })
-  }
-  const nextPageHandler = () => {
-    if (page < totalPage) {
-      imgBox.scrollTop = 0;
-      page++;
-      updatePage();
-      updateTotalPage();
-    }
-  }
-  const prevPageHandler = () => {
-    if (page > 0) {
-      imgBox.scrollTop = 0;
-      page--;
-      updatePage();
-      updateTotalPage();
-    }
-  }
-  const createPagination = () => {
-    const pagination = document.createElement('div');
-    pagination.style.padding = '10px';
-    pagination.style.alignItems = 'center';
-    pagination.style.color = '#fff';
-    pagination.style.fontSize = '1.5rem';
-    pagination.style.fontWeight = 'bold';
-    pagination.style.borderRadius = '10px'
-    pagination.style.float = 'left'
-    pagination.style.display = 'flex';
-    pagination.style.justifyContent = 'center';
-    pagination.style.width = '100%';
-    const totalPageElement = document.createElement('p');
-    totalPageElement.style.margin = '0 10px';
-    totalPageElement.className = 'tth-total-page';
-    totalPageElement.innerHTML = `${page}/${totalPage}`;
-    const nextBtn = document.createElement('button');
-    nextBtn.innerHTML = 'Next';
-    nextBtn.className = 'tth-next-btn'
-    nextBtn.onclick = () => {
-      nextPageHandler();
-    }
-    const prevBtn = document.createElement('button');
-    prevBtn.innerHTML = 'Prev';
-    prevBtn.className = 'tth-prev-btn'
-    prevBtn.onclick = () => {
-      prevPageHandler();
-    }
-    updateTotalPage()
-    pagination.appendChild(prevBtn);
-    pagination.appendChild(totalPageElement);
-    pagination.appendChild(nextBtn);
-    return pagination
-  }
-  const paginationTop = createPagination();
-  const paginationBottom = createPagination();
-  const imgBox = document.createElement('div');
-  imgBox.className = 'tth-images-area'
-  imgBox.style.position = 'relative';
-  imgBox.style.width = '100%';
-  imgBox.style.height = '100%';
-  imgBox.style.overflowY = 'auto';
-  imgBox.style.display = 'flex';
-  imgBox.style.alignItems = 'center';
-  imgBox.style.flexDirection = 'column';
-  imgBox.style.float = 'left'
-  imgBox.style.borderRadius = '10px'
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') {
-      nextPageHandler();
-    }
-    else if (e.key === 'ArrowLeft') {
-      prevPageHandler();
-    }
-    else if (e.key === 'ArrowDown') {
-      //   sizePercent += 10;
-      sizeImage = (Number(sizeImage.replace(/[a-z]+$/, '')) - 10) + sizeImage.match(/[a-z]+$/g)[0]
-      Array.from(imgBox.querySelectorAll('img')).forEach(el => {
-        el.style.width = sizeImage//sizePercent + '%';
+      }).then(res => {
+        favoriteBtn.innerHTML = favoriteBtn.innerHTML == favoriteMethod ? unfavoriteMethod : favoriteMethod;
+        favoriteBtn.disabled = false;
+        favoriteBtn.style.opacity = 1;
+        favoriteBtn.style.cursor = 'pointer';
       })
     }
-    else if (e.key === 'ArrowUp') {
-      //   sizePercent -= 10;
-      sizeImage = (Number(sizeImage.replace(/[a-z]+$/, '')) + 10) + sizeImage.match(/[a-z]+$/g)[0]
-      Array.from(imgBox.querySelectorAll('img')).forEach(el => {
-        el.style.width = sizeImage//sizePercent + '%';
-      })
+    //check state favorite
+    fetch('https://nhentai.net/g/' + idGallery).then(res => res.text()).then(data => {
+      const parser = new DOMParser();
+      const dom = parser.parseFromString(data, 'text/html');
+      favoriteBtn.innerHTML = dom.querySelector('#favorite').innerText.toLowerCase().includes(unfavoriteMethod) ? unfavoriteMethod : favoriteMethod;
+    })
+    const server = [3,5,7]
+    let formatToggle = false
+    let counter = 0
+
+    let retryCounter = 0
+    let img
+    components.events.imageErrorEvent = (e) => {
+      // if (counter >= 2 && format == 'jpg') {
+      //   return;
+      // }
+      if(retryCounter >= 2){
+        return;
+      }
+
+      img = e.srcElement;
+      const changeServer = (serverNumber) => {
+        return img.src.replace(/\/\/i\d+/g, '//i' + serverNumber);
+      }
+      if(counter >= 2){
+        counter = 0
+      }
+      else{
+        counter++;
+      }
+      img.src = changeServer(server[counter])
+      if (counter >= 2) {
+        retryCounter++;
+      }
     }
-  });
-  const updateImgBox = () => {
-    imgBox.innerHTML = '';
-    const imagesNumber = imagesPerPage * (page - 1);
-    imgBox.appendChild(paginationTop)
-    for (let i = 0; i < imagesPerPage; i++) {
-      if (imagesNumber + i >= urls.length) {
-        break;
+    retryCounter = 0;
+    counter = 0;
+    components.events.previewImageErrorEvent = (e) => {
+      // if (counter >= 2 && format == 'jpg') {
+      //   return;
+      // }
+      if(retryCounter >= 2){
+        return;
       }
-      const div = document.createElement('div')
-      div.style.position = 'relative'
-      let server = [3, 5, 7];
-      let counter = 0;
-      let format = 'jpg';
-      const img = document.createElement('img');
-      img.src = urls[imagesNumber + i];
-      img.style.position = 'absolute'
-      img.style.top = '0';
-      img.style.left = '0';
-      img.style.width = sizeImage//sizePercent + '%';
-      // img.style.height = 'auto';
-      img.onload = () => {
-        // img.style.width = sizeImage//sizePercent + '%';
-        img.style.height = img.height;
+      const imgTemp = e.srcElement;
+      const changeServer = (serverNumber) => {
+        return imgTemp.src.replace(/\/\/t\d+/g, '//t' + serverNumber);
       }
-      img.style.objectFit = 'cover';
-      img.loading = 'lazy';
-      img.onerror = () => {
-        const changeServer = (serverNumber, format) => {
-          return img.src.replace(/\/\/i\d+/g, '//i' + serverNumber).replace(/\.(jpg|png)$/, '.' + format);
-        }
-        img.src = changeServer(server[++counter], format)
-        if (counter >= 2 && format == 'png') {
-          return;
-        }
-        if (counter >= 2) {
-          format = 'png';
-          counter = -1;
-        }
-
-
-        // if (img.src.includes('i5') && img.src.includes('jpg')) {
-        //   img.src = img.src.replace('i5', 'i3');
-        // }
-        // else if (img.src.includes('i3') && img.src.includes('png')) {
-        //   img.src = img.src.replace('png', 'jpg');
-        // }
-        // else if (img.src.includes('i5') && img.src.includes('png')) {
-        //   img.src = img.src.replace('i5', 'i3');
-        // }
-        // else if (img.src.includes('i7') && img.src.includes('png')) {
-        //   img.src = img.src.replace('i7', 'i5');
-        // }
-        // else if (img.src.includes('jpg')) {
-        //   img.src = img.src.replace('jpg', 'png');
-        // }
+      if(counter >= 2){
+        counter = 0
       }
-      counter = 0;
-      format = 'jpg';
-      const imgTemp = document.createElement('img');
-      imgTemp.src = img.src.replace('.jpg', 't.jpg').replace('.png', 't.png').replace(/\/\/i\d+/g, '//t3');
-      imgTemp.onerror = () => {
-        const changeServer = (serverNumber, format) => {
-          return img.src.replace(/\/\/i\d+/g, '//t' + serverNumber).replace(/\.(jpg|png)$/, 't.' + format);
-        }
-        imgTemp.src = changeServer(server[++counter], format)
-        if (counter >= 2 && format == 'png') {
-          return;
-        }
-        if (counter >= 2) {
-          format = 'png';
-          counter = -1;
-        }
-
-        // if (imgTemp.src.includes('t7') && imgTemp.src.includes('jpg')) {
-        //   imgTemp.src = imgTemp.src.replace('t7', 't5');
-        // }
-        // else if (imgTemp.src.includes('t7') && imgTemp.src.includes('png')) {
-        //   imgTemp.src = imgTemp.src.replace('png', 'jpg');
-        // }
-        // else if (imgTemp.src.includes('t5') && imgTemp.src.includes('png')) {
-        //   imgTemp.src = imgTemp.src.replace('t5', 't7');
-        // }
-        // else if (imgTemp.src.includes('t3') && imgTemp.src.includes('png')) {
-        //   imgTemp.src = imgTemp.src.replace('t3', 't5');
-        // }
-        // else if (imgTemp.src.includes('jpg')) {
-        //   imgTemp.src = imgTemp.src.replace('jpg', 'png');
-        //   alert('ERROR: ' + imgTemp.src)
-        // }
+      else{
+        counter++;
       }
-      imgTemp.style.width = sizeImage//sizePercent + '%';
-      imgTemp.style.height = 'auto';
-      imgTemp.style.objectFit = 'cover';
+      imgTemp.src = changeServer(server[counter])
+      if (counter >= 2) {
+        retryCounter++;
+      }
 
-      div.appendChild(imgTemp)
-      div.appendChild(img)
-      imgBox.appendChild(div);
     }
-    imgBox.appendChild(paginationBottom);
-  }
-  const updatePage = () => {
-    updateImgBox();
-  }
-  updatePage();
-  containerBox.appendChild(imgBox);
-  containerBox.appendChild(closeBtn);
-  containerBox.appendChild(infoBox);
-  document.body.style.overflow = "hidden";
-  document.body.appendChild(containerBox);
-  Hints.create("tth-images-area", Hints.dispatchMouseClick);
-  actions.nh.readArea = containerBox;
+  }, (events) => {
+
+  })
 }
 //iwara
 actions.iw = {

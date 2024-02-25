@@ -232,5 +232,266 @@ util.playAsyncWithMpv = (url) => {
 util.sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+util.createComicViewer = async (images, imagesPerPage, previewImages, infomations, callback, callbackEvents) => {
+  const urls = images;
+  const events = {
+    imageErrorEvent: null,
+    previewImageErrorEvent: null,
+    removeContainerBox: null
+  }
+
+
+  //   let sizePercent = 50;
+  let sizeImage = '50vw';
+  let page = 1;
+  const totalPage = Math.ceil(urls.length / imagesPerPage);
+  const containerBox = document.createElement('div');
+  containerBox.style.position = 'fixed';
+  containerBox.style.top = '0';
+  containerBox.style.left = '0';
+  containerBox.style.right = '0';
+  containerBox.style.bottom = '0';
+  containerBox.style.borderRadius = '10px'
+  containerBox.style.margin = '20px';
+  containerBox.style.backgroundColor = '#000'
+  containerBox.style.float = 'left'
+  containerBox.style.zIndex = '9999'
+  containerBox.addEventListener('close', () => {
+  })
+  const removeContainerBox = () => {
+    document.body.style.overflow = "auto";
+    containerBox.remove();
+  }
+  events.removeContainerBox = removeContainerBox;
+  callbackEvents(events)
+
+  const closeBtn = document.createElement('button');
+  closeBtn.style.position = 'absolute';
+  closeBtn.style.top = '0';
+  closeBtn.style.right = '0';
+  closeBtn.innerHTML = "×";
+  closeBtn.style.backgroundColor = 'rgba(0,0,0,0.1)';
+  closeBtn.style.border = 'none';
+  closeBtn.style.color = '#fff';
+  closeBtn.style.fontSize = '1.5rem';
+  closeBtn.style.fontWeight = 'bold';
+  closeBtn.style.borderRadius = '50%';
+  closeBtn.style.width = '2rem';
+  closeBtn.style.height = '2rem';
+  closeBtn.style.padding = '0';
+  closeBtn.style.cursor = 'pointer';
+  closeBtn.style.margin = '10px';
+
+  closeBtn.onclick = () => {
+    removeContainerBox();
+  }
+  const infoBox = document.createElement('div');
+  infoBox.style.position = 'absolute';
+  infoBox.style.top = '0';
+  infoBox.style.left = '0';
+  infoBox.style.display = 'flex'
+  infoBox.style.flexDirection = 'column'
+  const favoriteBtn = document.createElement('button');
+  favoriteBtn.className = 'tth-favorite-btn'
+  favoriteBtn.innerHTML = "Loading...";
+  favoriteBtn.style.backgroundColor = '#ED2553'
+  favoriteBtn.style.border = 'none';
+  favoriteBtn.style.color = '#fff';
+  favoriteBtn.style.fontSize = '1.5rem';
+  favoriteBtn.style.fontWeight = 'bold';
+  favoriteBtn.style.borderRadius = '10px';
+  favoriteBtn.style.padding = '0';
+  favoriteBtn.style.cursor = 'pointer';
+  favoriteBtn.style.margin = '10px';
+  favoriteBtn.style.padding = '10px';
+  favoriteBtn.style.fontSize = '1.4rem';
+
+  const createDetailInfoBox = (str) => {
+    const textBox = document.createElement('div');
+    textBox.style.padding = '5px';
+    textBox.style.margin = '5px';
+    textBox.style.border = '2px solid #ccc'
+    textBox.style.maxWidth = '200px';
+    textBox.style.minWidth = '100px';
+     const tags = infomations;
+    const storagedTags = [];
+    for (let item of tags) {
+      if (item.type == str.toLowerCase()) {
+        if (item.name.toLowerCase().includes('neto')) {
+          storagedTags.push(item);
+          continue;
+        }
+        textBox.innerHTML += `<a href="${item.url}">${item.name}</a>, `;
+      }
+    }
+    for (let item of storagedTags) {
+      textBox.innerHTML = `<a href="${item.url}" style="color:red;">${item.name}</a>, ` + textBox.innerHTML;
+    }
+    textBox.innerHTML = str + ': ' + textBox.innerHTML;
+    if (textBox.innerText == str + ': ') {
+      textBox.innerText = str + ': None'
+      textBox.style.cursor = 'default';
+    }
+    else {
+      textBox.innerHTML = textBox.innerHTML.slice(0, -2);
+    }
+    return textBox;
+  }
+  const artistBox = createDetailInfoBox('artist')
+  const groupBox = createDetailInfoBox('group')
+  const parodyBox = createDetailInfoBox('parody')
+  const tagBox = createDetailInfoBox('tag')
+  infoBox.appendChild(favoriteBtn)
+  infoBox.appendChild(artistBox)
+  infoBox.appendChild(groupBox)
+  infoBox.appendChild(parodyBox)
+  infoBox.appendChild(tagBox)
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      removeContainerBox();
+    }
+  });
+  const updateTotalPage = () => {
+    document.querySelectorAll('.tth-total-page').forEach(el => {
+      el.innerHTML = `${page}/${totalPage}`;
+    })
+  }
+  const nextPageHandler = () => {
+    if (page < totalPage) {
+      imgBox.scrollTop = 0;
+      page++;
+      updatePage();
+      updateTotalPage();
+    }
+  }
+  const prevPageHandler = () => {
+    if (page > 0) {
+      imgBox.scrollTop = 0;
+      page--;
+      updatePage();
+      updateTotalPage();
+    }
+  }
+  const createPagination = () => {
+    const pagination = document.createElement('div');
+    pagination.style.padding = '10px';
+    pagination.style.alignItems = 'center';
+    pagination.style.color = '#fff';
+    pagination.style.fontSize = '1.5rem';
+    pagination.style.fontWeight = 'bold';
+    pagination.style.borderRadius = '10px'
+    pagination.style.float = 'left'
+    pagination.style.display = 'flex';
+    pagination.style.justifyContent = 'center';
+    pagination.style.width = '100%';
+    const totalPageElement = document.createElement('p');
+    totalPageElement.style.margin = '0 10px';
+    totalPageElement.className = 'tth-total-page';
+    totalPageElement.innerHTML = `${page}/${totalPage}`;
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = 'Next';
+    nextBtn.className = 'tth-next-btn'
+    nextBtn.onclick = () => {
+      nextPageHandler();
+    }
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = 'Prev';
+    prevBtn.className = 'tth-prev-btn'
+    prevBtn.onclick = () => {
+      prevPageHandler();
+    }
+    updateTotalPage()
+    pagination.appendChild(prevBtn);
+    pagination.appendChild(totalPageElement);
+    pagination.appendChild(nextBtn);
+    return pagination
+  }
+  const paginationTop = createPagination();
+  const paginationBottom = createPagination();
+  const imgBox = document.createElement('div');
+  imgBox.className = 'tth-images-area'
+  imgBox.style.position = 'relative';
+  imgBox.style.width = '100%';
+  imgBox.style.height = '100%';
+  imgBox.style.overflowY = 'auto';
+  imgBox.style.display = 'flex';
+  imgBox.style.alignItems = 'center';
+  imgBox.style.flexDirection = 'column';
+  imgBox.style.float = 'left'
+  imgBox.style.borderRadius = '10px'
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') {
+      nextPageHandler();
+    }
+    else if (e.key === 'ArrowLeft') {
+      prevPageHandler();
+    }
+    else if (e.key === 'ArrowDown') {
+      //   sizePercent += 10;
+      sizeImage = (Number(sizeImage.replace(/[a-z]+$/, '')) - 10) + sizeImage.match(/[a-z]+$/g)[0]
+      Array.from(imgBox.querySelectorAll('img')).forEach(el => {
+        el.style.width = sizeImage//sizePercent + '%';
+      })
+    }
+    else if (e.key === 'ArrowUp') {
+      //   sizePercent -= 10;
+      sizeImage = (Number(sizeImage.replace(/[a-z]+$/, '')) + 10) + sizeImage.match(/[a-z]+$/g)[0]
+      Array.from(imgBox.querySelectorAll('img')).forEach(el => {
+        el.style.width = sizeImage//sizePercent + '%';
+      })
+    }
+  });
+  const updateImgBox = () => {
+    imgBox.innerHTML = '';
+    const imagesNumber = imagesPerPage * (page - 1);
+    imgBox.appendChild(paginationTop)
+    for (let i = 0; i < imagesPerPage; i++) {
+      if (imagesNumber + i >= urls.length) {
+        break;
+      }
+      const div = document.createElement('div')
+      div.style.position = 'relative'
+
+      const img = document.createElement('img');
+      img.src = urls[imagesNumber + i];
+      img.style.position = 'absolute'
+      img.style.top = '0';
+      img.style.left = '0';
+      img.style.width = sizeImage//sizePercent + '%';
+      // img.style.height = 'auto';
+      img.onload = () => {
+        // img.style.width = sizeImage//sizePercent + '%';
+        img.style.height = img.height;
+      }
+      img.style.objectFit = 'cover';
+      img.loading = 'lazy';
+      img.onerror = events.imageErrorEvent;
+
+      const imgTemp = document.createElement('img');
+      imgTemp.src = previewImages[imagesNumber + i]
+      imgTemp.onerror = events.previewImageErrorEvent
+      imgTemp.style.width = sizeImage//sizePercent + '%';
+      imgTemp.style.height = 'auto';
+      imgTemp.style.objectFit = 'cover';
+
+      div.appendChild(imgTemp)
+      div.appendChild(img)
+      imgBox.appendChild(div);
+    }
+    imgBox.appendChild(paginationBottom);
+  }
+  const updatePage = () => {
+    updateImgBox();
+  }
+  containerBox.appendChild(imgBox);
+  containerBox.appendChild(closeBtn);
+  containerBox.appendChild(infoBox);
+  document.body.style.overflow = "hidden";
+  document.body.appendChild(containerBox);
+  Hints.create("tth-images-area", Hints.dispatchMouseClick);
+  callback({favoriteBtn, artistBox, groupBox, parodyBox, tagBox, paginationTop, paginationBottom, containerBox, events});
+  updatePage();
+}
 
 export default util
