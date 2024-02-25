@@ -460,10 +460,6 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
       img.style.left = '0';
       img.style.width = sizeImage//sizePercent + '%';
       // img.style.height = 'auto';
-      img.onload = () => {
-        // img.style.width = sizeImage//sizePercent + '%';
-        img.style.height = img.height;
-      }
       img.style.objectFit = 'cover';
       img.loading = 'lazy';
       img.onerror = events.imageErrorEvent;
@@ -474,6 +470,14 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
       imgTemp.style.width = sizeImage//sizePercent + '%';
       imgTemp.style.height = 'auto';
       imgTemp.style.objectFit = 'cover';
+
+      img.onload = () => {
+        // img.style.width = sizeImage//sizePercent + '%';
+        img.style.height = img.height;
+        if(!imgTemp.complete) {
+          imgTemp.src = img.src;
+        }
+      }
 
       div.appendChild(imgTemp)
       div.appendChild(img)
