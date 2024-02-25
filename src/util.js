@@ -465,7 +465,12 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
       img.onerror = events.imageErrorEvent;
 
       const imgTemp = document.createElement('img');
-      imgTemp.src = previewImages[imagesNumber + i]
+      if(!previewImages){
+        imgTemp.src = urls[imagesNumber + i];
+      }
+      else{
+        imgTemp.src = previewImages[imagesNumber + i]
+      }
       imgTemp.onerror = events.previewImageErrorEvent
       imgTemp.style.width = sizeImage//sizePercent + '%';
       imgTemp.style.height = 'auto';
