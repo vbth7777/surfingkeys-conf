@@ -557,7 +557,7 @@ maps["youtube.com"] = [
   },
   {
     leader: "",
-    alias: "cpl",
+    alias: "cvp",
     description: "Like And Show Playlist For Current Video",
     callback: () => {
       actions.yt.clickPlaylistButtonYoutube();
