@@ -480,9 +480,12 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
       img.onload = () => {
         // img.style.width = sizeImage//sizePercent + '%';
         img.style.height = img.height;
-        if (!imgTemp.complete) {
-          imgTemp.src = img.src;
-        }
+        // if (!imgTemp.complete) {
+        //   imgTemp.src = img.src;
+        // }
+        const temp = img.src;
+        img.src = '';
+        img.src = temp;
       }
 
       div.appendChild(imgTemp)
