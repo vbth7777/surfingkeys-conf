@@ -3,7 +3,7 @@ import DOMPurify from "dompurify"
 
 import api from "./api.js"
 
-const { Hints, RUNTIME } = api
+const { Hints, RUNTIME, Front } = api
 
 const util = {}
 
@@ -218,7 +218,7 @@ util.convertToSHA1 = async (str) => {
   return hashHex;
 }
 util.playWithMpv = (url, pageUrl = null, accessToken = null) => {
-  api.Front.showBanner(`Openning with mpv (${url})...`)
+  Front.showBanner(`Opening with mpv (${url})...`)
   fetch('http://localhost:9789', {
     method: 'post',
     body: new URLSearchParams({ url, pageUrl, accessToken })
@@ -505,6 +505,27 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
   Hints.create("tth-images-area", Hints.dispatchMouseClick);
   callback({ favoriteBtn, artistBox, groupBox, parodyBox, tagBox, paginationTop, paginationBottom, containerBox, events });
   updatePage();
+}
+util.autoChangeIpWhenError = async (callback) => {
+  let json = false
+  while (!json) {
+    try {
+      json = await callback();
+    } catch (error) {
+      await fetch('http://localhost:5466/api/change-ip', {
+        method: 'post'
+      }).then(res => {
+        if (res.status == 200) {
+          Front.showBanner('Success change ip');
+        }
+        else {
+          Front.showPopup('Failed to change ip');
+        }
+      })
+    }
+    console.log(await fetch('http://localhost:5466/api/get-ip').then(res => res.text()))
+  }
+  return json
 }
 
 export default util

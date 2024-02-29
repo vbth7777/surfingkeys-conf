@@ -1385,14 +1385,41 @@ actions.nh.createViewer = async (idGallery) => {
 //anchira
 actions.ah = {}
 actions.ah.getImages = async (idGallery) => {
-  const json = await fetch('https://anchira.to/api/v1/library/' + idGallery + '/data', {
-    headers: {
-      'X-Requested-With': 'XMLHttpRequest',
-      'User-Agent': "Mozilla/5.0 (Windows; Windows NT 10.0;) AppleWebKit/603.21 (KHTML, like Gecko) Chrome/47.0.1437.111 Safari/536.2 Edge/12.94565"
-    }
-  }).then(res => res.json());
+
+  const json = await util.autoChangeIpWhenError(async () => {
+    return await fetch('https://anchira.to/api/v1/library/' + idGallery + '/data', {
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'User-Agent': "Mozilla/5.0 (Windows; Windows NT 10.0;) AppleWebKit/603.21 (KHTML, like Gecko) Chrome/47.0.1437.111 Safari/536.2 Edge/12.94565"
+      }
+    }).then(res => res.json());
+  })
+  // let json = false
+  // while (!json) {
+  //   try {
+  //     json = await fetch('https://anchira.to/api/v1/library/' + idGallery + '/data', {
+  //       headers: {
+  //         'X-Requested-With': 'XMLHttpRequest',
+  //         'User-Agent': "Mozilla/5.0 (Windows; Windows NT 10.0;) AppleWebKit/603.21 (KHTML, like Gecko) Chrome/47.0.1437.111 Safari/536.2 Edge/12.94565"
+  //       }
+  //     }).then(res => res.json());
+  //   } catch (error) {
+  //     await fetch('http://localhost:5466/api/change-ip', {
+  //       method: 'post'
+  //     }).then(res => {
+  //       if (res.status == 200) {
+  //         Front.showBanner('Success change ip');
+  //       }
+  //       else {
+  //         Front.showPopup('Failed to change ip');
+  //       }
+  //     })
+  //   }
+  //   console.log(await fetch('http://localhost:5466/api/get-ip').then(res => res.text()))
+  // }
 
   const images = [];
+  console.log(json)
 
   const names = json.names;
   const id = json.id;
@@ -1402,6 +1429,8 @@ actions.ah.getImages = async (idGallery) => {
   for (let name of names) {
     images.push(`https://kisakisexo.xyz/${id}/${key}/${hash}/b/${name}`)
   }
+
+
   return images;
 }
 actions.ah.createViewer = async (idGallery) => {
