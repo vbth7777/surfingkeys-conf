@@ -483,14 +483,14 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
         // if (!imgTemp.complete) {
         //   imgTemp.src = img.src;
         // }
-        // setTimeout(() => {
-        //   const temp = img.src;
-        //   img.src = '';
-        //   img.src = temp;
-        // }, 500)
-        const temp = img.src;
-        img.src = '';
-        img.src = temp;
+        setTimeout(() => {
+          const temp = img.src;
+          img.src = '';
+          img.src = temp;
+        }, 500)
+        // const temp = img.src;
+        // img.src = '';
+        // img.src = temp;
       }
 
       div.appendChild(imgTemp)
