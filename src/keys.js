@@ -1492,8 +1492,10 @@ maps["iwara.tv"] = [
     description: "Search The Video On MMDFans",
     callback: async () => {
       const el = document.querySelector('.page-video__details > .text');
+      const authorName = document.querySelector('.username').innerText;
+
       if (el) {
-        actions.iw.GoToMmdFansVid(el.innerText);
+        actions.iw.GoToMmdFansVid(el.innerText, authorName);
         return;
       }
       const title = await actions.iw.getVideoTitle(actions.iw.getIdIwara(document.location.href))

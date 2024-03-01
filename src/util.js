@@ -238,7 +238,8 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
   const events = {
     imageErrorEvent: null,
     previewImageErrorEvent: null,
-    removeContainerBox: null
+    removeContainerBox: null,
+    imageAddEvent: null
   }
 
 
@@ -421,7 +422,32 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
   imgBox.style.flexDirection = 'column';
   imgBox.style.float = 'left'
   imgBox.style.borderRadius = '10px'
+
+  let currentImgView = null;
+  const isImgInView = (img) => {
+    if (!img) {
+      return false;
+    }
+    const rect = img.getBoundingClientRect();
+
+    if (rect.y > 0 && rect.y < window.innerHeight) {
+      return true;
+    }
+  }
+
   document.addEventListener('keydown', (e) => {
+    const imgs = imgBox.querySelectorAll('img');
+    console.log(isImgInView(currentImgView))
+    if (!isImgInView(currentImgView)) {
+      currentImgView = (() => {
+        for (let i = 0; i < imgs.length; i++) {
+          if (util.isElementInViewport(imgs[i])) {
+            console.log(imgs[i])
+            return imgs[i];
+          }
+        }
+      })();
+    }
     if (e.key === 'ArrowRight') {
       nextPageHandler();
     }
@@ -429,11 +455,14 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
       prevPageHandler();
     }
     else if (e.key === 'ArrowDown') {
+
       //   sizePercent += 10;
+
       sizeImage = (Number(sizeImage.replace(/[a-z]+$/, '')) - 10) + sizeImage.match(/[a-z]+$/g)[0]
-      Array.from(imgBox.querySelectorAll('img')).forEach(el => {
+      Array.from(imgs).forEach(el => {
         el.style.width = sizeImage//sizePercent + '%';
       })
+      currentImgView.scrollIntoView();
     }
     else if (e.key === 'ArrowUp') {
       //   sizePercent -= 10;
@@ -441,6 +470,7 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
       Array.from(imgBox.querySelectorAll('img')).forEach(el => {
         el.style.width = sizeImage//sizePercent + '%';
       })
+      currentImgView.scrollIntoView();
     }
   });
   const updateImgBox = () => {
@@ -478,26 +508,19 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
       imgTemp.style.objectFit = 'cover';
 
       img.onload = () => {
-        // img.style.width = sizeImage//sizePercent + '%';
         img.style.height = img.height;
-        // if (!imgTemp.complete) {
-        //   imgTemp.src = img.src;
-        // }
-        setTimeout(() => {
-          const temp = img.src;
-          img.src = '';
-          img.src = temp;
-        }, 500)
-        // const temp = img.src;
-        // img.src = '';
-        // img.src = temp;
       }
+
+
+      events.imageAddEvent(img, imgTemp);
+
 
       div.appendChild(imgTemp)
       div.appendChild(img)
       imgBox.appendChild(div);
     }
     imgBox.appendChild(paginationBottom);
+
   }
   const updatePage = () => {
     updateImgBox();

@@ -1380,6 +1380,20 @@ actions.nh.createViewer = async (idGallery) => {
       }
 
     }
+    components.events.imageAddEvent = (img) => {
+      let counter = 0;
+      const interval = setInterval(() => {
+        if (img.height > 0) {
+          clearInterval(interval);
+        }
+        else {
+          counter++;
+          if (counter >= 5) {
+            img.src = img.src.replace(/\/\/i\d+/g, '//i' + server[Math.floor(Math.random() * server.length)]);
+          }
+        }
+      }, 1000)
+    }
   })
 }
 //anchira
@@ -1809,12 +1823,16 @@ actions.iw.playUrlsOnPageWithMpv = () => {
   }
 
 }
-actions.iw.GoToMmdFansVid = (title, isSearching = true) => {
-  if (isSearching) {
-    api.Front.showBanner('Searching...')
-    // originalTitle = title;
-  };
-  actions.getDOM(encodeURI('https://mmdfans.net/?query=' + title), function(s, res) {
+actions.iw.GoToMmdFansVid = (title, authorName) => {
+  api.Front.showBanner('Searching...')
+  let query = '';
+  if (authorName) {
+    query = encodeURI(`https://mmdfans.net/?query=author:${authorName}&order_by=time`);
+  }
+  else {
+    query = encodeURI('https://mmdfans.net/?query=' + title);
+  }
+  actions.getDOM(query, function(s, res) {
     if (s) {
       api.Front.showPopup('Error:' + s)
       return;
