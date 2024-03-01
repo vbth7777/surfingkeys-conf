@@ -236,10 +236,10 @@ util.sleep = (ms) => {
 util.createComicViewer = async (images, imagesPerPage, previewImages, infomations, callback) => {
   const urls = images;
   const events = {
-    imageErrorEvent: null,
-    previewImageErrorEvent: null,
-    removeContainerBox: null,
-    imageAddEvent: null
+    imageErrorEvent: () => { },
+    previewImageErrorEvent: () => { },
+    removeContainerBox: () => { },
+    imageAddEvent: () => { }
   }
 
 
