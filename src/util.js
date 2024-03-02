@@ -509,6 +509,9 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
 
       img.onload = () => {
         img.style.height = img.height;
+        if (img.height > 0 && imgTemp.height == 0) {
+          imgTemp.style.height = img.height;
+        }
       }
 
 
@@ -536,10 +539,35 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
 }
 util.autoChangeIpWhenError = async (callback) => {
   let json = false
+  let counter = 0;
   while (!json) {
     try {
       json = await callback();
     } catch (error) {
+      counter++;
+      if (counter > 5) {
+        counter = 0;
+        await fetch('http://localhost:5466/api/delete', {
+          method: 'post'
+        }).then(res => {
+          if (res.status == 200) {
+            Front.showBanner('Success delete');
+          }
+          else {
+            Front.showPopup('Failed to delete');
+          }
+        })
+        await fetch('http://localhost:5466/api/register', {
+          method: 'post'
+        }).then(res => {
+          if (res.status == 200) {
+            Front.showBanner('Success register');
+          }
+          else {
+            Front.showPopup('Failed to register');
+          }
+        })
+      }
       await fetch('http://localhost:5466/api/change-ip', {
         method: 'post'
       }).then(res => {
