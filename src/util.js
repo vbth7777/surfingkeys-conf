@@ -234,6 +234,7 @@ util.sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 util.createComicViewer = async (images, imagesPerPage, previewImages, infomations, callback) => {
+  //infomations = {name, url, type}
   const urls = images;
   const events = {
     imageErrorEvent: () => { },
@@ -308,7 +309,6 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
   favoriteBtn.style.fontSize = '1.4rem';
 
   const createDetailInfoBox = (str) => {
-    //infomations = {name, url, type}
     const textBox = document.createElement('div');
     textBox.style.padding = '5px';
     textBox.style.margin = '5px';
