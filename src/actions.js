@@ -1383,19 +1383,19 @@ actions.nh.createViewer = async (idGallery) => {
     components.events.imageAddEvent = (img, imgTemp) => {
       let counter = 0;
       const interval = setInterval(() => {
-        if (img.height > 16) {
+        if (img.height > 100) {
           clearInterval(interval);
         }
         else {
           counter++;
-          if (counter >= 5) {
+          if (counter >= 5 || img.height == 16) {
             img.src = img.src.replace(/\/\/i\d+/g, '//i' + server[Math.floor(Math.random() * server.length)]);
           }
         }
       }, 1000)
       let counter2 = 0;
       const interval2 = setInterval(() => {
-        if (imgTemp.height > 16) {
+        if (imgTemp.height > 100) {
           clearInterval(interval2);
         }
         else {

@@ -511,13 +511,19 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
         img.style.height = img.height;
       }
       const interval = setInterval(() => {
-        if (img.height > 0 && imgTemp.height == 0) {
-          imgTemp.style.height = img.height;
+        const max = Math.max(img.height, imgTemp.height)
+        img.height = max;
+        imgTemp.height = max;
+        if (img.height > 0 && imgTemp.height > 0) {
           clearInterval(interval);
         }
-        else if (img.height > 0 && imgTemp.height > 0) {
-          clearInterval(interval);
-        }
+        // if (img.height > 0 && imgTemp.height == 0) {
+        //   imgTemp.style.height = img.height;
+        //   clearInterval(interval);
+        // }
+        // else if (img.height > 0 && imgTemp.height > 0) {
+        //   clearInterval(interval);
+        // }
       }, 1000)
 
 
