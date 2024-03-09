@@ -437,7 +437,6 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
 
   document.addEventListener('keydown', (e) => {
     const imgs = imgBox.querySelectorAll('img');
-    console.log(isImgInView(currentImgView))
     if (!isImgInView(currentImgView)) {
       currentImgView = (() => {
         for (let i = 0; i < imgs.length; i++) {
@@ -467,7 +466,7 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
     else if (e.key === 'ArrowUp') {
       //   sizePercent -= 10;
       sizeImage = (Number(sizeImage.replace(/[a-z]+$/, '')) + 10) + sizeImage.match(/[a-z]+$/g)[0]
-      Array.from(imgBox.querySelectorAll('img')).forEach(el => {
+      Array.from(imgs).forEach(el => {
         el.style.width = sizeImage//sizePercent + '%';
       })
       currentImgView.scrollIntoView();
@@ -512,8 +511,8 @@ util.createComicViewer = async (images, imagesPerPage, previewImages, infomation
       }
       const interval = setInterval(() => {
         const max = Math.max(img.height, imgTemp.height)
-        img.height = max;
-        imgTemp.height = max;
+        img.style.height = max;
+        imgTemp.style.height = max;
         if (img.height > 0 && imgTemp.height > 0) {
           clearInterval(interval);
         }
