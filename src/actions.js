@@ -1388,7 +1388,7 @@ actions.nh.createViewer = async (idGallery) => {
         }
         else {
           counter++;
-          if (counter >= 5 || img.height == 16) {
+          if (counter >= 2 || img.height == 16) {
             img.src = img.src.replace(/\/\/i\d+/g, '//i' + server[Math.floor(Math.random() * server.length)]);
           }
         }
@@ -1400,8 +1400,8 @@ actions.nh.createViewer = async (idGallery) => {
         }
         else {
           counter2++;
-          if (counter2 >= 5) {
-            imgTemp.src = imgTemp.src.replace(/\/\/i\d+/g, '//i' + server[Math.floor(Math.random() * server.length)]);
+          if (counter2 >= 2) {
+            imgTemp.src = imgTemp.src.replace(/\/\/t\d+/g, '//t' + server[Math.floor(Math.random() * server.length)]);
           }
         }
       }, 1000)
