@@ -1388,7 +1388,7 @@ actions.nh.createViewer = async (idGallery) => {
         }
         else {
           counter++;
-          if (counter >= 2 || img.height == 16) {
+          if (counter >= 5 || img.height == 16) {
             img.src = img.src.replace(/\/\/i\d+/g, '//i' + server[Math.floor(Math.random() * server.length)]);
           }
         }
