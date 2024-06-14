@@ -7,7 +7,7 @@ import util from "./util.js"
 const { categories } = help
 
 const { Clipboard, Front } = api
-const playVideoMPVAlias = "om";
+const playVideoMPVAlias = "om"
 // Remove undesired default mappings
 const unmaps = {
   mappings: [
@@ -40,7 +40,7 @@ const unmaps = {
     "p",
     "<Ctrl-j>",
     "<Ctrl-h>",
-    "x"
+    "x",
   ],
   searchAliases: {
     s: ["g", "d", "b", "e", "w", "s", "h", "y"],
@@ -116,9 +116,8 @@ maps.global = [
     description: "Go to parent domain",
     callback: () => {
       const subdomains = window.location.host.split(".")
-      const parentDomain = (subdomains.length > 2
-        ? subdomains.slice(1)
-        : subdomains
+      const parentDomain = (
+        subdomains.length > 2 ? subdomains.slice(1) : subdomains
       ).join(".")
       actions.openLink(`${window.location.protocol}//${parentDomain}`)
     },
@@ -141,7 +140,7 @@ maps.global = [
     description: "Copy link as Markdown",
     callback: () =>
       util.createHints("a[href]", (a) =>
-        Clipboard.write(`[${a.innerText}](${a.href})`)
+        Clipboard.write(`[${a.innerText}](${a.href})`),
       ),
   },
   {
@@ -306,46 +305,46 @@ maps.global = [
     alias: ";x",
     description: "Remove Element",
     callback: () => {
-      util.createHints("*", (element) => element.remove());
+      util.createHints("*", (element) => element.remove())
     },
   },
   {
     alias: ";r",
     description: "Get Full Text From Element",
     callback: () => {
-      util.createHints("*", (element) => Front.showPopup(element.innerText));
+      util.createHints("*", (element) => Front.showPopup(element.innerText))
     },
   },
   {
     alias: playVideoMPVAlias,
     description: "Open Url By MPV",
     callback: () => {
-      util.createHints("*[href]", el => {
+      util.createHints("*[href]", (el) => {
         util.playWithMpv(el.href)
-      });
-    }
+      })
+    },
   },
   {
     alias: "oc",
     description: "Open All Urls In Clipboard By MPV",
     callback: () => {
-      actions.openUrlsInClipboardWithMpv();
-    }
+      actions.openUrlsInClipboardWithMpv()
+    },
   },
 
   {
     alias: "ovm",
     description: "Open async video in mpv",
     callback: () => {
-      util.createHints("*[href]", async function(el) {
+      util.createHints("*[href]", async function (el) {
         const url = el.href
-        api.Front.showBanner(`Openning with mpv (${url})...`)
-        fetch('http://localhost:9789/async-run', {
-          method: 'post',
-          body: new URLSearchParams({ url })
-        }).catch(err => console.error(err))
+        api.Front.showBanner(`Opening with mpv (${url})...`)
+        fetch("http://localhost:9789/async-run", {
+          method: "post",
+          body: new URLSearchParams({ url }),
+        }).catch((err) => console.error(err))
       })
-    }
+    },
   },
 ]
 
@@ -419,7 +418,7 @@ maps["www.google.com"] = [
     callback: () =>
       util.createHints(
         googleSearchResultSelector,
-        actions.openAnchor({ newTab: true, active: false })
+        actions.openAnchor({ newTab: true, active: false }),
       ),
   },
   {
@@ -456,7 +455,7 @@ maps["duckduckgo.com"] = [
     callback: () =>
       util.createHints(
         ddgSelector,
-        actions.openAnchor({ newTab: true, active: false })
+        actions.openAnchor({ newTab: true, active: false }),
       ),
   },
   {
@@ -498,7 +497,7 @@ maps["youtube.com"] = [
     callback: () =>
       util.createHints(
         "*[id='video-title']",
-        actions.openAnchor({ newTab: true })
+        actions.openAnchor({ newTab: true }),
       ),
   },
   {
@@ -522,7 +521,7 @@ maps["youtube.com"] = [
       actions.dispatchMouseEvents(
         document.querySelector("#movie_player.ytp-fullscreen-button"),
         "mousedown",
-        "click"
+        "click",
       ),
   },
   {
@@ -543,35 +542,34 @@ maps["youtube.com"] = [
     alias: "cl",
     description: "Like And Show Playlist For Current Video",
     callback: () => {
-      actions.yt.clickLikeButtonYoutube();
-      actions.yt.clickPlaylistButtonYoutube();
-    }
+      actions.yt.clickLikeButtonYoutube()
+      actions.yt.clickPlaylistButtonYoutube()
+    },
   },
   {
     leader: "",
     alias: "cvl",
     description: "Like And Show Playlist For Current Video",
     callback: () => {
-      actions.yt.clickLikeButtonYoutube();
-    }
+      actions.yt.clickLikeButtonYoutube()
+    },
   },
   {
     leader: "",
     alias: "cvp",
     description: "Like And Show Playlist For Current Video",
     callback: () => {
-      actions.yt.clickPlaylistButtonYoutube();
-    }
+      actions.yt.clickPlaylistButtonYoutube()
+    },
   },
   {
     leader: "",
     alias: "l",
     description: "Show Playlist",
     callback: () => {
-      actions.yt.showPlaylist();
-    }
+      actions.yt.showPlaylist()
+    },
   },
-
 ]
 
 maps["vimeo.com"] = [
@@ -814,7 +812,7 @@ maps["twitter.com"] = [
     callback: () =>
       document
         .querySelector(
-          "a[role='button'][data-testid='SideNav_NewTweet_Button']"
+          "a[role='button'][data-testid='SideNav_NewTweet_Button']",
         )
         .click(),
   },
@@ -828,7 +826,7 @@ maps["twitter.com"] = [
     description: "Goto tweet",
     callback: () =>
       util.createHints(
-        "article, article div[data-focusable='true'][role='link'][tabindex='0']"
+        "article, article div[data-focusable='true'][role='link'][tabindex='0']",
       ),
   },
 ]
@@ -870,7 +868,7 @@ maps["reddit.com"] = [
     callback: () =>
       util.createHints(
         ".title",
-        actions.openAnchor({ newTab: true, active: false })
+        actions.openAnchor({ newTab: true, active: false }),
       ),
   },
   {
@@ -884,7 +882,7 @@ maps["reddit.com"] = [
     callback: () =>
       util.createHints(
         ".comments",
-        actions.openAnchor({ newTab: true, active: false })
+        actions.openAnchor({ newTab: true, active: false }),
       ),
   },
 ]
@@ -931,7 +929,7 @@ maps["news.ycombinator.com"] = [
     callback: () =>
       util.createHints(
         ".subline>a[href^='item']",
-        actions.openAnchor({ newTab: true, active: false })
+        actions.openAnchor({ newTab: true, active: false }),
       ),
   },
   {
@@ -970,7 +968,7 @@ maps["producthunt.com"] = [
     description: "View product",
     callback: () =>
       util.createHints(
-        "ul[class^='postsList_'] > li > div[class^='item_'] > a"
+        "ul[class^='postsList_'] > li > div[class^='item_'] > a",
       ),
   },
   {
@@ -1002,7 +1000,7 @@ maps["behance.net"] = [
     callback: () =>
       util.createHints(
         ".rf-project-cover__title",
-        actions.openAnchor({ newTab: true, active: false })
+        actions.openAnchor({ newTab: true, active: false }),
       ),
   },
 ]
@@ -1031,7 +1029,7 @@ maps["wikipedia.org"] = [
     description: "View page",
     callback: () =>
       util.createHints(
-        "#bodyContent :not(sup):not(.mw-editsection) > a:not([rel=nofollow])"
+        "#bodyContent :not(sup):not(.mw-editsection) > a:not([rel=nofollow])",
       ),
   },
   {
@@ -1367,48 +1365,54 @@ maps["nhentai.net"] = [
     leader: "",
     description: "Prev Page",
     callback: () => {
-      document.querySelector('.tth-prev-btn').click();
-    }
+      document.querySelector(".tth-prev-btn").click()
+    },
   },
   {
     alias: "l",
     leader: "",
     description: "Next Page",
     callback: () => {
-      document.querySelector('.tth-next-btn').click();
-    }
+      document.querySelector(".tth-next-btn").click()
+    },
   },
   {
     alias: "r",
     description: "Read Comic",
-    callback: () => util.createHints('a[href*="/g/"]', (el) => {
-      const id = actions.nh.getIdFromUrl(el.href)
-      actions.nh.createViewer(id);
-    }),
+    callback: () =>
+      util.createHints('a[href*="/g/"]', (el) => {
+        const id = actions.nh.getIdFromUrl(el.href)
+        actions.nh.createViewer(id)
+      }),
   },
   {
     leader: "",
     alias: "q",
     description: "Quit Comic",
-    callback: () => util.createHints('a[href*="/g/"]', (el) => {
-      actions.nh?.removeReaderArea()
-    }),
+    callback: () =>
+      util.createHints('a[href*="/g/"]', (el) => {
+        actions.nh?.removeReaderArea()
+      }),
   },
   {
     alias: "k",
     description: "Read Current Comic",
     callback: () => {
       const id = actions.nh.getIdFromUrl(window.location.href)
-      actions.nh.createViewer(id);
+      actions.nh.createViewer(id)
     },
   },
   {
     alias: "f",
     description: "Favorite Comic",
     callback: () => {
-      let btn = document.querySelector('.tth-favorite-btn') || document.querySelector('#favorite');
-      Front.showBanner(btn.innerText.trim().toLowerCase().replace('favorite', "favorited"));
-      btn.click();
+      let btn =
+        document.querySelector(".tth-favorite-btn") ||
+        document.querySelector("#favorite")
+      Front.showBanner(
+        btn.innerText.trim().toLowerCase().replace("favorite", "favorited"),
+      )
+      btn.click()
     },
   },
   {
@@ -1416,9 +1420,9 @@ maps["nhentai.net"] = [
     alias: "q",
     description: "Quit Reader Box",
     callback: () => {
-      actions.nh.removeReaderArea();
+      actions.nh.removeReaderArea()
     },
-  }
+  },
 ]
 maps["anchira.to"] = [
   {
@@ -1426,10 +1430,10 @@ maps["anchira.to"] = [
     description: "Read Comic",
     callback: () => {
       util.createHints('a[href*="/g/"]', (el) => {
-        actions.ah.createViewer(el.href.match(/\/g\/(.+)/)[1]);
+        actions.ah.createViewer(el.href.match(/\/g\/(.+)/)[1])
       })
-    }
-  }
+    },
+  },
 ]
 maps["iwara.tv"] = [
   {
@@ -1438,10 +1442,10 @@ maps["iwara.tv"] = [
     description: "Copy And View Video By MPV",
     callback: () => {
       util.createHints('a[href*="/video/"]', (el) => {
-        const id = actions.iw.getIdIwara(el.href);
-        actions.iw.copyAndPlayVideo(id);
+        const id = actions.iw.getIdIwara(el.href)
+        actions.iw.copyAndPlayVideo(id)
       })
-    }
+    },
   },
   {
     alias: "cv",
@@ -1449,33 +1453,37 @@ maps["iwara.tv"] = [
     callback: () => {
       // const id = actions.iw.getIdIwara(window.location.href);
       // actions.iw.copyAndPlayVideo(id);
-      util.playWithMpv(document.querySelector(".videoPlayer video").src, window.location.href, localStorage.accessToken)
-    }
+      util.playWithMpv(
+        document.querySelector(".videoPlayer video").src,
+        window.location.href,
+        localStorage.accessToken,
+      )
+    },
   },
   {
     alias: "k",
     description: "Show Playlist",
     callback: () => {
-      actions.iw.showPlaylistMenu();
-    }
+      actions.iw.showPlaylistMenu()
+    },
   },
   {
     alias: "pk",
     description: "Like And Show Playlist For Current Video",
     callback: () => {
-      Array.from(document.querySelectorAll('button')).forEach(el => {
-        if (el.innerText.toLowerCase().includes('like')) {
-          el.click();
+      Array.from(document.querySelectorAll("button")).forEach((el) => {
+        if (el.innerText.toLowerCase().includes("like")) {
+          el.click()
         }
       })
-    }
+    },
   },
   {
     alias: "paq",
     description: "Play All Videos On The Page By MPV By Queue",
     callback: () => {
-      actions.iw.playUrlsOnPageWithMpv();
-    }
+      actions.iw.playUrlsOnPageWithMpv()
+    },
   },
   {
     alias: "paa",
@@ -1483,53 +1491,58 @@ maps["iwara.tv"] = [
     callback: () => {
       const vids = document.querySelectorAll('a[href*="iwara.tv/video"]')
       for (let vid of vids) {
-        util.playWithMpv(vid.href, null, localStorage.accessToken);
+        util.playWithMpv(vid.href, null, localStorage.accessToken)
       }
-    }
+    },
   },
   {
     alias: "m",
     description: "Search The Video On MMDFans",
     callback: async () => {
-      const el = document.querySelector('.page-video__details > .text');
-      const authorName = document.querySelector('.username').innerText;
+      const el = document.querySelector(".page-video__details > .text")
+      const authorName = document.querySelector(".username").innerText
 
       if (el) {
-        actions.iw.GoToMmdFansVid(el.innerText, authorName);
-        return;
+        actions.iw.GoToMmdFansVid(el.innerText, authorName)
+        return
       }
-      const title = await actions.iw.getVideoTitle(actions.iw.getIdIwara(document.location.href))
+      const title = await actions.iw.getVideoTitle(
+        actions.iw.getIdIwara(document.location.href),
+      )
       console.log(title)
-      actions.iw.GoToMmdFansVid(title);
-
-    }
+      actions.iw.GoToMmdFansVid(title)
+    },
   },
   {
     alias: "vp",
     description: "Preview All Videos On Page",
     callback: async () => {
       if (actions.iw.reviewIntervalId) {
-        clearInterval(actions.iw.reviewIntervalId);
+        clearInterval(actions.iw.reviewIntervalId)
       }
       actions.iw.previewIntervalId = setInterval(() => {
-        const event = new MouseEvent('mouseover', {
+        const event = new MouseEvent("mouseover", {
           bubbles: true,
-        });
-        Array.from(document.querySelectorAll(".videoTeaser__thumbnail")).forEach(el => el.dispatchEvent(event))
+        })
+        Array.from(
+          document.querySelectorAll(".videoTeaser__thumbnail"),
+        ).forEach((el) => el.dispatchEvent(event))
       }, 1000)
-    }
+    },
   },
   {
     alias: "vs",
     description: "Stop Preview All Videos On Page",
     callback: async () => {
-      clearInterval(actions.iw.previewIntervalId);
-      actions.iw.previewIntervalId = null;
-      const event = new MouseEvent('mouseout', {
+      clearInterval(actions.iw.previewIntervalId)
+      actions.iw.previewIntervalId = null
+      const event = new MouseEvent("mouseout", {
         bubbles: true,
-      });
-      Array.from(document.querySelectorAll(".videoTeaser__thumbnail")).forEach(el => el.dispatchEvent(event))
-    }
+      })
+      Array.from(document.querySelectorAll(".videoTeaser__thumbnail")).forEach(
+        (el) => el.dispatchEvent(event),
+      )
+    },
   },
   {
     alias: "u",
@@ -1538,39 +1551,57 @@ maps["iwara.tv"] = [
       const getProfileID = (url) => {
         return url.match(/profile\/([^\/])*/)
       }
-      let profileId = null;
-      if (window.location.href.includes('profile')) {
-        profileId = getProfileID(window.location.href);
-      }
-      else {
+      let profileId = null
+      if (window.location.href.includes("profile")) {
+        profileId = getProfileID(window.location.href)
+      } else {
         await util.createHints('a[href*="/profile/"]', async (el) => {
-          profileId = getProfileID(el.href);
+          profileId = getProfileID(el.href)
         })
       }
       if (profileId) {
-        const idUser = (await util.getJSON('https://api.iwara.tv/profile/' + profileId)).user.id;
-        let page = 0;
-        let maxPage = true;
+        const idUser = (
+          await util.getJSON("https://api.iwara.tv/profile/" + profileId)
+        ).user.id
+        let page = 0
+        let maxPage = true
         while (page != maxPage) {
           const url = `https://api.iwara.tv/videos?sort=date&page=${page++}&user=${idUser}`
-          const json = await util.getJSON(url);
-          maxPage = maxPage !== true ? parseInt(json.count / json.limit) : maxPage;
-          const videos = json.results;
+          const json = await util.getJSON(url)
+          maxPage =
+            maxPage !== true ? parseInt(json.count / json.limit) : maxPage
+          const videos = json.results
           for (let vid of videos) {
-            actions.iw.copyAndPlayVideo(vid.id);
+            actions.iw.copyAndPlayVideo(vid.id)
           }
         }
       }
-    }
-  }
+    },
+  },
 ]
 maps["mmdfans.net"] = [
   {
     alias: "v",
     description: "Copy And View Current Video By MPV",
     callback: () => {
-      util.playWithMpv(document.querySelector('#mmd-player .mdui-video-fluid source').src);
-    }
+      util.playWithMpv(
+        document.querySelector("#mmd-player .mdui-video-fluid source").src,
+      )
+    },
+  },
+  {
+    alias: "k",
+    description: "View Async Current Video By MPV",
+    callback: () => {
+      const url = document.querySelector(
+        "#mmd-player .mdui-video-fluid source",
+      ).src
+      api.Front.showBanner(`Opening with mpv (${url})...`)
+      fetch("http://localhost:9789/async-run", {
+        method: "post",
+        body: new URLSearchParams({ url }),
+      }).catch((err) => console.error(err))
+    },
   },
 ]
 maps["erommdtube.com"] = [
@@ -1578,95 +1609,95 @@ maps["erommdtube.com"] = [
     alias: "ci",
     description: "Open Current Video With Iwara",
     callback: () => {
-      actions.em.openCurrentVideoWithIwara();
-    }
+      actions.em.openCurrentVideoWithIwara()
+    },
   },
   {
     alias: "i",
     description: "Open With Iwara",
     callback: () => {
-      actions.em.openWithIwara();
-    }
+      actions.em.openWithIwara()
+    },
   },
   {
     alias: "cf",
     description: "Open Current Video With MMDFans",
     callback: () => {
-      actions.em.openCurrentVideoWithMMDFans();
-    }
+      actions.em.openCurrentVideoWithMMDFans()
+    },
   },
   {
     alias: "f",
     description: "Open With MMDFans",
     callback: () => {
-      actions.em.openWithMMDFans();
-    }
+      actions.em.openWithMMDFans()
+    },
   },
   {
     alias: "cm",
     description: "Open Current Video With MPV",
     callback: () => {
-      actions.em.openCurrentVideoWithMPV();
-    }
+      actions.em.openCurrentVideoWithMPV()
+    },
   },
   {
     leader: "",
     alias: playVideoMPVAlias,
     description: "Open With MPV",
     callback: () => {
-      actions.em.openVideoWithMPV();
-    }
-  }
+      actions.em.openVideoWithMPV()
+    },
+  },
 ]
 maps["oreno3d.com"] = [
   {
     alias: "ci",
     description: "Open Current Video With Iwara",
     callback: () => {
-      actions.or.openCurrentVideoWithIwara();
-    }
+      actions.or.openCurrentVideoWithIwara()
+    },
   },
   {
     alias: "i",
     description: "Open With Iwara",
     callback: () => {
-      actions.or.openWithIwara();
-    }
+      actions.or.openWithIwara()
+    },
   },
   {
     alias: "cf",
     description: "Open Current Video With MMDFans",
     callback: () => {
-      actions.or.openCurrentVideoWithMMDFans();
-    }
+      actions.or.openCurrentVideoWithMMDFans()
+    },
   },
   {
     alias: "f",
     description: "Open With MMDFans",
     callback: () => {
-      actions.or.openWithMMDFans();
-    }
+      actions.or.openWithMMDFans()
+    },
   },
   {
     alias: "cm",
     description: "Open Current Video With MPV",
     callback: () => {
-      actions.or.openCurrentVideoWithMPV();
-    }
+      actions.or.openCurrentVideoWithMPV()
+    },
   },
   {
     leader: "",
     alias: playVideoMPVAlias,
     description: "Open With MPV",
     callback: () => {
-      actions.or.openVideoWithMPV();
-    }
-  }
+      actions.or.openVideoWithMPV()
+    },
+  },
 ]
 
 const registerDOI = (
   domain,
-  provider = actions.doi.providers.meta_citation_doi
+  provider = actions.doi.providers.meta_citation_doi,
 ) => {
   if (!maps[domain]) {
     maps[domain] = []
@@ -1695,7 +1726,7 @@ if (priv.doi_handler) {
   registerDOI("apa.org", () =>
     document
       .querySelector(".citation a")
-      ?.innerText?.replace(/^https:\/\/doi\.org\//, "")
+      ?.innerText?.replace(/^https:\/\/doi\.org\//, ""),
   )
   registerDOI("ashpublications.org")
   registerDOI("asnjournals.org")
@@ -1712,7 +1743,7 @@ if (priv.doi_handler) {
   registerDOI("elifesciences.org", () =>
     document
       .querySelector("meta[name='dc.identifier']")
-      ?.content?.replace(/^doi:/, "")
+      ?.content?.replace(/^doi:/, ""),
   )
   registerDOI("embopress.org")
   registerDOI("emerald.com", actions.doi.providers.meta_dcIdentifier_doi)
@@ -1725,12 +1756,12 @@ if (priv.doi_handler) {
   registerDOI("go.gale.com")
   registerDOI(
     "ieee.org",
-    () => document.querySelector(".stats-document-abstract-doi a")?.innerText
+    () => document.querySelector(".stats-document-abstract-doi a")?.innerText,
   )
   registerDOI("ingentaconnect.com", () =>
     document
       .querySelector("meta[name='DC.identifier']")
-      ?.content?.replace(/^info:doi\//, "")
+      ?.content?.replace(/^info:doi\//, ""),
   )
   registerDOI("jacc.or", actions.doi.providers.meta_dcIdentifier_doi)
   registerDOI("jamanetwork.com")
@@ -1741,16 +1772,16 @@ if (priv.doi_handler) {
   registerDOI("journals.lww.com")
   registerDOI(
     "journals.physiology.org",
-    actions.doi.providers.meta_dcIdentifier_doi
+    actions.doi.providers.meta_dcIdentifier_doi,
   )
   registerDOI("journals.plos.org")
   registerDOI(
     "journals.sagepub.com",
-    actions.doi.providers.meta_dcIdentifier_doi
+    actions.doi.providers.meta_dcIdentifier_doi,
   )
   registerDOI(
     "journals.uchicago.edu",
-    actions.doi.providers.meta_dcIdentifier_doi
+    actions.doi.providers.meta_dcIdentifier_doi,
   )
   registerDOI("jst.go.jp")
   registerDOI("karger.com")
@@ -1760,7 +1791,7 @@ if (priv.doi_handler) {
   registerDOI("mdpi.com")
   registerDOI(
     "msp.org",
-    () => document.querySelector(".paper-doi a")?.innerText
+    () => document.querySelector(".paper-doi a")?.innerText,
   )
   registerDOI("nature.com")
   registerDOI("nejm.org", actions.doi.providers.meta_dcIdentifier_doi)
@@ -1776,7 +1807,7 @@ if (priv.doi_handler) {
   registerDOI("research.manchester.ac.uk")
   registerDOI(
     "royalsocietypublishing.org",
-    actions.doi.providers.meta_dcIdentifier_doi
+    actions.doi.providers.meta_dcIdentifier_doi,
   )
   registerDOI("rupress.org")
   registerDOI("science.org", actions.doi.providers.meta_dcIdentifier_doi)
@@ -1790,7 +1821,7 @@ if (priv.doi_handler) {
   registerDOI("thelancet.com")
   registerDOI(
     "worldscientific.com",
-    actions.doi.providers.meta_dcIdentifier_doi
+    actions.doi.providers.meta_dcIdentifier_doi,
   )
 }
 
