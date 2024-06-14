@@ -1461,6 +1461,20 @@ maps["iwara.tv"] = [
     },
   },
   {
+    alias: "ck",
+    description: "View Async Current Video By MPV",
+    callback: () => {
+      // const id = actions.iw.getIdIwara(window.location.href);
+      // actions.iw.copyAndPlayVideo(id);
+      const url = document.querySelector(".videoPlayer video").src
+      api.Front.showBanner(`Opening with mpv (${url})...`)
+      fetch("http://localhost:9789/async-run", {
+        method: "post",
+        body: new URLSearchParams({ url }),
+      }).catch((err) => console.error(err))
+    },
+  },
+  {
     alias: "k",
     description: "Show Playlist",
     callback: () => {
