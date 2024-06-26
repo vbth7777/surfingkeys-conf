@@ -336,7 +336,7 @@ maps.global = [
     alias: "ovm",
     description: "Open async video in mpv",
     callback: () => {
-      util.createHints("*[href]", async function (el) {
+      util.createHints("*[href]", async function(el) {
         const url = el.href
         api.Front.showBanner(`Opening with mpv (${url})...`)
         fetch("http://localhost:9789/async-run", {
@@ -1503,7 +1503,9 @@ maps["iwara.tv"] = [
     alias: "paa",
     description: "Play All Videos On The Page By MPV",
     callback: () => {
-      const vids = document.querySelectorAll('a[href*="iwara.tv/video"]')
+      const vids = document.querySelectorAll(
+        '.videoTeaser__content a[href*="/video/"]',
+      )
       for (let vid of vids) {
         util.playWithMpv(vid.href, null, localStorage.accessToken)
       }
