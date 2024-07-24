@@ -336,7 +336,7 @@ maps.global = [
     alias: "ovm",
     description: "Open async video in mpv",
     callback: () => {
-      util.createHints("*[href]", async function(el) {
+      util.createHints("*[href]", async function (el) {
         const url = el.href
         api.Front.showBanner(`Opening with mpv (${url})...`)
         fetch("http://localhost:9789/async-run", {
