@@ -3,10 +3,16 @@ import ghReservedNames from "github-reserved-names"
 import api from "./api.js"
 import priv from "./conf.priv.js"
 import util from "./util.js"
+import actions from "./websites/global/actions.js"
+
+import iwActions from "./websites/iw/actions.js"
+import nhActions from "./websites/nh/actions.js"
+import ahActions from "./websites/ah/actions.js"
+import emActions from "./websites/em/actions.js"
+import orActions from "./websites/or/actions.js"
+import youtubeActions from "./websites/youtube/actions.js"
 
 const { tabOpenLink, Front, Hints, Normal, RUNTIME } = api
-
-const actions = {}
 
 // Globally applicable actions
 // ===========================
@@ -66,7 +72,7 @@ actions.scrollToHash = (hash = null) => {
   e.scrollIntoView({ behavior: "smooth" })
 }
 actions.openUrlsInClipboardWithMpv = async () => {
-  api.Clipboard.read(function(res) {
+  api.Clipboard.read(function (res) {
     const urls = res.data.split("\n")
     for (const url of urls) {
       if (url.includes("iwara")) {
@@ -74,7 +80,7 @@ actions.openUrlsInClipboardWithMpv = async () => {
           url.match(/video\/.+(\/)?/)[0].replace(/video\/|\/.+/g, ""),
         )
       } else if (url.includes("erommdtube") || url.includes("oreno3d")) {
-        actions.getDOM(url, function(err, htmlDocument) {
+        actions.getDOM(url, function (err, htmlDocument) {
           if (err) {
             console.log(err)
             return
@@ -120,9 +126,10 @@ actions.getDnsInfoUrl = ({
   hostname = window.location.hostname,
   all = false,
 } = {}) =>
-  `${ddossierUrl}?dom_dns=true&addr=${hostname}${all
-    ? "?dom_whois=true&dom_dns=true&traceroute=true&net_whois=true&svc_scan=true"
-    : ""
+  `${ddossierUrl}?dom_dns=true&addr=${hostname}${
+    all
+      ? "?dom_whois=true&dom_dns=true&traceroute=true&net_whois=true&svc_scan=true"
+      : ""
   }`
 
 actions.getGoogleCacheUrl = ({ href = window.location.href } = {}) =>
@@ -180,8 +187,8 @@ actions.getDiscussionsUrl = ({ href = window.location.href } = {}) =>
 // ----------------------------
 actions.openAnchor =
   ({ newTab = false, active = true, prop = "href" } = {}) =>
-    (a) =>
-      actions.openLink(a[prop], { newTab, active })
+  (a) =>
+    actions.openLink(a[prop], { newTab, active })
 
 actions.openLink = (url, { newTab = false, active = true } = {}) => {
   if (newTab) {
@@ -415,61 +422,61 @@ actions.dg.siteSearch = (site) => {
 actions.gh = {}
 actions.gh.star =
   ({ toggle = false } = {}) =>
-    async () => {
-      const hasDisplayNoneParent = (e) =>
-        window.getComputedStyle(e).display === "none" ||
-        (e.parentElement ? hasDisplayNoneParent(e.parentElement) : false)
+  async () => {
+    const hasDisplayNoneParent = (e) =>
+      window.getComputedStyle(e).display === "none" ||
+      (e.parentElement ? hasDisplayNoneParent(e.parentElement) : false)
 
-      const starContainers = Array.from(
-        document.querySelectorAll("div.starring-container"),
-      ).filter((e) => !hasDisplayNoneParent(e))
+    const starContainers = Array.from(
+      document.querySelectorAll("div.starring-container"),
+    ).filter((e) => !hasDisplayNoneParent(e))
 
-      let container
-      switch (starContainers.length) {
-        case 0:
+    let container
+    switch (starContainers.length) {
+      case 0:
+        return
+      case 1:
+        ;[container] = starContainers
+        break
+      default:
+        try {
+          container = await util.createHints(starContainers, { action: null })
+        } catch (_) {
           return
-        case 1:
-          ;[container] = starContainers
-          break
-        default:
-          try {
-            container = await util.createHints(starContainers, { action: null })
-          } catch (_) {
-            return
-          }
-      }
-
-      const repoUrl = container.parentElement.parentElement?.matches(
-        "ul.pagehead-actions",
-      )
-        ? window.location.pathname
-        : new URL(container.parentElement.querySelector("form").action).pathname
-
-      const status = container.classList.contains("on")
-      const repo = repoUrl.slice(1).split("/").slice(0, 2).join("/")
-
-      let star = "★"
-      let statusMsg = "starred"
-      let copula = "is"
-
-      if ((status && toggle) || (!status && !toggle)) {
-        statusMsg = `un${statusMsg}`
-        star = "☆"
-      }
-
-      if (toggle) {
-        copula = "has been"
-        container
-          .querySelector(
-            status
-              ? ".starred button, button.starred"
-              : ".unstarred button, button.unstarred",
-          )
-          .click()
-      }
-
-      Front.showBanner(`${star} Repository ${repo} ${copula} ${statusMsg}!`)
+        }
     }
+
+    const repoUrl = container.parentElement.parentElement?.matches(
+      "ul.pagehead-actions",
+    )
+      ? window.location.pathname
+      : new URL(container.parentElement.querySelector("form").action).pathname
+
+    const status = container.classList.contains("on")
+    const repo = repoUrl.slice(1).split("/").slice(0, 2).join("/")
+
+    let star = "★"
+    let statusMsg = "starred"
+    let copula = "is"
+
+    if ((status && toggle) || (!status && !toggle)) {
+      statusMsg = `un${statusMsg}`
+      star = "☆"
+    }
+
+    if (toggle) {
+      copula = "has been"
+      container
+        .querySelector(
+          status
+            ? ".starred button, button.starred"
+            : ".unstarred button, button.unstarred",
+        )
+        .click()
+    }
+
+    Front.showBanner(`${star} Repository ${repo} ${copula} ${statusMsg}!`)
+  }
 
 actions.gh.parseRepo = (url = window.location.href, rootOnly = false) => {
   let u
@@ -493,17 +500,17 @@ actions.gh.parseRepo = (url = window.location.href, rootOnly = false) => {
     !ghReservedNames.check(user)
   return cond
     ? {
-      type: "repo",
-      user,
-      repo,
-      owner: user,
-      name: repo,
-      href: url,
-      url: u,
-      repoBase: `${user}/${repo}`,
-      repoRoot: isRoot,
-      repoPath: rest,
-    }
+        type: "repo",
+        user,
+        repo,
+        owner: user,
+        name: repo,
+        href: url,
+        url: u,
+        repoBase: `${user}/${repo}`,
+        repoRoot: isRoot,
+        repoPath: rest,
+      }
     : null
 }
 
@@ -520,14 +527,14 @@ actions.gh.parseUser = (url = window.location.href, rootOnly = false) => {
     !ghReservedNames.check(user)
   return cond
     ? {
-      type: "user",
-      name: user,
-      user,
-      href: url,
-      url: u,
-      userRoot: isRoot,
-      userPath: rest,
-    }
+        type: "user",
+        name: user,
+        user,
+        href: url,
+        url: u,
+        userRoot: isRoot,
+        userPath: rest,
+      }
     : null
 }
 
@@ -563,8 +570,9 @@ actions.gh.parseFile = (url = window.location.href) => {
   }
   f.rawUrl = f.isDirectory
     ? null
-    : `https://raw.githubusercontent.com/${f.user}/${f.repo}/${f.commitHash
-    }/${f.filePath.join("/")}`
+    : `https://raw.githubusercontent.com/${f.user}/${f.repo}/${
+        f.commitHash
+      }/${f.filePath.join("/")}`
   return f
 }
 
@@ -587,13 +595,13 @@ actions.gh.parseCommit = (url = window.location.href) => {
     !ghReservedNames.check(user)
   return cond
     ? {
-      type: "commit",
-      user,
-      repo,
-      commitHash,
-      href: url,
-      url: u,
-    }
+        type: "commit",
+        user,
+        repo,
+        commitHash,
+        href: url,
+        url: u,
+      }
     : null
 }
 
@@ -614,19 +622,19 @@ actions.gh.parseIssue = (url = window.location.href) => {
     !ghReservedNames.check(user)
   return cond
     ? {
-      href: url,
-      url: u,
-      ...(isRoot
-        ? {
-          type: "issues",
-          issuePath: rest,
-        }
-        : {
-          type: "issue",
-          number: rest[0],
-          issuePath: rest,
-        }),
-    }
+        href: url,
+        url: u,
+        ...(isRoot
+          ? {
+              type: "issues",
+              issuePath: rest,
+            }
+          : {
+              type: "issue",
+              number: rest[0],
+              issuePath: rest,
+            }),
+      }
     : null
 }
 
@@ -647,19 +655,19 @@ actions.gh.parsePull = (url = window.location.href) => {
     !ghReservedNames.check(user)
   return cond
     ? {
-      href: url,
-      url: u,
-      ...(isRoot
-        ? {
-          type: "pulls",
-          pullPath: rest,
-        }
-        : {
-          type: "pull",
-          number: rest[0],
-          pullPath: rest,
-        }),
-    }
+        href: url,
+        url: u,
+        ...(isRoot
+          ? {
+              type: "pulls",
+              pullPath: rest,
+            }
+          : {
+              type: "pull",
+              number: rest[0],
+              pullPath: rest,
+            }),
+      }
     : null
 }
 
@@ -1021,7 +1029,8 @@ actions.nt = {}
 actions.nt.adjustTemp = (dir) =>
   document
     .querySelector(
-      `button[data-test='thermozilla-controller-controls-${dir > 0 ? "in" : "de"
+      `button[data-test='thermozilla-controller-controls-${
+        dir > 0 ? "in" : "de"
       }crement-button']`,
     )
     .click()
@@ -1180,787 +1189,15 @@ actions.ik.toggleProductReviews = () => {
 }
 
 // youtube.com
-actions.yt = {}
-actions.yt.getCurrentTimestamp = () => {
-  const [ss, mm, hh = 0] = document
-    .querySelector("#ytd-player .ytp-time-current")
-    ?.innerText?.split(":")
-    ?.reverse()
-    ?.map(Number) ?? [0, 0, 0]
-  return [ss, mm, hh]
-}
-
-actions.yt.getCurrentTimestampSeconds = () => {
-  const [ss, mm, hh] = actions.yt.getCurrentTimestamp()
-  return hh * 60 * 60 + mm * 60 + ss
-}
-
-actions.yt.getCurrentTimestampHuman = () => {
-  const [ss, mm, hh] = actions.yt.getCurrentTimestamp()
-  const pad = (n) => `${n}`.padStart(2, "0")
-  return hh > 0 ? `${hh}:${pad(mm)}:${pad(ss)}` : `${mm}:${pad(ss)}`
-}
-
-actions.yt.getShortLink = () => {
-  const params = new URLSearchParams(window.location.search)
-  return `https://youtu.be/${params.get("v")}`
-}
-
-actions.yt.getCurrentTimestampLink = () =>
-  `${actions.yt.getShortLink()}?t=${actions.yt.getCurrentTimestampSeconds()}`
-
-actions.yt.getCurrentTimestampMarkdownLink = () =>
-  actions.getMarkdownLink({
-    title: `${document.querySelector("#ytd-player .ytp-title").innerText
-      } @ ${actions.yt.getCurrentTimestampHuman()} - YouTube`,
-    href: actions.yt.getCurrentTimestampLink(),
-  })
-actions.yt.clickLikeButtonYoutube = () => {
-  document
-    .querySelector(
-      "#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > like-button-view-model > toggle-button-view-model > button > yt-touch-feedback-shape > div > div.yt-spec-touch-feedback-shape__fill",
-    )
-    .click()
-}
-actions.yt.checkSaveButtonTextOnYoutube = (text) => {
-  return (
-    text.indexOf("lưu") != -1 ||
-    text.indexOf("save") != -1 ||
-    text.indexOf("playlist") != -1 ||
-    text.indexOf("danh sách phát") != -1
-  )
-}
-actions.yt.clickPlaylistButtonYoutube = async () => {
-  document.querySelector("#button-shape > button").click()
-  await util.sleep(1000)
-  let btns = document.querySelectorAll(
-    ".ytd-popup-container ytd-menu-service-item-renderer",
-  )
-  for (let btn of btns) {
-    const text = btn.innerText.trim().toLowerCase()
-    if (actions.yt.checkSaveButtonTextOnYoutube(text)) {
-      btn.click()
-      break
-    }
-  }
-  let outBtns = Array.from(
-    document.querySelectorAll(
-      "#flexible-item-buttons > ytd-button-renderer button",
-    ),
-  )
-  for (let btn of outBtns) {
-    const text = btn.ariaLabel.trim().toLowerCase()
-    if (actions.yt.checkSaveButtonTextOnYoutube(text)) {
-      btn.click()
-      break
-    }
-  }
-}
-actions.yt.showPlaylist = () => {
-  util.createHints("#dismissible", async (el) => {
-    const menuBtn = el.querySelector("#menu button")
-    if (!menuBtn) {
-      return
-    }
-    menuBtn.click()
-    await util.sleep(100)
-    document
-      .querySelector("#items > ytd-menu-service-item-renderer:nth-child(3)")
-      .click()
-  })
-}
+actions.yt = youtubeActions
 
 //nhentai
-actions.nh = {
-  imagesPerPageForViewer: 50,
-  removeReaderArea: null,
-}
-actions.nh.getIdFromUrl = (url) => {
-  const match = url.match(/nhentai\.net\/g\/(\d+)/)
-  return match ? match[1] : null
-}
-actions.nh.createViewer = async (idGallery) => {
-  const nhApi = await fetch(
-    "https://nhentai.net/api/gallery/" + idGallery,
-  ).then((res) => res.json())
-  const mediaId = nhApi.media_id
-  const types = nhApi.images.pages.map((e) => {
-    if (e.t == "j") {
-      return "jpg"
-    } else if (e.t == "p") {
-      return "png"
-    }
-  })
-  const images = await (async () => {
-    const urls = (() => {
-      const images = []
-      for (let i = 0; i < types.length; i++) {
-        images.push(
-          `https://i7.nhentai.net/galleries/${mediaId}/${i + 1}.${types[i] || "png"}`,
-        )
-      }
-      return images
-    })()
-    return urls
-  })()
-  const previewImages = await (async () => {
-    const urls = (() => {
-      const images = []
-      for (let i = 0; i < types.length; i++) {
-        images.push(
-          `https://t3.nhentai.net/galleries/${mediaId}/${i + 1}t.${types[i] || "png"}`,
-        )
-      }
-      return images
-    })()
-    return urls
-  })()
-  const infomations = await (async () => {
-    return nhApi.tags
-  })()
-  util.createComicViewer(
-    images,
-    50,
-    previewImages,
-    infomations,
-    (components) => {
-      actions.nh.readArea = components.containerBox
-      actions.nh.removeReaderArea = components.events.removeContainerBox
-      const favoriteMethod = "favorite"
-      const unfavoriteMethod = "unfavorite"
-      const favoriteBtn = components.favoriteBtn
-      favoriteBtn.onclick = () => {
-        const state =
-          favoriteBtn.innerHTML != favoriteMethod
-            ? unfavoriteMethod
-            : favoriteMethod
-        favoriteBtn.disabled = true
-        favoriteBtn.style.opacity = 0.5
-        favoriteBtn.style.cursor = "default"
+actions.nh = nhActions
 
-        fetch("https://nhentai.net/api/gallery/" + idGallery + "/" + state, {
-          method: "post",
-          headers: {
-            "X-Csrftoken": document.cookie.replace(/.+=/g, ""),
-          },
-        }).then((res) => {
-          favoriteBtn.innerHTML =
-            favoriteBtn.innerHTML == favoriteMethod
-              ? unfavoriteMethod
-              : favoriteMethod
-          favoriteBtn.disabled = false
-          favoriteBtn.style.opacity = 1
-          favoriteBtn.style.cursor = "pointer"
-        })
-      }
-      //check state favorite
-      fetch("https://nhentai.net/g/" + idGallery)
-        .then((res) => res.text())
-        .then((data) => {
-          const parser = new DOMParser()
-          const dom = parser.parseFromString(data, "text/html")
-          favoriteBtn.innerHTML = dom
-            .querySelector("#favorite")
-            .innerText.toLowerCase()
-            .includes(unfavoriteMethod)
-            ? unfavoriteMethod
-            : favoriteMethod
-        })
-      const server = [3, 5, 7]
-      let formatToggle = false
-      let counter = 0
-
-      let retryCounter = 0
-      let img
-      components.events.imageErrorEvent = (e) => {
-        // if (counter >= 2 && format == 'jpg') {
-        //   return;
-        // }
-        if (retryCounter >= 2) {
-          return
-        }
-
-        img = e.srcElement
-        const changeServer = (serverNumber) => {
-          return img.src.replace(/\/\/i\d+/g, "//i" + serverNumber)
-        }
-        if (counter >= 2) {
-          counter = 0
-        } else {
-          counter++
-        }
-        img.src = changeServer(server[counter])
-        if (counter >= 2) {
-          retryCounter++
-        }
-      }
-      retryCounter = 0
-      counter = 0
-      components.events.previewImageErrorEvent = (e) => {
-        // if (counter >= 2 && format == 'jpg') {
-        //   return;
-        // }
-        if (retryCounter >= 2) {
-          return
-        }
-        const imgTemp = e.srcElement
-        const changeServer = (serverNumber) => {
-          return imgTemp.src.replace(/\/\/t\d+/g, "//t" + serverNumber)
-        }
-        if (counter >= 2) {
-          counter = 0
-        } else {
-          counter++
-        }
-        imgTemp.src = changeServer(server[counter])
-        if (counter >= 2) {
-          retryCounter++
-        }
-      }
-      components.events.imageAddEvent = (img, imgTemp) => {
-        let counter = 0
-        const interval = setInterval(() => {
-          if (img.height > 100) {
-            clearInterval(interval)
-          } else {
-            counter++
-            if (counter >= 5 || img.height == 16) {
-              img.src = img.src.replace(
-                /\/\/i\d+/g,
-                "//i" + server[Math.floor(Math.random() * server.length)],
-              )
-            }
-          }
-        }, 1000)
-        let counter2 = 0
-        const interval2 = setInterval(() => {
-          if (imgTemp.height > 100) {
-            clearInterval(interval2)
-          } else {
-            counter2++
-            if (counter2 >= 2) {
-              imgTemp.src = imgTemp.src.replace(
-                /\/\/t\d+/g,
-                "//t" + server[Math.floor(Math.random() * server.length)],
-              )
-            }
-          }
-        }, 1000)
-      }
-    },
-  )
-}
 //anchira
-actions.ah = {}
-actions.ah.getImages = async (idGallery) => {
-  const json = await util.autoChangeIpWhenError(async () => {
-    return await fetch(
-      "https://anchira.to/api/v1/library/" + idGallery + "/data",
-      {
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-          "User-Agent":
-            "Mozilla/5.0 (Windows; Windows NT 10.0;) AppleWebKit/603.21 (KHTML, like Gecko) Chrome/47.0.1437.111 Safari/536.2 Edge/12.94565",
-        },
-      },
-    ).then((res) => res.json())
-  })
-  // let json = false
-  // while (!json) {
-  //   try {
-  //     json = await fetch('https://anchira.to/api/v1/library/' + idGallery + '/data', {
-  //       headers: {
-  //         'X-Requested-With': 'XMLHttpRequest',
-  //         'User-Agent': "Mozilla/5.0 (Windows; Windows NT 10.0;) AppleWebKit/603.21 (KHTML, like Gecko) Chrome/47.0.1437.111 Safari/536.2 Edge/12.94565"
-  //       }
-  //     }).then(res => res.json());
-  //   } catch (error) {
-  //     await fetch('http://localhost:5466/api/change-ip', {
-  //       method: 'post'
-  //     }).then(res => {
-  //       if (res.status == 200) {
-  //         Front.showBanner('Success change ip');
-  //       }
-  //       else {
-  //         Front.showPopup('Failed to change ip');
-  //       }
-  //     })
-  //   }
-  //   console.log(await fetch('http://localhost:5466/api/get-ip').then(res => res.text()))
-  // }
-
-  const images = []
-  console.log(json)
-
-  const names = json.names
-  const id = json.id
-  const key = json.key
-  const hash = json.hash
-
-  for (let name of names) {
-    images.push(`https://kisakisexo.xyz/${id}/${key}/${hash}/b/${name}`)
-  }
-
-  return images
-}
-actions.ah.createViewer = async (idGallery) => {
-  const data = await fetch("https://anchira.to/api/v1/library/" + idGallery, {
-    headers: {
-      "X-Requested-With": "XMLHttpRequest",
-    },
-  }).then((res) => res.json())
-  const images = await actions.ah.getImages(idGallery)
-  const pages = data.pages
-  const previewImages = await (async () => {
-    const urls = (() => {
-      const images = []
-      for (let i = 0; i < pages; i++) {
-        images.push(`https://kisakisexo.xyz/${idGallery}/s/${i + 1}`)
-      }
-      return images
-    })()
-    return urls
-  })()
-  const infomations = await (async () => {
-    const info = []
-    const tags = data.tags
-    for (let tag of tags) {
-      if (!tag.namespace) {
-        info.push({
-          type: "tag",
-          name: tag.name,
-          url: "https://anchira.to/?s=tag:" + encodeURIComponent(tag.name),
-        })
-      } else if (tag.namespace == 1) {
-        info.push({
-          type: "artist",
-          name: tag.name,
-          url: "https://anchira.to/?s=artist:" + encodeURIComponent(tag.name),
-        })
-      } else if (tag.namespace == 2) {
-        info.push({
-          type: "group",
-          name: tag.name,
-          url: "https://anchira.to/?s=circle:" + encodeURIComponent(tag.name),
-        })
-      } else if (tag.namespace == 3) {
-        info.push({
-          type: "parody",
-          name: tag.name,
-          url: "https://anchira.to/?s=parody:" + encodeURIComponent(tag.name),
-        })
-      }
-    }
-    return info
-  })()
-  util.createComicViewer(
-    images,
-    50,
-    previewImages,
-    infomations,
-    (components) => { },
-  )
-}
+actions.ah = ahActions
 //iwara
-actions.iw = {
-  socket: null,
-  vidResolution: ["Source", "540p", "360p"],
-}
-actions.iw.getSocket = () => {
-  return actions.iw.socket
-}
-actions.iw.setSocket = () => {
-  actions.iw.socket = new WebSocket("ws://localhost:9790")
-  actions.iw.socket.addEventListener("message", (res) => {
-    const data = JSON.parse(res.data)
-    if (data.isContinue) {
-      const video = document.querySelector(
-        `[href*="${actions.iw.getIdIwara(data.url)}"]`,
-      )
-      if (video) {
-        video.parentElement.style.backgroundColor = ""
-      }
-      // Array.from(document.querySelectorAll('div.videoTeaser')).forEach(el => {
-      //   if (el.querySelector('a').href.includes(data.url))
-      //     el.style.backgroundColor = ''
-      // })
-    }
-  })
-}
-
-actions.iw.getIdIwara = (url) => {
-  const match = url.match(/iwara.tv\/video\/([^\/]+)/)
-  return match ? match[1] : url
-}
-actions.iw.getJSON = (url, callback, xVersionHeader = "", headers = {}) => {
-  if (xVersionHeader) {
-    headers = {
-      ...headers,
-      "x-version": xVersionHeader,
-    }
-  }
-  fetch(url, {
-    headers: {
-      Authorization: "Bearer " + localStorage.token,
-      ...headers,
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => callback(null, data))
-  return
-}
-actions.iw.createCheckBoxes = (checkboxes, isIwara) => {
-  // Create container element
-  const container = document.createElement("div")
-  container.style.display = "flex"
-  container.style.justifyContent = "center"
-  container.style.alignItems = "center"
-  container.style.height = "100vh"
-  container.style.background = "rgba(0, 0, 0, 0.5)"
-  container.style.backdropFilter = "blur(5px)"
-  container.style.position = "fixed"
-  container.style.left = "0"
-  container.style.top = "0"
-  container.style.width = "100%"
-  container.style.zIndex = "9999"
-  const handleEsc = (e) => {
-    if (e.key == "Escape") {
-      container.remove()
-      document.removeEventListener("keyup", handleEsc)
-    }
-  }
-  document.addEventListener("keyup", handleEsc)
-
-  // Create black box
-  const blackBox = document.createElement("div")
-  blackBox.style.backgroundColor = "black"
-  blackBox.style.color = "white"
-  blackBox.style.padding = "20px"
-  blackBox.style.borderRadius = "10px" // Adjust the border radius here
-  blackBox.style.width = "300px"
-  blackBox.style.position = "relative"
-
-  // Create close button
-  const closeButton = document.createElement("button")
-  closeButton.innerHTML = "&times;"
-  closeButton.style.position = "absolute"
-  closeButton.style.top = "10px"
-  closeButton.style.right = "10px"
-  closeButton.style.border = "none"
-  closeButton.style.backgroundColor = "transparent"
-  closeButton.style.color = "white"
-  closeButton.style.fontSize = "24px"
-  closeButton.style.fontWeight = "bold"
-  closeButton.style.cursor = "pointer"
-  closeButton.style.width = "30px"
-  closeButton.style.height = "30px"
-  closeButton.style.borderRadius = "50%"
-  closeButton.style.display = "flex"
-  closeButton.style.justifyContent = "center"
-  closeButton.style.alignItems = "center"
-  closeButton.style.outline = "none"
-  closeButton.style.boxShadow = "0 0 3px rgba(0, 0, 0, 0.3)"
-  closeButton.style.transition = "background-color 0.3s"
-
-  // Event listener for close button
-  closeButton.addEventListener("click", () => {
-    container.remove()
-  })
-
-  // Mouse hover effect for close button
-  closeButton.addEventListener("mouseenter", () => {
-    closeButton.style.backgroundColor = "rgba(255, 255, 255, 0.3)"
-  })
-
-  closeButton.addEventListener("mouseleave", () => {
-    closeButton.style.backgroundColor = "transparent"
-  })
-
-  // Append close button to the black box
-  blackBox.appendChild(closeButton)
-
-  // Create checkboxes
-
-  checkboxes.forEach(async (obj) => {
-    let checkboxText = ""
-    const checkboxContainer = document.createElement("div")
-    checkboxContainer.style.display = "flex"
-    checkboxContainer.style.alignItems = "center"
-    if (isIwara) {
-      checkboxText = obj.title
-    }
-
-    const checkbox = document.createElement("input")
-    checkbox.type = "checkbox"
-    checkbox.id = checkboxText
-    checkbox.checked = false
-    if (isIwara && obj.isAdded) {
-      checkbox.checked = true
-    }
-    if (isIwara) {
-      checkboxContainer.addEventListener("mousedown", async () => {
-        let method = checkbox.checked ? "delete" : "post"
-        const authorization = "Bearer " + localStorage.accessToken
-        console.log("TESTING: ", method, " ", authorization)
-        fetch(`https://api.iwara.tv/video/${obj.idVideo}/like`, {
-          method: method,
-          headers: {
-            Authorization: authorization,
-          },
-        }).then(() => {
-          fetch(
-            `https://api.iwara.tv/playlist/${obj.idPlaylist}/${obj.idVideo}`,
-            {
-              method: method,
-              headers: {
-                Authorization: authorization,
-              },
-            },
-          )
-        })
-      })
-    }
-    const label = document.createElement("label")
-    label.setAttribute("for", checkboxText)
-    label.textContent = checkboxText
-
-    checkboxContainer.appendChild(checkbox)
-    checkboxContainer.appendChild(label)
-
-    blackBox.appendChild(checkboxContainer)
-  })
-
-  // Append black box to the container
-  container.appendChild(blackBox)
-
-  // Add the container to the body
-  document.body.appendChild(container)
-}
-actions.iw.getAccessTokenFromIwara = async () => {
-  return await fetch("https://api.iwara.tv/user/token", {
-    method: "post",
-    headers: {
-      Authorization: "Bearer " + localStorage.token,
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => data.accessToken)
-}
-
-actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
-  const changeColorForPlayingUrl = (id) => {
-    Array.from(document.querySelectorAll("div.videoTeaser>a")).forEach((el) => {
-      if (el.href.includes(id)) {
-        el.parentElement.style.backgroundColor = "blue"
-      }
-    })
-  }
-  const getFileId = (url) => {
-    return url.match(/file\/.+\?/g)[0].replace(/file\/|\?/g, "")
-  }
-  const getExpire = (url) => {
-    return url.match("expires=.+&")[0].replace(/expires=|&/g, "")
-  }
-  if (!actions.iw.getSocket()) {
-    actions.iw.setSocket()
-    const socket = actions.iw.getSocket()
-    const handleOpen = () => {
-      changeColorForPlayingUrl(id)
-      socket.removeEventListener("open", handleOpen)
-    }
-    socket.addEventListener("open", handleOpen)
-  } else {
-    changeColorForPlayingUrl(id)
-  }
-
-  const urlVideo = "https://www.iwara.tv/video/" + id
-  // api.Clipboard.write(urlVideo);
-  util.playWithMpv(urlVideo, null, localStorage.accessToken)
-  return
-  actions.iw.getJSON(
-    `https://api.iwara.tv/video/${id}`,
-    async (status, res) => {
-      if (status) {
-        api.Front.showBanner("Error: ", status)
-        return
-      }
-      if (
-        res.message &&
-        (res?.message?.trim()?.toLowerCase()?.includes("notfound") ||
-          res?.message?.trim()?.toLowerCase()?.includes("private"))
-      ) {
-        api.Front.showPopup(res.message + " for " + id)
-        api.Clipboard.write("https://www.iwara.tv/" + id)
-        return
-      } else if (res.message) {
-        actions.iw.copyAndPlayVideo(id, index, isPlayWithMpv)
-        return
-      }
-      if (res.embedUrl && !res.fileUrl) {
-        api.Clipboard.write(res.embedUrl)
-        return
-      }
-      const fileUrl = res.fileUrl
-      const fileId = getFileId(fileUrl)
-      if (!fileId || !fileUrl) {
-        api.Front.showPopup("Not found requrement")
-        return
-      }
-      // console.log((fileId + '_' + getExpire(fileUrl) + '_5nFp9kmbNnHdAFhaqMvt'))
-      actions.iw.getJSON(
-        fileUrl,
-        (status2, res2) => {
-          const json = res2
-          // console.log(json)
-          let i = json.length - 1
-          for (let j = 0; j < json.length; j++) {
-            if (
-              actions.iw.vidResolution[index]
-                .toLowerCase()
-                .indexOf(json[j].name.toLowerCase()) != -1
-            ) {
-              i = j
-              break
-            }
-          }
-          const uri = "https:" + json[i].src.download
-          api.Clipboard.write(uri)
-          if (isPlayWithMpv) {
-            api.Front.showBanner("Opening mpv...")
-            util.playWithMpv(uri, "https://www.iwara.tv/video/" + id)
-          }
-        },
-        await util.convertToSHA1(
-          fileId + "_" + getExpire(fileUrl) + "_5nFp9kmbNnHdAFhaqMvt",
-        ),
-      )
-    },
-  )
-}
-actions.iw.likeCurrentVideo = (id) => {
-  fetch(`https://api.iwara.tv/video/${id}/like`, {
-    method: "post",
-    headers: {
-      Authorization: "Bearer " + localStorage.accessToken,
-    },
-  })
-}
-actions.iw.showPlaylistMenu = () => {
-  util.createHints("*[href*='video/']", async function(element) {
-    let checkBoxes = []
-    localStorage.accessToken = await actions.iw.getAccessTokenFromIwara()
-    const idVideo = actions.iw.getIdIwara(element.href)
-    await fetch("https://api.iwara.tv/light/playlists?id=" + idVideo, {
-      method: "get",
-      headers: {
-        Authorization: "Bearer " + localStorage.accessToken,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        for (let obj of data) {
-          checkBoxes = [
-            ...checkBoxes,
-            {
-              idPlaylist: obj.id,
-              idVideo,
-              isAdded: obj.added,
-              title: obj.title,
-            },
-          ]
-        }
-      })
-    actions.iw.createCheckBoxes(checkBoxes, true)
-  })
-}
-actions.iw.playUrlsInClipboardWithMpv = () => {
-  api.Clipboard.read(function(res) {
-    const urls = res.data.split("\n")
-    for (const url of urls) {
-      if (url.includes("iwara")) {
-        actions.iw.copyAndPlayVideo(
-          url.match(/video\/.+(\/)?/)[0].replace(/video\/|\/.+/g, ""),
-        )
-      } else {
-        util.playWithMpv(url)
-      }
-    }
-  })
-}
-actions.iw.playUrlsOnPageWithMpv = () => {
-  let index = 0
-  const urls = Array.from(document.querySelectorAll('a[href*="/video/"]'))
-    .map((a) => actions.iw.getIdIwara(a.href))
-    .filter((item, pos, self) => self.indexOf(item) == pos)
-  actions.iw.copyAndPlayVideo(urls[0])
-  actions.iw.getSocket().onmessage = (res) => {
-    const data = JSON.parse(res.data)
-    if (data.isContinue) {
-      actions.iw.copyAndPlayVideo(urls[++index])
-    } else if (index == urls.length - 1) {
-      actions.iw.getSocket().close()
-    }
-  }
-}
-actions.iw.GoToMmdFansVid = (title, config) => {
-  const authorName = config ? config.authorName : ""
-  const page = config ? config.page : 0
-  api.Front.showBanner("Searching...")
-  let query = ""
-  if (authorName) {
-    query = encodeURI(
-      `https://mmdfans.net/?query=author:${authorName}&order_by=time`,
-    )
-  } else {
-    query = encodeURI("https://mmdfans.net/?query=" + title)
-  }
-  if (page) {
-    query += `&page=${page}`
-  }
-  actions.getDOM(query, function(s, res) {
-    if (s) {
-      api.Front.showPopup("Error:" + s)
-      return
-    }
-    const doc = res
-    const videos = doc.querySelectorAll(".mdui-col > a")
-    console.log(doc)
-    console.log(videos)
-    if (!videos || videos.length < 1) {
-      const titleBackup = title
-      title = title.replace(/ [^ ]*$/, "")
-      if (!title || titleBackup == title) {
-        api.Front.showPopup("Not found video")
-        actions.iw.GoToMmdFansVid(titleBackup, { page: page + 1, authorName })
-        return
-      }
-      api.Front.showBanner("Not found, searching " + title)
-      actions.iw.GoToMmdFansVid(title, false)
-      return
-    }
-    let index = 0
-    if (videos.length > 1) {
-      api.Front.showBanner("Result have above 1 video")
-      const vids = Array.from(doc.querySelectorAll(".mdui-grid-tile"))
-      for (let i in vids) {
-        if (vids[i].innerText.indexOf(title) != -1) {
-          index = i
-        }
-      }
-    }
-
-    let openUrl =
-      "https://mmdfans.net/" + videos[index].href.match(/mmd\/.+/gi)[0]
-    console.log(openUrl)
-    window.open(openUrl)
-  })
-}
-actions.iw.getVideoTitle = async (id) => {
-  return await fetch(`https://api.iwara.tv/video/${id}`)
-    .then((response) => response.json())
-    .then((data) => data.title)
-}
-
+actions.iw = iwActions
 // DOI
 actions.doi = {}
 actions.doi.providers = {}
@@ -1983,105 +1220,7 @@ actions.doi.getLink = (provider) => {
 }
 
 //erommdtube
-actions.em = {}
-actions.em.openCurrentVideoWithIwara = () => {
-  try {
-    const id = document
-      .querySelector('[href*="https://ecchi.iwara"]')
-      .href.match(/(video|videos)\/.+/i)[0]
-      .replace(/(.+\/)/, "")
-    if (id) {
-      window.open("https://iwara.tv/video/" + id)
-      return
-    }
-  } catch {
-    window.open(document.querySelector('[href*="iwara.tv/video"]').href)
-  }
-}
-actions.em.openWithIwara = () => {
-  util.createHints("*[href*='erommdtube.com/movies/']", function(element) {
-    actions.getDOM(element.href, function(s, res) {
-      if (s) {
-        api.Front.showPopup("Error:" + s)
-        return
-      }
-      const doc = res
-      window.open(doc.querySelector('[href*="iwara.tv"]').href)
-    })
-  })
-}
-actions.em.openWithMMDFans = () => {
-  util.createHints("*[href*='erommdtube.com/movies/']", function(element) {
-    const title = element.querySelector(".main__list-title").innerText
-    actions.iw.GoToMmdFansVid(title)
-  })
-}
-actions.em.openCurrentVideoWithMMDFans = () => {
-  const title = document.querySelector("h1.show__h1").innerText
-  actions.iw.GoToMmdFansVid(title)
-}
-actions.em.openCurrentVideoWithMPV = () => {
-  const url = document.querySelector('[href*="iwara.tv"]').href
-  actions.iw.copyAndPlayVideo(actions.iw.getIdIwara(url))
-}
-actions.em.openVideoWithMPV = () => {
-  util.createHints("*[href*='erommdtube.com/movies/']", function(element) {
-    actions.getDOM(element.href, function(s, res) {
-      debugger
-      const url = res.querySelector('[href*="iwara.tv"]').href
-      actions.iw.copyAndPlayVideo(actions.iw.getIdIwara(url))
-    })
-  })
-}
-
+actions.em = emActions
 //oreno3d
-actions.or = {}
-actions.or.openCurrentVideoWithIwara = () => {
-  try {
-    const id = document
-      .querySelector('[href*="https://ecchi.iwara"]')
-      .href.match(/(video|videos)\/.+/i)[0]
-      .replace(/(.+\/)/, "")
-    if (id) {
-      window.open("https://iwara.tv/video/" + id)
-      return
-    }
-  } catch {
-    window.open(document.querySelector('[href*="iwara.tv/video"]').href)
-  }
-}
-actions.or.openWithIwara = () => {
-  util.createHints("*[href*='erommdtube.com/movies/']", function(element) {
-    actions.getDOM(element.href, function(s, res) {
-      if (s) {
-        api.Front.showPopup("Error:" + s)
-        return
-      }
-      const doc = res
-      window.open(doc.querySelector('[href*="iwara.tv"]').href)
-    })
-  })
-}
-actions.or.openWithMMDFans = () => {
-  util.createHints("*[href*='erommdtube.com/movies/']", function(element) {
-    const title = element.querySelector(".main__list-title").innerText
-    actions.iw.GoToMmdFansVid(title)
-  })
-}
-actions.or.openCurrentVideoWithMMDFans = () => {
-  const title = document.querySelector("h1.show__h1").innerText
-  actions.iw.GoToMmdFansVid(title)
-}
-actions.or.openCurrentVideoWithMPV = () => {
-  const url = document.querySelector('[href*="iwara.tv"]').href
-  actions.iw.copyAndPlayVideo(actions.iw.getIdIwara(url))
-}
-actions.or.openVideoWithMPV = () => {
-  util.createHints("*[href*='erommdtube.com/movies/']", function(element) {
-    actions.getDOM(element.href, function(s, res) {
-      const url = res.querySelector('[href*="iwara.tv"]').href
-      actions.iw.copyAndPlayVideo(actions.iw.getIdIwara(url))
-    })
-  })
-}
+actions.or = orActions
 export default actions

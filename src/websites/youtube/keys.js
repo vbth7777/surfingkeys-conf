@@ -1,10 +1,14 @@
-import actions from "./actions.js"
-import api from "./api.js"
-import util from "./util.js"
-import actions from "./actions.js"
+import actions from "../global/actions.js"
+import webActions from "./actions.js"
+import api from "../../api.js"
+import help from "../../help.js"
+import priv from "../../conf.priv.js"
+import util from "../../util.js"
+import { PLAY_VIDEO_MPV_ALIAS } from "../global/constants.js"
 
+const { categories } = help
 
-const { Clipboard } = api
+const { Clipboard, Front } = api
 
 export default [
   {
@@ -14,7 +18,7 @@ export default [
     callback: () =>
       util.createHints(
         "*[id='video-title']",
-        actions.openAnchor({ newTab: true })
+        actions.openAnchor({ newTab: true }),
       ),
   },
   {
@@ -38,54 +42,53 @@ export default [
       actions.dispatchMouseEvents(
         document.querySelector("#movie_player.ytp-fullscreen-button"),
         "mousedown",
-        "click"
+        "click",
       ),
   },
   {
     leader: "",
     alias: "Yt",
     description: "Copy YouTube video link for current time",
-    callback: () => Clipboard.write(actions.yt.getCurrentTimestampLink()),
+    callback: () => Clipboard.write(webActions.getCurrentTimestampLink()),
   },
   {
     leader: "",
     alias: "Ym",
     description: "Copy YouTube video markdown link for current time",
     callback: () =>
-      Clipboard.write(actions.yt.getCurrentTimestampMarkdownLink()),
+      Clipboard.write(webActions.getCurrentTimestampMarkdownLink()),
   },
   {
     leader: "",
     alias: "cl",
     description: "Like And Show Playlist For Current Video",
     callback: () => {
-      actions.yt.clickLikeButtonYoutube();
-      actions.yt.clickPlaylistButtonYoutube();
-    }
+      webActions.clickLikeButtonYoutube()
+      webActions.clickPlaylistButtonYoutube()
+    },
   },
   {
     leader: "",
     alias: "cvl",
     description: "Like And Show Playlist For Current Video",
     callback: () => {
-      actions.yt.clickLikeButtonYoutube();
-    }
+      webActions.clickLikeButtonYoutube()
+    },
   },
   {
     leader: "",
     alias: "cvp",
     description: "Like And Show Playlist For Current Video",
     callback: () => {
-      actions.yt.clickPlaylistButtonYoutube();
-    }
+      webActions.clickPlaylistButtonYoutube()
+    },
   },
   {
     leader: "",
     alias: "l",
     description: "Show Playlist",
     callback: () => {
-      actions.yt.showPlaylist();
-    }
+      webActions.showPlaylist()
+    },
   },
-
 ]

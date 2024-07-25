@@ -1,8 +1,8 @@
 import ghReservedNames from "github-reserved-names"
 
-import api from "./api.js"
-import priv from "./conf.priv.js"
-import util from "./util.js"
+import api from "../../api.js"
+import priv from "../../conf.priv.js"
+import util from "../../util.js"
 
 const { tabOpenLink, Front, Hints, Normal, RUNTIME } = api
 
@@ -35,15 +35,15 @@ actions.moveTabNextToTab = (targetId, nextTo, leftOf = false) =>
 
 actions.getDOM = (url, callback) => {
   fetch(url)
-    .then(res => res.text())
-    .then(data => {
-      const parser = new DOMParser();
-      const htmlDocument = parser.parseFromString(data, 'text/html');
-      callback(null, htmlDocument);
+    .then((res) => res.text())
+    .then((data) => {
+      const parser = new DOMParser()
+      const htmlDocument = parser.parseFromString(data, "text/html")
+      callback(null, htmlDocument)
     })
-    .catch(error => {
-      callback(error, null);
-    });
+    .catch((error) => {
+      callback(error, null)
+    })
 }
 actions.dispatchEvents = (type, node, ...eventTypes) =>
   eventTypes.forEach((t) => {
@@ -66,25 +66,25 @@ actions.scrollToHash = (hash = null) => {
   e.scrollIntoView({ behavior: "smooth" })
 }
 actions.openUrlsInClipboardWithMpv = async () => {
-  api.Clipboard.read(function(res) {
-    const urls = res.data.split('\n');
+  api.Clipboard.read(function (res) {
+    const urls = res.data.split("\n")
     for (const url of urls) {
-      if (url.includes('iwara')) {
-        actions.iw.copyAndPlayVideo(url.match(/video\/.+(\/)?/)[0].replace(/video\/|\/.+/g, ''));
-      }
-      else if (url.includes('erommdtube') || url.includes('oreno3d')) {
-        actions.getDOM(url, function(err, htmlDocument) {
+      if (url.includes("iwara")) {
+        actions.iw.copyAndPlayVideo(
+          url.match(/video\/.+(\/)?/)[0].replace(/video\/|\/.+/g, ""),
+        )
+      } else if (url.includes("erommdtube") || url.includes("oreno3d")) {
+        actions.getDOM(url, function (err, htmlDocument) {
           if (err) {
-            console.log(err);
-            return;
+            console.log(err)
+            return
           }
-          const urlIw = htmlDocument.querySelector('[href*="iwara.tv"]');
-          const id = actions.iw.getIdIwara(urlIw.href);
-          actions.iw.copyAndPlayVideo(id);
+          const urlIw = htmlDocument.querySelector('[href*="iwara.tv"]')
+          const id = actions.iw.getIdIwara(urlIw.href)
+          actions.iw.copyAndPlayVideo(id)
         })
-      }
-      else {
-        util.playWithMpv(url);
+      } else {
+        util.playWithMpv(url)
       }
     }
   })
@@ -98,7 +98,7 @@ actions.vimEditURL = () =>
     (url) => {
       actions.openLink(url)
     },
-    "url"
+    "url",
   )
 
 actions.getOrgLink = () => `[[${window.location.href}][${document.title}]]`
@@ -120,9 +120,10 @@ actions.getDnsInfoUrl = ({
   hostname = window.location.hostname,
   all = false,
 } = {}) =>
-  `${ddossierUrl}?dom_dns=true&addr=${hostname}${all
-    ? "?dom_whois=true&dom_dns=true&traceroute=true&net_whois=true&svc_scan=true"
-    : ""
+  `${ddossierUrl}?dom_dns=true&addr=${hostname}${
+    all
+      ? "?dom_whois=true&dom_dns=true&traceroute=true&net_whois=true&svc_scan=true"
+      : ""
   }`
 
 actions.getGoogleCacheUrl = ({ href = window.location.href } = {}) =>
@@ -178,11 +179,10 @@ actions.getDiscussionsUrl = ({ href = window.location.href } = {}) =>
 
 // Surfingkeys-specific actions
 // ----------------------------
-actions.openAnchor = ({
-  newTab = false,
-  active = true,
-  prop = "href",
-} = {}) => (a) => actions.openLink(a[prop], { newTab, active })
+actions.openAnchor =
+  ({ newTab = false, active = true, prop = "href" } = {}) =>
+  (a) =>
+    actions.openLink(a[prop], { newTab, active })
 
 actions.openLink = (url, { newTab = false, active = true } = {}) => {
   if (newTab) {
@@ -213,7 +213,7 @@ actions.togglePdfViewer = () =>
 
 actions.previewLink = () =>
   util.createHints("a[href]", (a) =>
-    Front.showEditor(a.href, (url) => actions.openLink(url), "url")
+    Front.showEditor(a.href, (url) => actions.openLink(url), "url"),
   )
 
 actions.scrollElement = (el, dir) => {
@@ -229,4 +229,4 @@ actions.fakeSpot = (url = window.location.href) =>
     active: false,
   })
 
-export default actions;
+export default actions
