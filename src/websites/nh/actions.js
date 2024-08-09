@@ -390,12 +390,34 @@ actions.nh.createViewer = async (idGallery) => {
       components.events.imageErrorEvent = handleImageError
       components.events.previewImageErrorEvent = handleImageError
 
-      const handleImageAdd = (img, imgTemp) => {
+      // const handleImageAdd = (img, imgTemp) => {
+      //   let counter = 0
+      //
+      //   const retryImageLoad = (imgElement, serverPrefix, maxRetries) => {
+      //     const interval = setInterval(() => {
+      //       if (imgElement.height > 100 || counter >= maxRetries) {
+      //         clearInterval(interval)
+      //       } else {
+      //         counter++
+      //         imgElement.src = imgElement.src.replace(
+      //           new RegExp(`//${serverPrefix}\\d+`),
+      //           `//${serverPrefix}${server[Math.floor(Math.random() * server.length)]}`,
+      //         )
+      //       }
+      //     }, 1000)
+      //   }
+      //
+      //   retryImageLoad(img, "i", 5)
+      //   retryImageLoad(imgTemp, "t", 2)
+      // }
+      const handleImageAdd = (img, isPreview) => {
         let counter = 0
+        const maxRetries = isPreview ? 2 : 5
+        const serverPrefix = isPreview ? "t" : "i"
 
-        const retryImageLoad = (imgElement, serverPrefix, maxRetries) => {
+        const retryImageLoad = (imgElement) => {
           const interval = setInterval(() => {
-            if (imgElement.height > 100 || counter >= maxRetries) {
+            if (imgElement.complete || counter >= maxRetries) {
               clearInterval(interval)
             } else {
               counter++
@@ -404,11 +426,10 @@ actions.nh.createViewer = async (idGallery) => {
                 `//${serverPrefix}${server[Math.floor(Math.random() * server.length)]}`,
               )
             }
-          }, 1000)
+          }, 2000) // Increased interval to 2 seconds
         }
 
-        retryImageLoad(img, "i", 5)
-        retryImageLoad(imgTemp, "t", 2)
+        retryImageLoad(img)
       }
 
       components.events.imageAddEvent = handleImageAdd
