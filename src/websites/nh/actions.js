@@ -187,60 +187,156 @@ actions.nh.getIdFromUrl = (url) => {
 //   )
 // }
 
+// actions.nh.createViewer = async (idGallery) => {
+//   // Fetch gallery data in one request
+//   const nhApi = await fetch(
+//     `https://nhentai.net/api/gallery/${idGallery}`,
+//   ).then((res) => res.json())
+//
+//   const mediaId = nhApi.media_id
+//   const types = nhApi.images.pages.map((e) => (e.t === "j" ? "jpg" : "png"))
+//
+//   // Generate image and preview image URLs in a single loop
+//   const urls = []
+//   const previewUrls = []
+//   for (let i = 0; i < types.length; i++) {
+//     const type = types[i]
+//     urls.push(`https://i7.nhentai.net/galleries/${mediaId}/${i + 1}.${type}`)
+//     previewUrls.push(
+//       `https://t3.nhentai.net/galleries/${mediaId}/${i + 1}t.${type}`,
+//     )
+//   }
+//
+//   const infomations = nhApi.tags
+//
+//   util.createComicViewer(
+//     urls,
+//     50,
+//     previewUrls,
+//     infomations,
+//     async (components) => {
+//       actions.nh.readArea = components.containerBox
+//       actions.nh.removeReaderArea = components.events.removeContainerBox
+//
+//       const favoriteMethod = "favorite"
+//       const unfavoriteMethod = "unfavorite"
+//       const favoriteBtn = components.favoriteBtn
+//
+//       favoriteBtn.onclick = async () => {
+//         const state =
+//           favoriteBtn.innerHTML === favoriteMethod
+//             ? unfavoriteMethod
+//             : favoriteMethod
+//         favoriteBtn.disabled = true
+//         favoriteBtn.style.opacity = 0.5
+//         favoriteBtn.style.cursor = "default"
+//
+//         await fetch(`https://nhentai.net/api/gallery/${idGallery}/${state}`, {
+//           method: "post",
+//           headers: {
+//             "X-Csrftoken": document.cookie.replace(/.+=/g, ""),
+//           },
+//         })
+//
+//         favoriteBtn.innerHTML =
+//           favoriteBtn.innerHTML === favoriteMethod
+//             ? unfavoriteMethod
+//             : favoriteMethod
+//         favoriteBtn.disabled = false
+//         favoriteBtn.style.opacity = 1
+//         favoriteBtn.style.cursor = "pointer"
+//       }
+//
+//       // Check favorite state efficiently
+//       const response = await fetch(`https://nhentai.net/g/${idGallery}`)
+//       const data = await response.text()
+//       const isFavorited = data.includes(unfavoriteMethod.toLowerCase())
+//       favoriteBtn.innerHTML = isFavorited ? unfavoriteMethod : favoriteMethod
+//
+//       const server = [3, 5, 7]
+//       let formatToggle = false
+//       let counter = 0
+//       let retryCounter = 0
+//
+//       const handleImageError = (e) => {
+//         if (retryCounter >= 2) return
+//
+//         const img = e.srcElement
+//         const changeServer = (serverNumber) =>
+//           img.src.replace(/\/\/i\d+/g, `//i${serverNumber}`)
+//
+//         if (counter >= 2) {
+//           counter = 0
+//         } else {
+//           counter++
+//         }
+//
+//         img.src = changeServer(server[counter])
+//         retryCounter++
+//       }
+//
+//       components.events.imageErrorEvent = handleImageError
+//       components.events.previewImageErrorEvent = handleImageError
+//
+//       const handleImageAdd = (img, imgTemp) => {
+//         const interval = setInterval(() => {
+//           if (img.height > 100) {
+//             clearInterval(interval)
+//           } else {
+//             counter++
+//             if (counter >= 5 || img.height === 16) {
+//               img.src = img.src.replace(
+//                 /\/\/i\d+/g,
+//                 `//i${server[Math.floor(Math.random() * server.length)]}`,
+//               )
+//             }
+//           }
+//         }, 1000)
+//
+//         const interval2 = setInterval(() => {
+//           if (imgTemp.height > 100) {
+//             clearInterval(interval2)
+//           } else {
+//             counter++
+//             if (counter >= 2) {
+//               imgTemp.src = imgTemp.src.replace(
+//                 /\/\/t\d+/g,
+//                 `//t${server[Math.floor(Math.random() * server.length)]}`,
+//               )
+//             }
+//           }
+//         }, 1000)
+//       }
+//
+//       components.events.imageAddEvent = handleImageAdd
+//     },
+//   )
+// }
 actions.nh.createViewer = async (idGallery) => {
-  // Fetch gallery data with error handling
-  const nhApi = await fetch(`https://nhentai.net/api/gallery/${idGallery}`)
-    .then((res) => res.json())
-    .catch((error) => {
-      console.error("Error fetching gallery data:", error)
-      // Handle error gracefully, e.g., display an error message to the user
-      return null
-    })
-
-  if (!nhApi) {
-    return // Abort viewer creation if gallery data is unavailable
-  }
+  // Fetch gallery data in one request
+  const nhApi = await fetch(
+    `https://nhentai.net/api/gallery/${idGallery}`,
+  ).then((res) => res.json())
 
   const mediaId = nhApi.media_id
   const types = nhApi.images.pages.map((e) => (e.t === "j" ? "jpg" : "png"))
-  const serverList = [3, 5, 7] // Replace with actual server list
 
-  // Generate image URLs with error handling
-  const generateImageUrls = (type, isPreview) => {
-    const baseUrl = isPreview ? "https://t" : "https://i"
-    const serverIndex = Math.floor(Math.random() * serverList.length)
-    return `${baseUrl}${serverList[serverIndex]}.nhentai.net/galleries/${mediaId}/${"{index+1}"}.${type}`
-  }
+  // Generate image and preview image URLs efficiently using `map`
+  const urls = types.map(
+    (type, i) => `https://i.nhentai.net/galleries/${mediaId}/${i + 1}.${type}`,
+  )
+  const previewUrls = types.map(
+    (type, i) => `https://t.nhentai.net/galleries/${mediaId}/${i + 1}t.${type}`,
+  )
 
-  const generateUrls = async (isPreview) => {
-    const urls = []
-    for (let i = 0; i < types.length; i++) {
-      try {
-        urls.push(generateImageUrls(types[i], isPreview))
-      } catch (error) {
-        console.error("Error generating image URLs:", error)
-        // Handle error (e.g., retry with different server)
-      }
-    }
-    return urls
-  }
-
-  const images = await generateUrls(false)
-  const previewImages = await generateUrls(true)
-
-  // Fetch tags
-  const infomations = await (async () => {
-    return nhApi.tags
-  })()
-
-  // Create comic viewer with error handling
+  const informations = nhApi.tags
 
   util.createComicViewer(
-    images,
+    urls,
     50,
-    previewImages,
-    infomations,
-    (components) => {
+    previewUrls,
+    informations,
+    async (components) => {
       actions.nh.readArea = components.containerBox
       actions.nh.removeReaderArea = components.events.removeContainerBox
 
@@ -248,124 +344,76 @@ actions.nh.createViewer = async (idGallery) => {
       const unfavoriteMethod = "unfavorite"
       const favoriteBtn = components.favoriteBtn
 
-      const updateFavoriteState = async (newState) => {
-        favoriteBtn.innerHTML = newState
+      favoriteBtn.onclick = async () => {
+        const state =
+          favoriteBtn.innerHTML === favoriteMethod
+            ? unfavoriteMethod
+            : favoriteMethod
+
         favoriteBtn.disabled = true
         favoriteBtn.style.opacity = 0.5
         favoriteBtn.style.cursor = "default"
 
-        try {
-          const response = await fetch(
-            `https://nhentai.net/api/gallery/${idGallery}/${newState}`,
-            {
-              method: "post",
-              headers: {
-                "X-Csrftoken": document.cookie.replace(/.+=/g, ""),
-              },
-            },
-          )
+        await fetch(`https://nhentai.net/api/gallery/${idGallery}/${state}`, {
+          method: "post",
+          headers: {
+            "X-Csrftoken": document.cookie.replace(/.+=/g, ""),
+          },
+        })
 
-          if (response.ok) {
-            favoriteBtn.disabled = false
-            favoriteBtn.style.opacity = 1
-            favoriteBtn.style.cursor = "pointer"
-          } else {
-            console.error("Error updating favorite state:", response.statusText)
-            // Handle error gracefully
-          }
-        } catch (error) {
-          console.error("Error updating favorite state:", error)
-          // Handle error gracefully
-        }
+        favoriteBtn.innerHTML = state
+        favoriteBtn.disabled = false
+        favoriteBtn.style.opacity = 1
+        favoriteBtn.style.cursor = "pointer"
       }
 
-      favoriteBtn.onclick = async () => {
-        const currentState = favoriteBtn.innerHTML.toLowerCase()
-        const newState =
-          currentState === favoriteMethod ? unfavoriteMethod : favoriteMethod
-        await updateFavoriteState(newState)
-      }
+      // Check favorite state efficiently
+      const response = await fetch(`https://nhentai.net/g/${idGallery}`)
+      const data = await response.text()
+      const isFavorited = data.includes(unfavoriteMethod.toLowerCase())
+      favoriteBtn.innerHTML = isFavorited ? unfavoriteMethod : favoriteMethod
 
-      // Check favorite state securely
-      const checkFavoriteState = async () => {
-        try {
-          const response = await fetch(`https://nhentai.net/g/${idGallery}`)
-          if (!response.ok) {
-            console.error("Error fetching favorite state:", response.statusText)
-            return
-          }
-
-          const data = await response.text()
-          const parser = new DOMParser()
-          const dom = parser.parseFromString(data, "text/html")
-
-          const favoriteElement = dom.querySelector("#favorite")
-          if (
-            favoriteElement &&
-            favoriteElement.innerText.toLowerCase().includes(unfavoriteMethod)
-          ) {
-            favoriteBtn.innerHTML = unfavoriteMethod
-          } else {
-            favoriteBtn.innerHTML = favoriteMethod
-          }
-        } catch (error) {
-          console.error("Error checking favorite state:", error)
-        }
-      }
-
-      checkFavoriteState()
-
-      let formatToggle = false
-      let counter = 0
+      const server = [3, 5, 7]
       let retryCounter = 0
 
-      const handleImageError = (img, changeServer) => {
-        if (retryCounter >= 2) {
-          return
-        }
-        img.src = changeServer(img.src)
-        if (counter >= 2) {
-          retryCounter++
-        } else {
-          counter++
-        }
-      }
+      const handleImageError = (e) => {
+        if (retryCounter >= 2) return
 
-      components.events.imageErrorEvent = (e) => {
-        handleImageError(e.srcElement, (src) =>
-          src.replace(/\/\/i\d+/g, "//i" + serverList[counter]),
+        const img = e.target // Use e.target instead of e.srcElement for better compatibility
+        retryCounter++
+        img.src = img.src.replace(
+          /\/\/i\d+/,
+          `//i${server[Math.floor(Math.random() * server.length)]}`,
         )
       }
 
-      components.events.previewImageErrorEvent = (e) => {
-        handleImageError(e.srcElement, (src) =>
-          src.replace(/\/\/t\d+/g, "//t" + serverList[counter]),
-        )
-      }
+      components.events.imageErrorEvent = handleImageError
+      components.events.previewImageErrorEvent = handleImageError
 
-      // Implement image loading optimization using IntersectionObserver (example)
-      const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const img = entry.target
-            if (!img.src) {
-              img.src = generateImageUrls(
-                img.dataset.type,
-                img.dataset.isPreview === "true",
+      const handleImageAdd = (img, imgTemp) => {
+        let counter = 0
+
+        const retryImageLoad = (imgElement, serverPrefix, maxRetries) => {
+          const interval = setInterval(() => {
+            if (imgElement.height > 100 || counter >= maxRetries) {
+              clearInterval(interval)
+            } else {
+              counter++
+              imgElement.src = imgElement.src.replace(
+                new RegExp(`//${serverPrefix}\\d+`),
+                `//${serverPrefix}${server[Math.floor(Math.random() * server.length)]}`,
               )
             }
-            observer.unobserve(img)
-          }
-        })
-      })
+          }, 1000)
+        }
 
-      document
-        .querySelectorAll(".comic-viewer__image, .comic-viewer__preview-image")
-        .forEach((img) => {
-          observer.observe(img)
-        })
+        retryImageLoad(img, "i", 5)
+        retryImageLoad(imgTemp, "t", 2)
+      }
+
+      components.events.imageAddEvent = handleImageAdd
     },
   )
 }
-//
+
 export default actions.nh
