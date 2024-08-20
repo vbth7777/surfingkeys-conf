@@ -157,6 +157,7 @@ actions.nh.createViewer = async (idGallery) => {
         let counter = 0
         const interval = setInterval(() => {
           if (img.height > 100) {
+            imgTemp.remove()
             clearInterval(interval)
           } else {
             counter++
@@ -166,7 +167,7 @@ actions.nh.createViewer = async (idGallery) => {
               img.src = img.src.replace(
                 /\/\/i\d+/g,
                 "//i" +
-                  server[newServer == server.length - 1 ? 0 : newServer + 1],
+                server[newServer == server.length - 1 ? 0 : newServer + 1],
               )
             }
           }
@@ -183,7 +184,7 @@ actions.nh.createViewer = async (idGallery) => {
               imgTemp.src = imgTemp.src.replace(
                 /\/\/t\d+/g,
                 "//t" +
-                  server[newServer == server.length - 1 ? 0 : newServer + 1],
+                server[newServer == server.length - 1 ? 0 : newServer + 1],
               )
             }
           }
