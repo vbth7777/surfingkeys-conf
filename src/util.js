@@ -7,8 +7,7 @@ const { Hints, RUNTIME, Front } = api
 
 const util = {}
 
-const promisify =
-  (fn) =>
+const promisify = (fn) =>
   (...args) =>
     new Promise((resolve, reject) => {
       try {
@@ -79,12 +78,12 @@ util.until = (check, test = (a) => a, maxAttempts = 50, interval = 50) =>
 
 const localStorageFns = () => {
   if (typeof browser !== "undefined") {
-    return [browser.storage.local.get, browser.storage.local.set]
+    // return [browser.storage.local.get, browser.storage.local.set]
   }
   if (typeof chrome !== "undefined") {
-    return [chrome.storage.local.get, chrome.storage.local.set].map((fn) =>
-      util.promisify(fn.bind(chrome.storage.local)),
-    )
+    // return [chrome.storage.local.get, chrome.storage.local.set].map((fn) =>
+    //   util.promisify(fn.bind(chrome.storage.local)),
+    // )
   }
   const fn = () =>
     new Error("local storage unavailable: unsupported environment")
@@ -120,21 +119,19 @@ util.htmlForEach = (items) => items.map((item) => html.for(item)`${item}`)
 util.html = (template, ...values) =>
   util.htmlNode(template, ...values).outerHTML
 
-util.suggestionItem =
-  (props = {}) =>
+util.suggestionItem = (props = {}) =>
   (template, ...values) => ({
     html: util.html(template, ...values),
     props,
   })
 
 util.urlItem = (title, url, { desc = null, query = null } = {}) => {
-  const descItems =
-    desc && desc.length > 0
-      ? (Array.isArray(desc) ? desc : [desc]).map(
-          (d) => util.htmlNode`<div>${d}</div>`,
-        )
-      : []
-  return util.suggestionItem({ url: url, query: query ?? title })`
+  const descItems = desc && desc.length > 0
+    ? (Array.isArray(desc) ? desc : [desc]).map(
+      (d) => util.htmlNode`<div>${d}</div>`,
+    )
+    : []
+  return util.suggestionItem({ url, query: query ?? title })`
     <div>
       <div style="font-weight: bold">${title}</div>
       ${util.htmlForEach(descItems)}
@@ -172,18 +169,18 @@ util.createHintsFiltered = (filter, selector, ...args) => {
 
 // https://developer.mozilla.org/en-US/docs/web/api/element/getboundingclientrect
 util.isRectVisibleInViewport = (rect) =>
-  rect.height > 0 &&
-  rect.width > 0 &&
-  rect.bottom >= 0 &&
-  rect.right >= 0 &&
-  rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
-  rect.left <= (window.innerWidth || document.documentElement.clientWidth)
+  rect.height > 0
+  && rect.width > 0
+  && rect.bottom >= 0
+  && rect.right >= 0
+  && rect.top <= (window.innerHeight || document.documentElement.clientHeight)
+  && rect.left <= (window.innerWidth || document.documentElement.clientWidth)
 
 util.isElementInViewport = (e) =>
-  e.offsetHeight > 0 &&
-  e.offsetWidth > 0 &&
-  !e.getAttribute("disabled") &&
-  util.isRectVisibleInViewport(e.getBoundingClientRect())
+  e.offsetHeight > 0
+  && e.offsetWidth > 0
+  && !e.getAttribute("disabled")
+  && util.isRectVisibleInViewport(e.getBoundingClientRect())
 
 util.getDuckduckgoFaviconUrl = (url) => {
   const u = url instanceof URL ? url : new URL(url)
@@ -198,20 +195,19 @@ util.prettyDate = (date) => {
   const diff = (new Date().getTime() - date.getTime()) / 1000
   const dayDiff = Math.floor(diff / 86400)
   if (Number.isNaN(dayDiff) || dayDiff < 0) return ""
-  const [count, unit] = (dayDiff === 0 &&
-    ((diff < 60 && [null, "just now"]) ||
-      (diff < 3600 && [Math.floor(diff / 60), "minute"]) ||
-      (diff < 86400 && [Math.floor(diff / 3600), "hour"]))) ||
-    (dayDiff === 1 && [null, "yesterday"]) ||
-    (dayDiff < 7 && [dayDiff, "day"]) ||
-    (dayDiff < 30 && [Math.round(dayDiff / 7), "week"]) ||
-    (dayDiff < 365 && [Math.round(dayDiff / 30), "month"]) || [
+  const [count, unit] = (dayDiff === 0
+    && ((diff < 60 && [null, "just now"])
+      || (diff < 3600 && [Math.floor(diff / 60), "minute"])
+      || (diff < 86400 && [Math.floor(diff / 3600), "hour"])))
+    || (dayDiff === 1 && [null, "yesterday"])
+    || (dayDiff < 7 && [dayDiff, "day"])
+    || (dayDiff < 30 && [Math.round(dayDiff / 7), "week"])
+    || (dayDiff < 365 && [Math.round(dayDiff / 30), "month"]) || [
       Math.round(dayDiff / 365),
       "year",
     ]
-  return `${count ?? ""}${count ? " " : ""}${unit}${
-    (count ?? 0) > 1 ? "s" : ""
-  }${count ? " ago" : ""}`
+  return `${count ?? ""}${count ? " " : ""}${unit}${(count ?? 0) > 1 ? "s" : ""
+    }${count ? " ago" : ""}`
 }
 util.convertToSHA1 = async (str) => {
   const encoder = new TextEncoder()
@@ -234,9 +230,7 @@ util.playAsyncWithMpv = (url) => {
     body: new URLSearchParams({ url }),
   })
 }
-util.sleep = (ms) => {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
+util.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 util.createComicViewer = async (
   images,
   imagesPerPage,
@@ -244,13 +238,13 @@ util.createComicViewer = async (
   infomations,
   callback,
 ) => {
-  //infomations = {name, url, type}
+  // infomations = {name, url, type}
   const urls = images
   const events = {
-    imageErrorEvent: () => {},
-    previewImageErrorEvent: () => {},
-    removeContainerBox: () => {},
-    imageAddEvent: () => {},
+    imageErrorEvent: () => { },
+    previewImageErrorEvent: () => { },
+    removeContainerBox: () => { },
+    imageAddEvent: () => { },
   }
 
   //   let sizePercent = 50;
@@ -268,7 +262,7 @@ util.createComicViewer = async (
   containerBox.style.backgroundColor = "#000"
   containerBox.style.float = "left"
   containerBox.style.zIndex = "9999"
-  containerBox.addEventListener("close", () => {})
+  containerBox.addEventListener("close", () => { })
   const removeContainerBox = () => {
     document.body.style.overflow = "auto"
     containerBox.remove()
@@ -325,7 +319,7 @@ util.createComicViewer = async (
     textBox.style.minWidth = "100px"
     const tags = infomations
     const storagedTags = []
-    for (let item of tags) {
+    for (const item of tags) {
       if (item.type == str.toLowerCase()) {
         if (item.name.toLowerCase().includes("neto")) {
           storagedTags.push(item)
@@ -334,14 +328,12 @@ util.createComicViewer = async (
         textBox.innerHTML += `<a href="${item.url}">${item.name}</a>, `
       }
     }
-    for (let item of storagedTags) {
-      textBox.innerHTML =
-        `<a href="${item.url}" style="color:red;">${item.name}</a>, ` +
-        textBox.innerHTML
+    for (const item of storagedTags) {
+      textBox.innerHTML = `<a href="${item.url}" style="color:red;">${item.name}</a>, ${textBox.innerHTML}`
     }
-    textBox.innerHTML = str + ": " + textBox.innerHTML
-    if (textBox.innerText == str + ": ") {
-      textBox.innerText = str + ": None"
+    textBox.innerHTML = `${str}: ${textBox.innerHTML}`
+    if (textBox.innerText == `${str}: `) {
+      textBox.innerText = `${str}: None`
       textBox.style.cursor = "default"
     } else {
       textBox.innerHTML = textBox.innerHTML.slice(0, -2)
@@ -463,22 +455,20 @@ util.createComicViewer = async (
     } else if (e.key === "ArrowDown") {
       //   sizePercent += 10;
 
-      sizeImage =
-        Number(sizeImage.replace(/[a-z]+$/, "")) -
-        10 +
-        sizeImage.match(/[a-z]+$/g)[0]
+      sizeImage = Number(sizeImage.replace(/[a-z]+$/, ""))
+        - 10
+        + sizeImage.match(/[a-z]+$/g)[0]
       Array.from(imgs).forEach((el) => {
-        el.style.width = sizeImage //sizePercent + '%';
+        el.style.width = sizeImage // sizePercent + '%';
       })
       currentImgView.scrollIntoView()
     } else if (e.key === "ArrowUp") {
       //   sizePercent -= 10;
-      sizeImage =
-        Number(sizeImage.replace(/[a-z]+$/, "")) +
-        10 +
-        sizeImage.match(/[a-z]+$/g)[0]
+      sizeImage = Number(sizeImage.replace(/[a-z]+$/, ""))
+        + 10
+        + sizeImage.match(/[a-z]+$/g)[0]
       Array.from(imgs).forEach((el) => {
-        el.style.width = sizeImage //sizePercent + '%';
+        el.style.width = sizeImage // sizePercent + '%';
       })
       currentImgView.scrollIntoView()
     }
@@ -499,7 +489,7 @@ util.createComicViewer = async (
       img.style.position = "absolute"
       img.style.top = "0"
       img.style.left = "0"
-      img.style.width = sizeImage //sizePercent + '%';
+      img.style.width = sizeImage // sizePercent + '%';
       // img.style.height = 'auto';
       img.style.objectFit = "cover"
       // img.loading = 'lazy';
@@ -512,7 +502,7 @@ util.createComicViewer = async (
         imgTemp.src = previewImages[imagesNumber + i]
       }
       imgTemp.onerror = events.previewImageErrorEvent
-      imgTemp.style.width = sizeImage //sizePercent + '%';
+      imgTemp.style.width = sizeImage // sizePercent + '%';
       imgTemp.style.height = "auto"
       imgTemp.style.objectFit = "cover"
 

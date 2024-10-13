@@ -11,7 +11,7 @@ const {
   Front,
   removeSearchAlias,
   addSearchAlias,
-  Hints
+  Hints,
 } = api
 
 const registerKey = (domain, mapObj, siteleader) => {
@@ -43,16 +43,14 @@ const registerKey = (domain, mapObj, siteleader) => {
 
 const registerKeys = (maps, aliases, siteleader) => {
   const hydratedAliases = Object.entries(
-    aliases
+    aliases,
   ).flatMap(([baseDomain, aliasDomains]) =>
-    aliasDomains.flatMap((a) => ({ [a]: maps[baseDomain] }))
-  )
+    aliasDomains.flatMap((a) => ({ [a]: maps[baseDomain] })))
 
   const mapsAndAliases = Object.assign({}, maps, ...hydratedAliases)
 
   Object.entries(mapsAndAliases).forEach(([domain, domainMaps]) =>
-    domainMaps.forEach((mapObj) => registerKey(domain, mapObj, siteleader))
-  )
+    domainMaps.forEach((mapObj) => registerKey(domain, mapObj, siteleader)))
 }
 
 const registerSearchEngines = (searchEngines, searchleader) =>
@@ -69,11 +67,10 @@ const registerSearchEngines = (searchEngines, searchleader) =>
       s.compl,
       s.callback,
       undefined,
-      options
+      options,
     )
     mapkey(`${searchleader}${s.alias}`, `#8Search ${s.name}`, () =>
-      Front.openOmnibar({ type: "SearchEngine", extra: s.alias })
-    )
+      Front.openOmnibar({ type: "SearchEngine", extra: s.alias }))
     mapkey(
       `c${searchleader}${s.alias}`,
       `#8Search ${s.name} with clipboard contents`,
@@ -85,24 +82,24 @@ const registerSearchEngines = (searchEngines, searchleader) =>
             extra: s.alias,
           })
         })
-      }
+      },
     )
   })
 
 const main = async () => {
   window.surfingKeys = api
-  Hints.style('font-family: Arial;background: #fff;border-color: #000; color: #000; font-size:12px;')
+  Hints.style("font-family: Arial;background: #fff;border-color: #000; color: #000; font-size:12px;")
   if (conf.settings) {
     Object.assign(
       settings,
-      typeof conf.settings === "function" ? conf.settings() : conf.settings
+      typeof conf.settings === "function" ? conf.settings() : conf.settings,
     )
   }
 
   if (conf.logLevels) {
-    await chrome.storage.local.set({
-      logLevels: conf.logLevels,
-    })
+    // await chrome.storage.local.set({
+    //   logLevels: conf.logLevels,
+    // })
   }
 
   if (conf.keys && conf.keys.unmaps) {

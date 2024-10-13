@@ -4,7 +4,9 @@ import api from "../../api.js"
 import priv from "../../conf.priv.js"
 import util from "../../util.js"
 
-const { tabOpenLink, Front, Hints, Normal, RUNTIME } = api
+const {
+  tabOpenLink, Front, Hints, Normal, RUNTIME,
+} = api
 
 const actions = {}
 
@@ -58,15 +60,14 @@ actions.dispatchMouseEvents = actions.dispatchEvents.bind(undefined, [
 
 actions.scrollToHash = (hash = null) => {
   const h = (hash || document.location.hash).replace("#", "")
-  const e =
-    document.getElementById(h) || document.querySelector(`[name="${h}"]`)
+  const e = document.getElementById(h) || document.querySelector(`[name="${h}"]`)
   if (!e) {
     return
   }
   e.scrollIntoView({ behavior: "smooth" })
 }
 actions.openUrlsInClipboardWithMpv = async () => {
-  api.Clipboard.read(function (res) {
+  api.Clipboard.read((res) => {
     const urls = res.data.split("\n")
     for (const url of urls) {
       if (url.includes("iwara")) {
@@ -74,12 +75,12 @@ actions.openUrlsInClipboardWithMpv = async () => {
           url.match(/video\/.+(\/)?/)[0].replace(/video\/|\/.+/g, ""),
         )
       } else if (url.includes("erommdtube") || url.includes("oreno3d")) {
-        actions.getDOM(url, function (err, htmlDocument) {
+        actions.getDOM(url, (err, htmlDocument) => {
           if (err) {
             console.log(err)
             return
           }
-          const urlIw = htmlDocument.querySelector('[href*="iwara.tv"]')
+          const urlIw = htmlDocument.querySelector("[href*=\"iwara.tv\"]")
           const id = actions.iw.getIdIwara(urlIw.href)
           actions.iw.copyAndPlayVideo(id)
         })
@@ -120,10 +121,9 @@ actions.getDnsInfoUrl = ({
   hostname = window.location.hostname,
   all = false,
 } = {}) =>
-  `${ddossierUrl}?dom_dns=true&addr=${hostname}${
-    all
-      ? "?dom_whois=true&dom_dns=true&traceroute=true&net_whois=true&svc_scan=true"
-      : ""
+  `${ddossierUrl}?dom_dns=true&addr=${hostname}${all
+    ? "?dom_whois=true&dom_dns=true&traceroute=true&net_whois=true&svc_scan=true"
+    : ""
   }`
 
 actions.getGoogleCacheUrl = ({ href = window.location.href } = {}) =>
@@ -179,8 +179,7 @@ actions.getDiscussionsUrl = ({ href = window.location.href } = {}) =>
 
 // Surfingkeys-specific actions
 // ----------------------------
-actions.openAnchor =
-  ({ newTab = false, active = true, prop = "href" } = {}) =>
+actions.openAnchor = ({ newTab = false, active = true, prop = "href" } = {}) =>
   (a) =>
     actions.openLink(a[prop], { newTab, active })
 
@@ -199,22 +198,21 @@ actions.editSettings = () =>
   tabOpenLink(chrome.extension.getURL("/pages/options.html"))
 
 actions.togglePdfViewer = () =>
-  chrome.storage.local.get("noPdfViewer", (resp) => {
-    if (!resp.noPdfViewer) {
-      chrome.storage.local.set({ noPdfViewer: 1 }, () => {
-        Front.showBanner("PDF viewer disabled.")
-      })
-    } else {
-      chrome.storage.local.remove("noPdfViewer", () => {
-        Front.showBanner("PDF viewer enabled.")
-      })
-    }
-  })
+  // chrome.storage.local.get("noPdfViewer", (resp) => {
+  //   if (!resp.noPdfViewer) {
+  //     chrome.storage.local.set({ noPdfViewer: 1 }, () => {
+  //       Front.showBanner("PDF viewer disabled.")
+  //     })
+  //   } else {
+  //     chrome.storage.local.remove("noPdfViewer", () => {
+  //       Front.showBanner("PDF viewer enabled.")
+  //     })
+  //   }
+  // })
 
-actions.previewLink = () =>
-  util.createHints("a[href]", (a) =>
-    Front.showEditor(a.href, (url) => actions.openLink(url), "url"),
-  )
+  actions.previewLink = () =>
+    util.createHints("a[href]", (a) =>
+      Front.showEditor(a.href, (url) => actions.openLink(url), "url"))
 
 actions.scrollElement = (el, dir) => {
   actions.dispatchMouseEvents(el, "mousedown")

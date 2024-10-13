@@ -109,69 +109,52 @@ actions.nh.createViewer = async (idGallery) => {
       let retryCounter = 0
       let img
       components.events.imageErrorEvent = (e) => {
-        // if (counter >= 2 && format == 'jpg') {
-        //   return;
+        img.style.position = "absolute"
+        imgTemp.style.position = "relative"
+        // // if (counter >= 2 && format == 'jpg') {
+        // //   return;
+        // // }
+        // if (retryCounter >= 2) {
+        //   return
         // }
-        if (retryCounter >= 2) {
-          return
-        }
-
-        img = e.srcElement
-        const changeServer = (serverNumber) => {
-          return img.src.replace(/\/\/i\d+/g, "//i" + serverNumber)
-        }
-        if (counter >= 2) {
-          counter = 0
-        } else {
-          counter++
-        }
-        img.src = changeServer(server[counter])
-        if (counter >= 2) {
-          retryCounter++
-        }
+        //
+        // img = e.srcElement
+        // const changeServer = (serverNumber) => {
+        //   return img.src.replace(/\/\/i\d+/g, "//i" + serverNumber)
+        // }
+        // if (counter >= 2) {
+        //   counter = 0
+        // } else {
+        //   counter++
+        // }
+        // img.src = changeServer(server[counter])
+        // if (counter >= 2) {
+        //   retryCounter++
+        // }
       }
       retryCounter = 0
       counter = 0
       components.events.previewImageErrorEvent = (e) => {
-        // if (counter >= 2 && format == 'jpg') {
-        //   return;
+        imgTemp.style.position = "absolute"
+        img.style.position = "relative"
+        // if (retryCounter >= 2) {
+        //   return
         // }
-        if (retryCounter >= 2) {
-          return
-        }
-        const imgTemp = e.srcElement
-        const changeServer = (serverNumber) => {
-          return imgTemp.src.replace(/\/\/t\d+/g, "//t" + serverNumber)
-        }
-        if (counter >= 2) {
-          counter = 0
-        } else {
-          counter++
-        }
-        imgTemp.src = changeServer(server[counter])
-        if (counter >= 2) {
-          retryCounter++
-        }
+        // const imgTemp = e.srcElement
+        // const changeServer = (serverNumber) => {
+        //   return imgTemp.src.replace(/\/\/t\d+/g, "//t" + serverNumber)
+        // }
+        // if (counter >= 2) {
+        //   counter = 0
+        // } else {
+        //   counter++
+        // }
+        // imgTemp.src = changeServer(server[counter])
+        // if (counter >= 2) {
+        //   retryCounter++
+        // }
       }
       components.events.imageAddEvent = (img, imgTemp) => {
-        let counter = 0
-        const interval = setInterval(() => {
-          if (img.height > 100) {
-            imgTemp.remove()
-            clearInterval(interval)
-          } else {
-            counter++
-            if (counter >= 5 || img.height == 16) {
-              const currentServer = img.src.match(/\/\/i(\d+)/)[1]
-              const newServer = server.indexOf(parseInt(currentServer))
-              img.src = img.src.replace(
-                /\/\/i\d+/g,
-                "//i" +
-                server[newServer == server.length - 1 ? 0 : newServer + 1],
-              )
-            }
-          }
-        }, 1000)
         let counter2 = 0
         const interval2 = setInterval(() => {
           if (imgTemp.height > 100) {
@@ -184,6 +167,23 @@ actions.nh.createViewer = async (idGallery) => {
               imgTemp.src = imgTemp.src.replace(
                 /\/\/t\d+/g,
                 "//t" +
+                server[newServer == server.length - 1 ? 0 : newServer + 1],
+              )
+            }
+          }
+        }, 1000)
+        let counter = 0
+        const interval = setInterval(() => {
+          if (img.height > 100) {
+            clearInterval(interval)
+          } else {
+            counter++
+            if (counter >= 5 || img.height == 16) {
+              const currentServer = img.src.match(/\/\/i(\d+)/)[1]
+              const newServer = server.indexOf(parseInt(currentServer))
+              img.src = img.src.replace(
+                /\/\/i\d+/g,
+                "//i" +
                 server[newServer == server.length - 1 ? 0 : newServer + 1],
               )
             }
