@@ -5,15 +5,15 @@ import priv from "../../conf.priv.js"
 import util from "../../util.js"
 import actions from "../global/actions.js"
 
-const { tabOpenLink, Front, Hints, Normal, RUNTIME } = api
+const {
+  tabOpenLink, Front, Hints, Normal, RUNTIME,
+} = api
 
 actions.iw = {
   socket: null,
   vidResolution: ["Source", "540p", "360p"],
 }
-actions.iw.getSocket = () => {
-  return actions.iw.socket
-}
+actions.iw.getSocket = () => actions.iw.socket
 actions.iw.setSocket = () => {
   actions.iw.socket = new WebSocket("ws://localhost:9790")
   actions.iw.socket.addEventListener("message", (res) => {
@@ -46,13 +46,12 @@ actions.iw.getJSON = (url, callback, xVersionHeader = "", headers = {}) => {
   }
   fetch(url, {
     headers: {
-      Authorization: "Bearer " + localStorage.token,
+      Authorization: `Bearer ${localStorage.token}`,
       ...headers,
     },
   })
     .then((response) => response.json())
     .then((data) => callback(null, data))
-  return
 }
 actions.iw.createCheckBoxes = (checkboxes, isIwara) => {
   // Create container element
@@ -144,11 +143,11 @@ actions.iw.createCheckBoxes = (checkboxes, isIwara) => {
     }
     if (isIwara) {
       checkboxContainer.addEventListener("mousedown", async () => {
-        let method = checkbox.checked ? "delete" : "post"
-        const authorization = "Bearer " + localStorage.accessToken
+        const method = checkbox.checked ? "delete" : "post"
+        const authorization = `Bearer ${localStorage.accessToken}`
         console.log("TESTING: ", method, " ", authorization)
         fetch(`https://api.iwara.tv/video/${obj.idVideo}/like`, {
-          method: method,
+          method,
           headers: {
             Authorization: authorization,
           },
@@ -156,7 +155,7 @@ actions.iw.createCheckBoxes = (checkboxes, isIwara) => {
           fetch(
             `https://api.iwara.tv/playlist/${obj.idPlaylist}/${obj.idVideo}`,
             {
-              method: method,
+              method,
               headers: {
                 Authorization: authorization,
               },
@@ -181,16 +180,14 @@ actions.iw.createCheckBoxes = (checkboxes, isIwara) => {
   // Add the container to the body
   document.body.appendChild(container)
 }
-actions.iw.getAccessTokenFromIwara = async () => {
-  return await fetch("https://api.iwara.tv/user/token", {
-    method: "post",
-    headers: {
-      Authorization: "Bearer " + localStorage.token,
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => data.accessToken)
-}
+actions.iw.getAccessTokenFromIwara = async () => await fetch("https://api.iwara.tv/user/token", {
+  method: "post",
+  headers: {
+    Authorization: `Bearer ${localStorage.token}`,
+  },
+})
+  .then((res) => res.json())
+  .then((data) => data.accessToken)
 
 actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
   const changeColorForPlayingUrl = (id) => {
@@ -200,12 +197,8 @@ actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
       }
     })
   }
-  const getFileId = (url) => {
-    return url.match(/file\/.+\?/g)[0].replace(/file\/|\?/g, "")
-  }
-  const getExpire = (url) => {
-    return url.match("expires=.+&")[0].replace(/expires=|&/g, "")
-  }
+  const getFileId = (url) => url.match(/file\/.+\?/g)[0].replace(/file\/|\?/g, "")
+  const getExpire = (url) => url.match("expires=.+&")[0].replace(/expires=|&/g, "")
   if (!actions.iw.getSocket()) {
     actions.iw.setSocket()
     const socket = actions.iw.getSocket()
@@ -218,7 +211,7 @@ actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
     changeColorForPlayingUrl(id)
   }
 
-  const urlVideo = "https://www.iwara.tv/video/" + id
+  const urlVideo = `https://www.iwara.tv/video/${id}`
   // api.Clipboard.write(urlVideo);
   util.playWithMpv(urlVideo, null, localStorage.accessToken)
   return
@@ -230,14 +223,14 @@ actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
         return
       }
       if (
-        res.message &&
-        (res?.message?.trim()?.toLowerCase()?.includes("notfound") ||
-          res?.message?.trim()?.toLowerCase()?.includes("private"))
+        res.message
+        && (res?.message?.trim()?.toLowerCase()?.includes("notfound")
+          || res?.message?.trim()?.toLowerCase()?.includes("private"))
       ) {
-        api.Front.showPopup(res.message + " for " + id)
-        api.Clipboard.write("https://www.iwara.tv/" + id)
+        api.Front.showPopup(`${res.message} for ${id}`)
+        api.Clipboard.write(`https://www.iwara.tv/${id}`)
         return
-      } else if (res.message) {
+      } if (res.message) {
         actions.iw.copyAndPlayVideo(id, index, isPlayWithMpv)
         return
       }
@@ -245,7 +238,7 @@ actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
         api.Clipboard.write(res.embedUrl)
         return
       }
-      const fileUrl = res.fileUrl
+      const { fileUrl } = res
       const fileId = getFileId(fileUrl)
       if (!fileId || !fileUrl) {
         api.Front.showPopup("Not found requrement")
@@ -268,15 +261,15 @@ actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
               break
             }
           }
-          const uri = "https:" + json[i].src.download
+          const uri = `https:${json[i].src.download}`
           api.Clipboard.write(uri)
           if (isPlayWithMpv) {
             api.Front.showBanner("Opening mpv...")
-            util.playWithMpv(uri, "https://www.iwara.tv/video/" + id)
+            util.playWithMpv(uri, `https://www.iwara.tv/video/${id}`)
           }
         },
         await util.convertToSHA1(
-          fileId + "_" + getExpire(fileUrl) + "_5nFp9kmbNnHdAFhaqMvt",
+          `${fileId}_${getExpire(fileUrl)}_5nFp9kmbNnHdAFhaqMvt`,
         ),
       )
     },
@@ -286,24 +279,24 @@ actions.iw.likeCurrentVideo = (id) => {
   fetch(`https://api.iwara.tv/video/${id}/like`, {
     method: "post",
     headers: {
-      Authorization: "Bearer " + localStorage.accessToken,
+      Authorization: `Bearer ${localStorage.accessToken}`,
     },
   })
 }
 actions.iw.showPlaylistMenu = () => {
-  util.createHints("*[href*='video/']", async function (element) {
+  util.createHints("*[href*='video/']", async (element) => {
     let checkBoxes = []
     localStorage.accessToken = await actions.iw.getAccessTokenFromIwara()
     const idVideo = actions.iw.getIdIwara(element.href)
-    await fetch("https://api.iwara.tv/light/playlists?id=" + idVideo, {
+    await fetch(`https://api.iwara.tv/light/playlists?id=${idVideo}`, {
       method: "get",
       headers: {
-        Authorization: "Bearer " + localStorage.accessToken,
+        Authorization: `Bearer ${localStorage.accessToken}`,
       },
     })
       .then((res) => res.json())
       .then((data) => {
-        for (let obj of data) {
+        for (const obj of data) {
           checkBoxes = [
             ...checkBoxes,
             {
@@ -319,7 +312,7 @@ actions.iw.showPlaylistMenu = () => {
   })
 }
 actions.iw.playUrlsInClipboardWithMpv = () => {
-  api.Clipboard.read(function (res) {
+  api.Clipboard.read((res) => {
     const urls = res.data.split("\n")
     for (const url of urls) {
       if (url.includes("iwara")) {
@@ -334,7 +327,7 @@ actions.iw.playUrlsInClipboardWithMpv = () => {
 }
 actions.iw.playUrlsOnPageWithMpv = () => {
   let index = 0
-  const urls = Array.from(document.querySelectorAll('a[href*="/video/"]'))
+  const urls = Array.from(document.querySelectorAll("a[href*=\"/video/\"]"))
     .map((a) => actions.iw.getIdIwara(a.href))
     .filter((item, pos, self) => self.indexOf(item) == pos)
   actions.iw.copyAndPlayVideo(urls[0])
@@ -357,14 +350,14 @@ actions.iw.GoToMmdFansVid = (title, config) => {
       `https://mmdfans.net/?query=author:${authorName}&order_by=time`,
     )
   } else {
-    query = encodeURI("https://mmdfans.net/?query=" + title)
+    query = encodeURI(`https://mmdfans.net/?query=${title}`)
   }
   if (page) {
     query += `&page=${page}`
   }
-  actions.getDOM(query, function (s, res) {
+  actions.getDOM(query, (s, res) => {
     if (s) {
-      api.Front.showPopup("Error:" + s)
+      api.Front.showPopup(`Error:${s}`)
       return
     }
     const doc = res
@@ -379,7 +372,7 @@ actions.iw.GoToMmdFansVid = (title, config) => {
         actions.iw.GoToMmdFansVid(titleBackup, { page: page + 1, authorName })
         return
       }
-      api.Front.showBanner("Not found, searching " + title)
+      api.Front.showBanner(`Not found, searching ${title}`)
       actions.iw.GoToMmdFansVid(title, false)
       return
     }
@@ -387,22 +380,19 @@ actions.iw.GoToMmdFansVid = (title, config) => {
     if (videos.length > 1) {
       api.Front.showBanner("Result have above 1 video")
       const vids = Array.from(doc.querySelectorAll(".mdui-grid-tile"))
-      for (let i in vids) {
+      for (const i in vids) {
         if (vids[i].innerText.indexOf(title) != -1) {
           index = i
         }
       }
     }
 
-    let openUrl =
-      "https://mmdfans.net/" + videos[index].href.match(/mmd\/.+/gi)[0]
+    const openUrl = `https://mmdfans.net/${videos[index].href.match(/mmd\/.+/gi)[0]}`
     console.log(openUrl)
     window.open(openUrl)
   })
 }
-actions.iw.getVideoTitle = async (id) => {
-  return await fetch(`https://api.iwara.tv/video/${id}`)
-    .then((response) => response.json())
-    .then((data) => data.title)
-}
+actions.iw.getVideoTitle = async (id) => await fetch(`https://api.iwara.tv/video/${id}`)
+  .then((response) => response.json())
+  .then((data) => data.title)
 export default actions.iw

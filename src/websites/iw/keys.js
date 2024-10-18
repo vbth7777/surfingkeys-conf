@@ -15,7 +15,7 @@ export default [
     alias: PLAY_VIDEO_MPV_ALIAS,
     description: "Copy And View Video By MPV",
     callback: () => {
-      util.createHints('a[href*="/video/"]', (el) => {
+      util.createHints("a[href*=\"/video/\"]", (el) => {
         const id = webActions.getIdIwara(el.href)
         webActions.copyAndPlayVideo(id)
       })
@@ -78,9 +78,9 @@ export default [
     description: "Play All Videos On The Page By MPV",
     callback: () => {
       const vids = document.querySelectorAll(
-        '.videoTeaser__content a[href*="/video/"]',
+        ".videoTeaser__content a[href*=\"/video/\"]",
       )
-      for (let vid of vids) {
+      for (const vid of vids) {
         util.playWithMpv(vid.href, null, localStorage.accessToken)
       }
     },
@@ -138,30 +138,27 @@ export default [
     alias: "u",
     description: "Play All Video Of User",
     callback: async () => {
-      const getProfileID = (url) => {
-        return url.match(/profile\/([^\/])*/)
-      }
+      const getProfileID = (url) => url.match(/profile\/([^\/])*/)
       let profileId = null
       if (window.location.href.includes("profile")) {
         profileId = getProfileID(window.location.href)
       } else {
-        await util.createHints('a[href*="/profile/"]', async (el) => {
+        await util.createHints("a[href*=\"/profile/\"]", async (el) => {
           profileId = getProfileID(el.href)
         })
       }
       if (profileId) {
         const idUser = (
-          await util.getJSON("https://api.iwara.tv/profile/" + profileId)
+          await util.getJSON(`https://api.iwara.tv/profile/${profileId}`)
         ).user.id
         let page = 0
         let maxPage = true
         while (page != maxPage) {
           const url = `https://api.iwara.tv/videos?sort=date&page=${page++}&user=${idUser}`
           const json = await util.getJSON(url)
-          maxPage =
-            maxPage !== true ? parseInt(json.count / json.limit) : maxPage
+          maxPage = maxPage !== true ? parseInt(json.count / json.limit) : maxPage
           const videos = json.results
-          for (let vid of videos) {
+          for (const vid of videos) {
             webActions.copyAndPlayVideo(vid.id)
           }
         }

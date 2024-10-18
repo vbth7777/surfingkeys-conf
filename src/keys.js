@@ -4,6 +4,7 @@ import help from "./help.js"
 import priv from "./conf.priv.js"
 import util from "./util.js"
 
+import iwActions from "./websites/iw/actions.js"
 import iwKeys from "./websites/iw/keys.js"
 import nhKeys from "./websites/nh/keys.js"
 import ahKeys from "./websites/ah/keys.js"
@@ -148,8 +149,7 @@ maps.global = [
     description: "Copy link as Markdown",
     callback: () =>
       util.createHints("a[href]", (a) =>
-        Clipboard.write(`[${a.innerText}](${a.href})`),
-      ),
+        Clipboard.write(`[${a.innerText}](${a.href})`)),
   },
   {
     alias: "yO",
@@ -344,7 +344,7 @@ maps.global = [
     alias: "ovm",
     description: "Open async video in mpv",
     callback: () => {
-      util.createHints("*[href]", async function (el) {
+      util.createHints("*[href]", async (el) => {
         const url = el.href
         api.Front.showBanner(`Opening with mpv (${url})...`)
         fetch("http://localhost:9789/async-run", {
@@ -1324,8 +1324,7 @@ if (priv.doi_handler) {
   registerDOI("apa.org", () =>
     document
       .querySelector(".citation a")
-      ?.innerText?.replace(/^https:\/\/doi\.org\//, ""),
-  )
+      ?.innerText?.replace(/^https:\/\/doi\.org\//, ""))
   registerDOI("ashpublications.org")
   registerDOI("asnjournals.org")
   registerDOI("biomedcentral.com")
@@ -1341,8 +1340,7 @@ if (priv.doi_handler) {
   registerDOI("elifesciences.org", () =>
     document
       .querySelector("meta[name='dc.identifier']")
-      ?.content?.replace(/^doi:/, ""),
-  )
+      ?.content?.replace(/^doi:/, ""))
   registerDOI("embopress.org")
   registerDOI("emerald.com", actions.doi.providers.meta_dcIdentifier_doi)
   registerDOI("episciences.org")
@@ -1359,8 +1357,7 @@ if (priv.doi_handler) {
   registerDOI("ingentaconnect.com", () =>
     document
       .querySelector("meta[name='DC.identifier']")
-      ?.content?.replace(/^info:doi\//, ""),
-  )
+      ?.content?.replace(/^info:doi\//, ""))
   registerDOI("jacc.or", actions.doi.providers.meta_dcIdentifier_doi)
   registerDOI("jamanetwork.com")
   registerDOI("jci.org")
@@ -1451,7 +1448,7 @@ const aliases = {
   ],
 }
 
-//Configurate for specific sites
+// Configurate for specific sites
 const { hostname } = window.location
 if (hostname.includes("pixiv")) {
   unmaps.mappings.push("z")
