@@ -1,13 +1,13 @@
 <!-- NOTICE: This file is auto-generated. Do not edit directly. -->
 
-# SurfingKeys Configuration
+# Maddison's SurfingKeys Configuration
 
 This is my configuration for the [SurfingKeys](https://github.com/brookhong/Surfingkeys) browser extension.
 
 It includes:
 
-- [261 key mappings for 101 unique websites](#site-specific-key-mappings) which **automate many common actions**.
-- [Omnibar integration with 54 Search Engines and Knowledge Sources](#omnibar-search-engine-integrations), many of which include **inline images** and **instant answers**.
+- [265 key mappings for 104 unique websites](#site-specific-key-mappings) which **automate many common actions**.
+- [Omnibar integration with 55 Search Engines and Knowledge Sources](#omnibar-search-engine-integrations), many of which include **inline images** and **instant answers**.
 
 ## Table of Contents
 
@@ -32,7 +32,6 @@ It includes:
 <tr><td><code>J</code></td><td>Scroll half page down</td></tr>
 <tr><td><code>gh</code></td><td>Scroll to element targeted by URL hash</td></tr>
 <tr><td><code>gi</code></td><td>Edit current URL with vim editor</td></tr>
-<tr><td><code>gi</code></td><td>Edit current URL with vim editor</td></tr>
 <tr><td><code>gI</code></td><td>View image in new tab</td></tr>
 <tr><td><code>g.</code></td><td>Go to parent domain</td></tr>
 <tr><td><code>yp</code></td><td>Copy URL path of current page</td></tr>
@@ -42,7 +41,6 @@ It includes:
 <tr><td><code>yM</code></td><td>Copy page URL/Title as Markdown link</td></tr>
 <tr><td><code>yT</code></td><td>Duplicate current tab (non-active new tab)</td></tr>
 <tr><td><code>;se</code></td><td>Edit Settings</td></tr>
-<tr><td><code>gS</code></td><td>Open Chrome settings</td></tr>
 <tr><td><code>&#x3D;W</code></td><td>Lookup whois information for domain</td></tr>
 <tr><td><code>&#x3D;d</code></td><td>Lookup dns information for domain</td></tr>
 <tr><td><code>&#x3D;D</code></td><td>Lookup all information for domain</td></tr>
@@ -50,6 +48,7 @@ It includes:
 <tr><td><code>&#x3D;a</code></td><td>Show Archive.org Wayback Machine for page</td></tr>
 <tr><td><code>&#x3D;A</code></td><td>Show Alexa.com info for domain</td></tr>
 <tr><td><code>&#x3D;s</code></td><td>View social discussions for page</td></tr>
+<tr><td><code>&#x3D;S</code></td><td>View summary for page</td></tr>
 <tr><td><code>&#x3D;o</code></td><td>Show outline.com version of page</td></tr>
 <tr><td><code>&#x3D;bw</code></td><td>Show BuiltWith report for page</td></tr>
 <tr><td><code>&#x3D;wa</code></td><td>Show Wappalyzer report for page</td></tr>
@@ -77,6 +76,13 @@ It includes:
 <tr><td><code>&lt;Space&gt;b</code></td><td>Add project to collection</td></tr>
 <tr><td><code>&lt;Space&gt;a</code></td><td>View project</td></tr>
 <tr><td><code>&lt;Space&gt;A</code></td><td>View project (non-active new tab)</td></tr>
+<tr><th colspan="2"><a href="//bsky.app"><img src="./assets/favicons/bsky.app.ico" width="16px"> bsky.app</a></th></tr><tr><td><strong>Mapping</strong></td><td><strong>Description</strong></td></tr>
+<tr><td><code>&lt;Space&gt;d</code></td><td>Copy user DID</td></tr>
+<tr><td><code>&lt;Space&gt;p</code></td><td>Copy user post ID</td></tr>
+<tr><th colspan="2"><a href="//chatgpt.com"><img src="./assets/favicons/chatgpt.com.ico" width="16px"> chatgpt.com</a></th></tr><tr><td><strong>Mapping</strong></td><td><strong>Description</strong></td></tr>
+<tr><td><code>i</code></td><td>Focus input</td></tr>
+<tr><th colspan="2"><a href="//claude.ai"><img src="./assets/favicons/claude.ai.ico" width="16px"> claude.ai</a></th></tr><tr><td><strong>Mapping</strong></td><td><strong>Description</strong></td></tr>
+<tr><td><code>i</code></td><td>Focus input</td></tr>
 <tr><th colspan="2"><a href="//craigslist.org"><img src="./assets/favicons/craigslist.org.ico" width="16px"> craigslist.org</a></th></tr><tr><td><strong>Mapping</strong></td><td><strong>Description</strong></td></tr>
 <tr><td><code>&lt;Space&gt;a</code></td><td>View listing</td></tr>
 <tr><th colspan="2"><a href="//devdocs.io"><img src="./assets/favicons/devdocs.io.ico" width="16px"> devdocs.io</a></th></tr><tr><td><strong>Mapping</strong></td><td><strong>Description</strong></td></tr>
@@ -124,7 +130,8 @@ It includes:
 <tr><td><code>&lt;Space&gt;yy</code></td><td>Copy Project Path</td></tr>
 <tr><td><code>&lt;Space&gt;Y</code></td><td>Copy Project Path (including domain)</td></tr>
 <tr><td><code>&lt;Space&gt;l</code></td><td>Toggle repo language stats</td></tr>
-<tr><td><code>&lt;Space&gt;D</code></td><td>View GoDoc for Project</td></tr>
+<tr><td><code>&lt;Space&gt;D</code></td><td>Open in github.dev (new tab)</td></tr>
+<tr><td><code>&lt;Space&gt;dd</code></td><td>Open in github.dev</td></tr>
 <tr><td><code>&lt;Space&gt;G</code></td><td>View on SourceGraph</td></tr>
 <tr><td><code>&lt;Space&gt;r</code></td><td>View live raw version of file</td></tr>
 <tr><td><code>&lt;Space&gt;yr</code></td><td>Copy raw link to file</td></tr>
@@ -337,7 +344,7 @@ For example, to open the Wikipedia omnibar integration, type `awp`.
   </tr>
   <tr>
     <td><a href="https://duckduckgo.com"><img src="./assets/favicons/duckduckgo.com.ico" width="16px"> </a></td>
-    <td><code>dd</code></td>
+    <td><code>du</code></td>
     <td>duckduckgo</td>
     <td><a href="https://duckduckgo.com">duckduckgo.com</a></td>
     <td></td>
@@ -574,6 +581,13 @@ For example, to open the Wikipedia omnibar integration, type `awp`.
     <td><a href="#thesaurus">:framed_picture:</a></td>
   </tr>
   <tr>
+    <td><a href="https://www.typescriptlang.org"><img src="./assets/favicons/www.typescriptlang.org.ico" width="16px"> </a></td>
+    <td><code>ts</code></td>
+    <td>typescript</td>
+    <td><a href="https://www.typescriptlang.org">www.typescriptlang.org</a></td>
+    <td></td>
+  </tr>
+  <tr>
     <td><a href="https://twitter.com"><img src="./assets/favicons/twitter.com.ico" width="16px"> </a></td>
     <td><code>tw</code></td>
     <td>twitter</td>
@@ -581,10 +595,10 @@ For example, to open the Wikipedia omnibar integration, type `awp`.
     <td></td>
   </tr>
   <tr>
-    <td><a href="https://unicode-table.com"><img src="./assets/favicons/unicode-table.com.ico" width="16px"> </a></td>
+    <td><a href="https://symbl.cc"><img src="./assets/favicons/symbl.cc.ico" width="16px"> </a></td>
     <td><code>un</code></td>
     <td>unicode <a title="requires local web server" href="#running-the-local-web-server">&#8224;</a></td>
-    <td><a href="https://unicode-table.com">unicode-table.com</a></td>
+    <td><a href="https://symbl.cc">symbl.cc</a></td>
     <td><a href="#unicode">:framed_picture:</a></td>
   </tr>
   <tr>
@@ -846,4 +860,4 @@ You will need to modify it to contain the proper path to your `surfingkeys-conf`
 
 ## Copyright
 
-<p><h4>Author</h4>&copy; 2017-2023 <a href="https://github.com/b0o">Maddison Hellstrom</a></p><p><h4>License</h4>Released under the <a href="./LICENSE">MIT License</a></p>
+<p><h4>Author</h4>&copy; 2017-2024 <a href="https://github.com/b0o">Maddison Hellstrom</a></p><p><h4>License</h4>Released under the <a href="./LICENSE">MIT License</a></p>

@@ -11,7 +11,6 @@ const {
   Front,
   removeSearchAlias,
   addSearchAlias,
-  Hints,
 } = api
 
 const registerKey = (domain, mapObj, siteleader) => {
@@ -34,23 +33,28 @@ const registerKey = (domain, mapObj, siteleader) => {
 
   const fullDescription = `#${category} ${description}`
 
-  if (typeof mapObj.map !== "undefined") {
-    map(alias, mapObj.map)
-  } else {
-    mapkey(key, fullDescription, callback, opts)
+  try {
+    if (typeof mapObj.map !== "undefined") {
+      map(alias, mapObj.map)
+    } else {
+      mapkey(key, fullDescription, callback, opts) // t, n, r, o
+    }
+  } catch (e) {
+    console.error(`Error registering key ${alias}: ${e}`)
   }
 }
 
 const registerKeys = (maps, aliases, siteleader) => {
-  const hydratedAliases = Object.entries(
-    aliases,
-  ).flatMap(([baseDomain, aliasDomains]) =>
-    aliasDomains.flatMap((a) => ({ [a]: maps[baseDomain] })))
+  const hydratedAliases = Object.entries(aliases).flatMap(
+    ([baseDomain, aliasDomains]) =>
+      aliasDomains.flatMap((a) => ({ [a]: maps[baseDomain] })),
+  )
 
   const mapsAndAliases = Object.assign({}, maps, ...hydratedAliases)
 
   Object.entries(mapsAndAliases).forEach(([domain, domainMaps]) =>
-    domainMaps.forEach((mapObj) => registerKey(domain, mapObj, siteleader)))
+    domainMaps.forEach((mapObj) => registerKey(domain, mapObj, siteleader)),
+  )
 }
 
 const registerSearchEngines = (searchEngines, searchleader) =>
@@ -70,7 +74,8 @@ const registerSearchEngines = (searchEngines, searchleader) =>
       options,
     )
     mapkey(`${searchleader}${s.alias}`, `#8Search ${s.name}`, () =>
-      Front.openOmnibar({ type: "SearchEngine", extra: s.alias }))
+      Front.openOmnibar({ type: "SearchEngine", extra: s.alias }),
+    )
     mapkey(
       `c${searchleader}${s.alias}`,
       `#8Search ${s.name} with clipboard contents`,
@@ -88,7 +93,6 @@ const registerSearchEngines = (searchEngines, searchleader) =>
 
 const main = async () => {
   window.surfingKeys = api
-  Hints.style("font-family: Arial;background: #fff;border-color: #000; color: #000; font-size:12px;")
   if (conf.settings) {
     Object.assign(
       settings,
@@ -100,6 +104,7 @@ const main = async () => {
     // await chrome.storage.local.set({
     //   logLevels: conf.logLevels,
     // })
+    localStorage.setItem("logLevels", conf.logLevels)
   }
 
   if (conf.keys && conf.keys.unmaps) {

@@ -8,14 +8,14 @@ import file from "gulp-file"
 import path from "path"
 import { deleteAsync } from "del"
 import gulpNotify from "gulp-notify"
-import fs from "fs/promises"
+import fs from "fs"
 import url from "url"
 
 import serve from "./server/index.js"
 import paths, { getPath, getSrcPath } from "./paths.js"
 import webpackConfig from "./webpack.config.js"
 
-const requireJson = async (f) => JSON.parse(await fs.readFile(f))
+const requireJson = (f) => JSON.parse(fs.readFileSync(f))
 const log = (...msg) => process.stderr.write(`${msg.join("\n")}\n`)
 
 const copyrightYearOne = 2017
@@ -28,16 +28,16 @@ const escapeHTML = (text) =>
   String(text).replace(
     /[&<>"'`=/]/g,
     (s) =>
-    ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;",
-      "/": "&#x2F;",
-      "`": "&#x60;",
-      "=": "&#x3D;",
-    }[s])
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+        "/": "&#x2F;",
+        "`": "&#x60;",
+        "=": "&#x3D;",
+      })[s],
   )
 
 const { WEBPACK_MODE } = process.env
@@ -50,7 +50,7 @@ if (WEBPACK_MODE) {
   log(`Using webpack mode: ${WEBPACK_MODE}`)
 }
 
-const pkg = await requireJson(getPath(paths.pkgJson))
+const pkg = requireJson(getPath(paths.pkgJson))
 
 const getSources = (() => {
   let sources = null
@@ -61,20 +61,20 @@ const getSources = (() => {
     // Create stubs for document methods which are used by uhtml
     const oldDocument = global.document
     global.document = {
-      createDocumentFragment: function() { },
-      createElement: function() { },
-      createElementNS: function() { },
-      createTextNode: function() { },
-      createTreeWalker: function() { },
-      importNode: function() { },
+      createDocumentFragment() {},
+      createElement() {},
+      createElementNS() {},
+      createTextNode() {},
+      createTreeWalker() {},
+      importNode() {},
     }
     sources = await Object.fromEntries(
       await Promise.all(
         Object.entries(paths.sources).map(async ([name, srcPath]) => [
           name,
           (await import(getSrcPath(srcPath))).default,
-        ])
-      )
+        ]),
+      ),
     )
     global.document = oldDocument
     return sources
@@ -90,8 +90,8 @@ const loadFaviconsManifest = async () => {
     return
   }
   try {
-    faviconsManifest = await requireJson(
-      getPath(paths.favicons, paths.faviconsManifest)
+    faviconsManifest = requireJson(
+      getPath(paths.favicons, paths.faviconsManifest),
     )
   } catch (e) {
     log(`Warning: couldn't load favicons manifest: ${e}`)
@@ -108,9 +108,9 @@ const notify = Object.assign(
         timeout: 2000,
         ...opts,
       },
-      ...args
+      ...args,
     ),
-  gulpNotify
+  gulpNotify,
 )
 
 notify.onError = (opts, ...args) =>
@@ -120,7 +120,7 @@ notify.onError = (opts, ...args) =>
       timeout: 7500,
       ...opts,
     },
-    ...args
+    ...args,
   )
 
 task("clean", () => deleteAsync(["build", ".cache", ".tmp-gulp-compile-*"]))
@@ -131,12 +131,12 @@ task("check-priv", async () => {
     await fs.stat(getSrcPath(paths.sources.priv))
   } catch (e) {
     log(
-      `Notice: Initializing ${paths.sources.confPriv}. Configure your API keys here.`
+      `Notice: Initializing ${paths.sources.confPriv}. Configure your API keys here.`,
     )
     return fs.copyFile(
       getPath(paths.confPrivExample),
       getSrcPath(paths.sources.confPriv),
-      fs.constants.COPYFILE_EXCL
+      fs.constants.COPYFILE_EXCL,
     )
   }
   return Promise.resolve()
@@ -146,7 +146,7 @@ const parseContributor = (contributor) => {
   let c = contributor
   if (typeof contributor === "string") {
     const m = contributor.match(
-      /^(?<name>.*?)\s*(<(?<email>.*?)>)?\s*(\((?<url>.*?)\))?$/
+      /^(?<name>.*?)\s*(<(?<email>.*?)>)?\s*(\((?<url>.*?)\))?$/,
     )
     if (!m) {
       throw new Error(`couldn't parse contributor '${contributor}'`)
@@ -154,7 +154,7 @@ const parseContributor = (contributor) => {
     c = m.groups
   } else if (typeof contributor !== "object") {
     throw new Error(
-      `expected contributor to be of type 'string' or 'object', got '${typeof contributor}'`
+      `expected contributor to be of type 'string' or 'object', got '${typeof contributor}'`,
     )
   }
   if (!c.name) {
@@ -211,7 +211,7 @@ task(
           const num = i > 0 ? ` ${i + 1}` : ""
           s += `<a href="#${c.name.toLowerCase()}${num.replace(
             " ",
-            "-"
+            "-",
           )}">:framed_picture:</a>`
           screenshotList += `##### ${c.name}${num}\n`
           screenshotList += `![${c.name} screenshot](./${ss})\n\n`
@@ -253,7 +253,7 @@ task(
           leader = conf.siteleader
         }
         const mapStr = escapeHTML(
-          `${leader}${map.alias}`.replace(" ", "<space>")
+          `${leader}${map.alias}`.replace(" ", "<space>"),
         )
         return `${acc2}<tr><td><code>${mapStr}</code></td><td>${map.description}</td></tr>\n`
       }, "")
@@ -269,18 +269,19 @@ task(
     }, Promise.resolve(""))
 
     const year = new Date().getFullYear()
-    const copyrightYears = `${copyrightYearOne !== year
+    const copyrightYears = `${
+      copyrightYearOne !== year
         ? `${copyrightYearOne}-${year}`
         : copyrightYearOne
-      }`
+    }`
     let copyright = `<p><h4>Author</h4>&copy; ${copyrightYears} ${parseContributor(
-      pkg.author
+      pkg.author,
     )}</p>`
     if (Array.isArray(pkg.contributors) && pkg.contributors.length > 0) {
       copyright += "<p><h4>Contributors</h4><ul>"
       copyright += pkg.contributors.reduce(
         (acc, c) => `${acc}<li>${parseContributor(c)}</li>`,
-        ""
+        "",
       )
       copyright += "</ul></p>"
     }
@@ -294,25 +295,25 @@ task(
       .pipe(
         replace(
           "<!--{{SEARCH_ENGINES_COUNT}}-->",
-          Object.keys(searchEngines).length
-        )
+          Object.keys(searchEngines).length,
+        ),
       )
       .pipe(replace("<!--{{SEARCH_ENGINES_TABLE}}-->", searchEnginesTable))
       .pipe(
         replace(
           "<!--{{KEYS_MAPS_COUNT}}-->",
-          Object.values(keys.maps).reduce((acc, m) => acc + m.length, 0)
-        )
+          Object.values(keys.maps).reduce((acc, m) => acc + m.length, 0),
+        ),
       )
       .pipe(
-        replace("<!--{{KEYS_SITES_COUNT}}-->", Object.keys(keys.maps).length)
+        replace("<!--{{KEYS_SITES_COUNT}}-->", Object.keys(keys.maps).length),
       )
       .pipe(replace("<!--{{KEYS_TABLE}}-->", keysTable))
       .pipe(replace("<!--{{SCREENSHOTS}}-->", screenshotList))
       .pipe(replace("<!--{{COPYRIGHT}}-->", copyright))
       .pipe(rename(paths.readmeOut))
       .pipe(dest(paths.dirname))
-  })
+  }),
 )
 
 const getFavicon = async ({ domain, favicon }, timeout = 5000) => {
@@ -329,7 +330,7 @@ const getFavicon = async ({ domain, favicon }, timeout = 5000) => {
     // transparent pixel
     data = Buffer.from(
       "AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAA==",
-      "base64"
+      "base64",
     )
   }
   return {
@@ -364,9 +365,9 @@ task(
           .map(([key]) => ({
             domain: key,
             favicon: getDuckduckgoFaviconUrl(
-              new URL(`https://${key}`).hostname
+              new URL(`https://${key}`).hostname,
             ),
-          }))
+          })),
       )
       .filter((e, i, arr) => i === arr.indexOf(e))
 
@@ -388,7 +389,7 @@ task(
     ]
 
     return file(files).pipe(dest(getPath(paths.favicons)))
-  })
+  }),
 )
 
 task("docs-full", series("favicons", "docs"))
@@ -411,7 +412,7 @@ const build = () =>
         title: `Build success [${pkg.name}]`,
         message: "No issues",
         timeout: 2,
-      })
+      }),
     )
 
 task("build", build)
@@ -423,8 +424,8 @@ task("dist", parallel("docs-full", "build-full"))
 task(
   "install",
   series("build", () =>
-    src(getPath(paths.buildDir, paths.output)).pipe(dest(paths.installDir))
-  )
+    src(getPath(paths.buildDir, paths.output)).pipe(dest(paths.installDir)),
+  ),
 )
 
 const watch = (g, t) => () =>
@@ -438,15 +439,15 @@ task(
   "watch-docs",
   watch(
     [srcWatchPat, getPath(paths.readme), getPath(paths.assets, "**/*")],
-    series("docs")
-  )
+    series("docs"),
+  ),
 )
 task(
   "watch-docs-full",
   watch(
     [srcWatchPat, getPath(paths.readme), getPath(paths.assets, "**/*")],
-    series("docs-full")
-  )
+    series("docs-full"),
+  ),
 )
 task("watch", series("watch-install"))
 

@@ -4,7 +4,6 @@ import help from "./help.js"
 import priv from "./conf.priv.js"
 import util from "./util.js"
 
-import iwActions from "./websites/iw/actions.js"
 import iwKeys from "./websites/iw/keys.js"
 import nhKeys from "./websites/nh/keys.js"
 import ahKeys from "./websites/ah/keys.js"
@@ -15,8 +14,8 @@ import youtubeKeys from "./websites/youtube/keys.js"
 
 const { categories } = help
 
-const { Clipboard, Front } = api
-const PLAY_VIDEO_MPV_ALIAS = "om"
+const { Clipboard, Front, Hints } = api
+
 // Remove undesired default mappings
 const unmaps = {
   mappings: [
@@ -49,7 +48,6 @@ const unmaps = {
     "p",
     "<Ctrl-j>",
     "<Ctrl-h>",
-    "x",
   ],
   searchAliases: {
     s: ["g", "d", "b", "e", "w", "s", "h", "y"],
@@ -66,7 +64,7 @@ maps.global = [
     description: "Open a link in non-active new tab",
   },
   {
-    alias: "of",
+    alias: "zf",
     category: categories.mouseClick,
     description: "Open link URL in vim editor",
     callback: actions.previewLink,
@@ -100,12 +98,6 @@ maps.global = [
     category: categories.scroll,
     description: "Scroll to element targeted by URL hash",
     callback: actions.scrollToHash,
-  },
-  {
-    alias: "gi",
-    category: categories.pageNav,
-    description: "Edit current URL with vim editor",
-    callback: actions.vimEditURL,
   },
   {
     alias: "gi",
@@ -149,7 +141,8 @@ maps.global = [
     description: "Copy link as Markdown",
     callback: () =>
       util.createHints("a[href]", (a) =>
-        Clipboard.write(`[${a.innerText}](${a.href})`)),
+        Clipboard.write(`[${a.innerText}](${a.href})`),
+      ),
   },
   {
     alias: "yO",
@@ -188,11 +181,6 @@ maps.global = [
     category: categories.settings,
     description: "Edit Settings",
     callback: actions.editSettings,
-  },
-  {
-    alias: "gS",
-    category: categories.chromeURLs,
-    description: "Open Chrome settings",
   },
   {
     alias: "=W",
@@ -238,6 +226,12 @@ maps.global = [
     description: "View social discussions for page",
     callback: () =>
       actions.openLink(actions.getDiscussionsUrl(), { newTab: true }),
+  },
+  {
+    alias: "=S",
+    category: categories.misc,
+    description: "View summary for page",
+    callback: () => actions.openLink(actions.getSummaryUrl(), { newTab: true }),
   },
   {
     alias: "=o",
@@ -304,56 +298,6 @@ maps.global = [
   //   description: "Open AWS service",
   //   callback:    actions.omnibar.aws,
   // },
-  {
-    alias: "cm",
-    description: "Play Urls In Clipboard With MPV",
-    callback: () => util.openUrlsInClipboardWithMpv(),
-  },
-  {
-    alias: ";x",
-    description: "Remove Element",
-    callback: () => {
-      util.createHints("*", (element) => element.remove())
-    },
-  },
-  {
-    alias: ";r",
-    description: "Get Full Text From Element",
-    callback: () => {
-      util.createHints("*", (element) => Front.showPopup(element.innerText))
-    },
-  },
-  {
-    alias: PLAY_VIDEO_MPV_ALIAS,
-    description: "Open Url By MPV",
-    callback: () => {
-      util.createHints("*[href]", (el) => {
-        util.playWithMpv(el.href)
-      })
-    },
-  },
-  {
-    alias: "oc",
-    description: "Open All Urls In Clipboard By MPV",
-    callback: () => {
-      actions.openUrlsInClipboardWithMpv()
-    },
-  },
-
-  {
-    alias: "ovm",
-    description: "Open async video in mpv",
-    callback: () => {
-      util.createHints("*[href]", async (el) => {
-        const url = el.href
-        api.Front.showBanner(`Opening with mpv (${url})...`)
-        fetch("http://localhost:9789/async-run", {
-          method: "post",
-          body: new URLSearchParams({ url }),
-        }).catch((err) => console.error(err))
-      })
-    },
-  },
 ]
 
 maps["amazon.com"] = [
@@ -628,8 +572,13 @@ maps["github.com"] = [
   },
   {
     alias: "D",
-    description: "View GoDoc for Project",
-    callback: actions.viewGodoc,
+    description: "Open in github.dev (new tab)",
+    callback: () => actions.gh.openInDev({ newTab: true }),
+  },
+  {
+    alias: "dd",
+    description: "Open in github.dev",
+    callback: actions.gh.openInDev,
   },
   {
     alias: "G",
@@ -755,6 +704,19 @@ maps["twitter.com"] = [
       util.createHints(
         "article, article div[data-focusable='true'][role='link'][tabindex='0']",
       ),
+  },
+]
+
+maps["bsky.app"] = [
+  {
+    alias: "d",
+    description: "Copy user DID",
+    callback: actions.by.copyDID,
+  },
+  {
+    alias: "p",
+    description: "Copy user post ID",
+    callback: actions.by.copyPostID,
   },
 ]
 
@@ -1286,13 +1248,43 @@ maps["ikea.com"] = [
       actions.openLink("/us/en/customer-service/track-manage-order/"),
   },
 ]
+
+maps["chatgpt.com"] = [
+  {
+    alias: "i",
+    leader: "",
+    description: "Focus input",
+    callback: () =>
+      setTimeout(
+        () =>
+          Hints.dispatchMouseClick(document.querySelector("#prompt-textarea")),
+        0,
+      ),
+  },
+]
+
+maps["claude.ai"] = [
+  {
+    alias: "i",
+    leader: "",
+    description: "Focus input",
+    callback: () =>
+      setTimeout(
+        () =>
+          Hints.dispatchMouseClick(
+            document.querySelector(".ProseMirror[contenteditable=true]"),
+          ),
+        0,
+      ),
+  },
+]
+
 maps["nhentai.net"] = nhKeys
 maps["anchira.to"] = ahKeys
 maps["iwara.tv"] = iwKeys
 maps["mmdfans.net"] = mfKeys
 maps["erommdtube.com"] = emKeys
 maps["oreno3d.com"] = orKeys
-
 const registerDOI = (
   domain,
   provider = actions.doi.providers.meta_citation_doi,
@@ -1324,7 +1316,8 @@ if (priv.doi_handler) {
   registerDOI("apa.org", () =>
     document
       .querySelector(".citation a")
-      ?.innerText?.replace(/^https:\/\/doi\.org\//, ""))
+      ?.innerText?.replace(/^https:\/\/doi\.org\//, ""),
+  )
   registerDOI("ashpublications.org")
   registerDOI("asnjournals.org")
   registerDOI("biomedcentral.com")
@@ -1340,7 +1333,8 @@ if (priv.doi_handler) {
   registerDOI("elifesciences.org", () =>
     document
       .querySelector("meta[name='dc.identifier']")
-      ?.content?.replace(/^doi:/, ""))
+      ?.content?.replace(/^doi:/, ""),
+  )
   registerDOI("embopress.org")
   registerDOI("emerald.com", actions.doi.providers.meta_dcIdentifier_doi)
   registerDOI("episciences.org")
@@ -1357,7 +1351,8 @@ if (priv.doi_handler) {
   registerDOI("ingentaconnect.com", () =>
     document
       .querySelector("meta[name='DC.identifier']")
-      ?.content?.replace(/^info:doi\//, ""))
+      ?.content?.replace(/^info:doi\//, ""),
+  )
   registerDOI("jacc.or", actions.doi.providers.meta_dcIdentifier_doi)
   registerDOI("jamanetwork.com")
   registerDOI("jci.org")
@@ -1448,14 +1443,6 @@ const aliases = {
   ],
 }
 
-// Configurate for specific sites
-const { hostname } = window.location
-if (hostname.includes("pixiv")) {
-  unmaps.mappings.push("z")
-  unmaps.mappings.push("d")
-  unmaps.mappings.push("s")
-  unmaps.mappings.push("e")
-}
 export default {
   unmaps,
   maps,

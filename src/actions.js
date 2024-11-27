@@ -3,16 +3,10 @@ import ghReservedNames from "github-reserved-names"
 import api from "./api.js"
 import priv from "./conf.priv.js"
 import util from "./util.js"
-import actions from "./websites/global/actions.js"
 
-import iwActions from "./websites/iw/actions.js"
-import nhActions from "./websites/nh/actions.js"
-import ahActions from "./websites/ah/actions.js"
-import emActions from "./websites/em/actions.js"
-import orActions from "./websites/or/actions.js"
-import youtubeActions from "./websites/youtube/actions.js"
+const { tabOpenLink, Front, Hints, Normal, RUNTIME, Clipboard } = api
 
-const { tabOpenLink, Front, Hints, Normal, RUNTIME } = api
+const actions = {}
 
 // Globally applicable actions
 // ===========================
@@ -39,18 +33,6 @@ actions.moveTabNextToTab = (targetId, nextTo, leftOf = false) =>
 //   await actions.moveTabNextToTab(cutTabEvent.tabId, curTab, leftOf)
 // }
 
-actions.getDOM = (url, callback) => {
-  fetch(url)
-    .then((res) => res.text())
-    .then((data) => {
-      const parser = new DOMParser()
-      const htmlDocument = parser.parseFromString(data, "text/html")
-      callback(null, htmlDocument)
-    })
-    .catch((error) => {
-      callback(error, null)
-    })
-}
 actions.dispatchEvents = (type, node, ...eventTypes) =>
   eventTypes.forEach((t) => {
     const e = document.createEvent(type)
@@ -70,30 +52,6 @@ actions.scrollToHash = (hash = null) => {
     return
   }
   e.scrollIntoView({ behavior: "smooth" })
-}
-actions.openUrlsInClipboardWithMpv = async () => {
-  api.Clipboard.read(function(res) {
-    const urls = res.data.split("\n")
-    for (const url of urls) {
-      if (url.includes("iwara")) {
-        actions.iw.copyAndPlayVideo(
-          url.match(/video\/.+(\/)?/)[0].replace(/video\/|\/.+/g, ""),
-        )
-      } else if (url.includes("erommdtube") || url.includes("oreno3d")) {
-        actions.getDOM(url, function(err, htmlDocument) {
-          if (err) {
-            console.log(err)
-            return
-          }
-          const urlIw = htmlDocument.querySelector('[href*="iwara.tv"]')
-          const id = actions.iw.getIdIwara(urlIw.href)
-          actions.iw.copyAndPlayVideo(id)
-        })
-      } else {
-        util.playWithMpv(url)
-      }
-    }
-  })
 }
 
 // URL Manipulation/querying
@@ -126,9 +84,10 @@ actions.getDnsInfoUrl = ({
   hostname = window.location.hostname,
   all = false,
 } = {}) =>
-  `${ddossierUrl}?dom_dns=true&addr=${hostname}${all
-    ? "?dom_whois=true&dom_dns=true&traceroute=true&net_whois=true&svc_scan=true"
-    : ""
+  `${ddossierUrl}?dom_dns=true&addr=${hostname}${
+    all
+      ? "?dom_whois=true&dom_dns=true&traceroute=true&net_whois=true&svc_scan=true"
+      : ""
   }`
 
 actions.getGoogleCacheUrl = ({ href = window.location.href } = {}) =>
@@ -151,6 +110,11 @@ actions.getWappalyzerUrl = ({ hostname = window.location.hostname } = {}) =>
 
 actions.getDiscussionsUrl = ({ href = window.location.href } = {}) =>
   `https://discussions.xojoc.pw/?${new URLSearchParams({ url: href })}`
+
+actions.getSummaryUrl = ({ href = window.location.href } = {}) =>
+  `https://kagi.com/summarizer/index.html?${new URLSearchParams({
+    url: href,
+  })}`
 
 // // Custom Omnibar interfaces
 // // ------------------------
@@ -186,8 +150,8 @@ actions.getDiscussionsUrl = ({ href = window.location.href } = {}) =>
 // ----------------------------
 actions.openAnchor =
   ({ newTab = false, active = true, prop = "href" } = {}) =>
-    (a) =>
-      actions.openLink(a[prop], { newTab, active })
+  (a) =>
+    actions.openLink(a[prop], { newTab, active })
 
 actions.openLink = (url, { newTab = false, active = true } = {}) => {
   if (newTab) {
@@ -203,23 +167,23 @@ actions.openLink = (url, { newTab = false, active = true } = {}) => {
 actions.editSettings = () =>
   tabOpenLink(chrome.extension.getURL("/pages/options.html"))
 
-actions.togglePdfViewer = () =>
-  // chrome.storage.local.get("noPdfViewer", (resp) => {
-  //   if (!resp.noPdfViewer) {
-  //     chrome.storage.local.set({ noPdfViewer: 1 }, () => {
-  //       Front.showBanner("PDF viewer disabled.")
-  //     })
-  //   } else {
-  //     chrome.storage.local.remove("noPdfViewer", () => {
-  //       Front.showBanner("PDF viewer enabled.")
-  //     })
-  //   }
-  // })
+actions.togglePdfViewer = () => {}
+// chrome.storage.local.get("noPdfViewer", (resp) => {
+//   if (!resp.noPdfViewer) {
+//     chrome.storage.local.set({ noPdfViewer: 1 }, () => {
+//       Front.showBanner("PDF viewer disabled.")
+//     })
+//   } else {
+//     chrome.storage.local.remove("noPdfViewer", () => {
+//       Front.showBanner("PDF viewer enabled.")
+//     })
+//   }
+// })
 
-  actions.previewLink = () =>
-    util.createHints("a[href]", (a) =>
-      Front.showEditor(a.href, (url) => actions.openLink(url), "url"),
-    )
+actions.previewLink = () =>
+  util.createHints("a[href]", (a) =>
+    Front.showEditor(a.href, (url) => actions.openLink(url), "url"),
+  )
 
 actions.scrollElement = (el, dir) => {
   actions.dispatchMouseEvents(el, "mousedown")
@@ -421,61 +385,61 @@ actions.dg.siteSearch = (site) => {
 actions.gh = {}
 actions.gh.star =
   ({ toggle = false } = {}) =>
-    async () => {
-      const hasDisplayNoneParent = (e) =>
-        window.getComputedStyle(e).display === "none" ||
-        (e.parentElement ? hasDisplayNoneParent(e.parentElement) : false)
+  async () => {
+    const hasDisplayNoneParent = (e) =>
+      window.getComputedStyle(e).display === "none" ||
+      (e.parentElement ? hasDisplayNoneParent(e.parentElement) : false)
 
-      const starContainers = Array.from(
-        document.querySelectorAll("div.starring-container"),
-      ).filter((e) => !hasDisplayNoneParent(e))
+    const starContainers = Array.from(
+      document.querySelectorAll("div.starring-container"),
+    ).filter((e) => !hasDisplayNoneParent(e))
 
-      let container
-      switch (starContainers.length) {
-        case 0:
+    let container
+    switch (starContainers.length) {
+      case 0:
+        return
+      case 1:
+        ;[container] = starContainers
+        break
+      default:
+        try {
+          container = await util.createHints(starContainers, { action: null })
+        } catch (_) {
           return
-        case 1:
-          ;[container] = starContainers
-          break
-        default:
-          try {
-            container = await util.createHints(starContainers, { action: null })
-          } catch (_) {
-            return
-          }
-      }
-
-      const repoUrl = container.parentElement.parentElement?.matches(
-        "ul.pagehead-actions",
-      )
-        ? window.location.pathname
-        : new URL(container.parentElement.querySelector("form").action).pathname
-
-      const status = container.classList.contains("on")
-      const repo = repoUrl.slice(1).split("/").slice(0, 2).join("/")
-
-      let star = "★"
-      let statusMsg = "starred"
-      let copula = "is"
-
-      if ((status && toggle) || (!status && !toggle)) {
-        statusMsg = `un${statusMsg}`
-        star = "☆"
-      }
-
-      if (toggle) {
-        copula = "has been"
-        container
-          .querySelector(
-            status
-              ? ".starred button, button.starred"
-              : ".unstarred button, button.unstarred",
-          )
-          .click()
-      }
-
-      Front.showBanner(`${star} Repository ${repo} ${copula} ${statusMsg}!`)
+        }
     }
+
+    const repoUrl = container.parentElement.parentElement?.matches(
+      "ul.pagehead-actions",
+    )
+      ? window.location.pathname
+      : new URL(container.parentElement.querySelector("form").action).pathname
+
+    const status = container.classList.contains("on")
+    const repo = repoUrl.slice(1).split("/").slice(0, 2).join("/")
+
+    let star = "★"
+    let statusMsg = "starred"
+    let copula = "is"
+
+    if ((status && toggle) || (!status && !toggle)) {
+      statusMsg = `un${statusMsg}`
+      star = "☆"
+    }
+
+    if (toggle) {
+      copula = "has been"
+      container
+        .querySelector(
+          status
+            ? ".starred button, button.starred"
+            : ".unstarred button, button.unstarred",
+        )
+        .click()
+    }
+
+    Front.showBanner(`${star} Repository ${repo} ${copula} ${statusMsg}!`)
+  }
 
 actions.gh.parseRepo = (url = window.location.href, rootOnly = false) => {
   let u
@@ -499,17 +463,17 @@ actions.gh.parseRepo = (url = window.location.href, rootOnly = false) => {
     !ghReservedNames.check(user)
   return cond
     ? {
-      type: "repo",
-      user,
-      repo,
-      owner: user,
-      name: repo,
-      href: url,
-      url: u,
-      repoBase: `${user}/${repo}`,
-      repoRoot: isRoot,
-      repoPath: rest,
-    }
+        type: "repo",
+        user,
+        repo,
+        owner: user,
+        name: repo,
+        href: url,
+        url: u,
+        repoBase: `${user}/${repo}`,
+        repoRoot: isRoot,
+        repoPath: rest,
+      }
     : null
 }
 
@@ -526,14 +490,14 @@ actions.gh.parseUser = (url = window.location.href, rootOnly = false) => {
     !ghReservedNames.check(user)
   return cond
     ? {
-      type: "user",
-      name: user,
-      user,
-      href: url,
-      url: u,
-      userRoot: isRoot,
-      userPath: rest,
-    }
+        type: "user",
+        name: user,
+        user,
+        href: url,
+        url: u,
+        userRoot: isRoot,
+        userPath: rest,
+      }
     : null
 }
 
@@ -569,8 +533,9 @@ actions.gh.parseFile = (url = window.location.href) => {
   }
   f.rawUrl = f.isDirectory
     ? null
-    : `https://raw.githubusercontent.com/${f.user}/${f.repo}/${f.commitHash
-    }/${f.filePath.join("/")}`
+    : `https://raw.githubusercontent.com/${f.user}/${f.repo}/${
+        f.commitHash
+      }/${f.filePath.join("/")}`
   return f
 }
 
@@ -593,13 +558,13 @@ actions.gh.parseCommit = (url = window.location.href) => {
     !ghReservedNames.check(user)
   return cond
     ? {
-      type: "commit",
-      user,
-      repo,
-      commitHash,
-      href: url,
-      url: u,
-    }
+        type: "commit",
+        user,
+        repo,
+        commitHash,
+        href: url,
+        url: u,
+      }
     : null
 }
 
@@ -620,19 +585,19 @@ actions.gh.parseIssue = (url = window.location.href) => {
     !ghReservedNames.check(user)
   return cond
     ? {
-      href: url,
-      url: u,
-      ...(isRoot
-        ? {
-          type: "issues",
-          issuePath: rest,
-        }
-        : {
-          type: "issue",
-          number: rest[0],
-          issuePath: rest,
-        }),
-    }
+        href: url,
+        url: u,
+        ...(isRoot
+          ? {
+              type: "issues",
+              issuePath: rest,
+            }
+          : {
+              type: "issue",
+              number: rest[0],
+              issuePath: rest,
+            }),
+      }
     : null
 }
 
@@ -653,19 +618,19 @@ actions.gh.parsePull = (url = window.location.href) => {
     !ghReservedNames.check(user)
   return cond
     ? {
-      href: url,
-      url: u,
-      ...(isRoot
-        ? {
-          type: "pulls",
-          pullPath: rest,
-        }
-        : {
-          type: "pull",
-          number: rest[0],
-          pullPath: rest,
-        }),
-    }
+        href: url,
+        url: u,
+        ...(isRoot
+          ? {
+              type: "pulls",
+              pullPath: rest,
+            }
+          : {
+              type: "pull",
+              number: rest[0],
+              pullPath: rest,
+            }),
+      }
     : null
 }
 
@@ -793,6 +758,12 @@ actions.gh.viewSourceGraph = () => {
   actions.openLink(url.href, { newTab: true })
 }
 
+actions.gh.openInDev = ({ newTab = false } = {}) => {
+  const url = new URL(window.location.href)
+  url.hostname = "github.dev"
+  actions.openLink(url.href, { newTab })
+}
+
 actions.gh.selectFile = async ({ files = true, directories = true } = {}) => {
   if (!(files || directories))
     throw new Error("At least one of 'files' or 'directories' must be true")
@@ -891,6 +862,23 @@ actions.tw.openUser = () =>
       ),
     ),
   )
+
+// Bsky
+// ----
+actions.by = {}
+actions.by.copyDID = () => {
+  util.createHints("img[src*='/did:plc:']", (e) => {
+    const [_, did] = e.src.match("/(did:.*)/")
+    if (did) Clipboard.write(did)
+  })
+}
+
+actions.by.copyPostID = () => {
+  util.createHints('a[href*="/post/"]', (e) => {
+    const [_, postID] = e.pathname.match(/^\/profile\/[^/]+\/post\/(\w+)/)
+    if (postID) Clipboard.write(postID)
+  })
+}
 
 // Reddit
 // ------
@@ -1000,7 +988,8 @@ actions.wp.viewWikiRank = () => {
 }
 
 actions.wp.markdownSummary = () =>
-  `> ${[
+  `> [!wiki]
+> ${[
     (acc) => [...acc.querySelectorAll("sup")].map((e) => e.remove()),
     (acc) =>
       [...acc.querySelectorAll("b")].forEach((e) => {
@@ -1018,8 +1007,8 @@ actions.wp.markdownSummary = () =>
         .cloneNode(true),
     )
     .innerText.trim()}
-
-— ${actions.getMarkdownLink()}`
+>
+> — ${actions.getMarkdownLink()}`
 
 // Nest Thermostat Controller
 // --------------------------
@@ -1027,7 +1016,8 @@ actions.nt = {}
 actions.nt.adjustTemp = (dir) =>
   document
     .querySelector(
-      `button[data-test='thermozilla-controller-controls-${dir > 0 ? "in" : "de"
+      `button[data-test='thermozilla-controller-controls-${
+        dir > 0 ? "in" : "de"
       }crement-button']`,
     )
     .click()
@@ -1186,15 +1176,43 @@ actions.ik.toggleProductReviews = () => {
 }
 
 // youtube.com
-actions.yt = youtubeActions
+actions.yt = {}
+actions.yt.getCurrentTimestamp = () => {
+  const [ss, mm, hh = 0] = document
+    .querySelector("#ytd-player .ytp-time-current")
+    ?.innerText?.split(":")
+    ?.reverse()
+    ?.map(Number) ?? [0, 0, 0]
+  return [ss, mm, hh]
+}
 
-//nhentai
-actions.nh = nhActions
+actions.yt.getCurrentTimestampSeconds = () => {
+  const [ss, mm, hh] = actions.yt.getCurrentTimestamp()
+  return hh * 60 * 60 + mm * 60 + ss
+}
 
-//anchira
-actions.ah = ahActions
-//iwara
-actions.iw = iwActions
+actions.yt.getCurrentTimestampHuman = () => {
+  const [ss, mm, hh] = actions.yt.getCurrentTimestamp()
+  const pad = (n) => `${n}`.padStart(2, "0")
+  return hh > 0 ? `${hh}:${pad(mm)}:${pad(ss)}` : `${mm}:${pad(ss)}`
+}
+
+actions.yt.getShortLink = () => {
+  const params = new URLSearchParams(window.location.search)
+  return `https://youtu.be/${params.get("v")}`
+}
+
+actions.yt.getCurrentTimestampLink = () =>
+  `${actions.yt.getShortLink()}?t=${actions.yt.getCurrentTimestampSeconds()}`
+
+actions.yt.getCurrentTimestampMarkdownLink = () =>
+  actions.getMarkdownLink({
+    title: `${
+      document.querySelector("#ytd-player .ytp-title").innerText
+    } @ ${actions.yt.getCurrentTimestampHuman()} - YouTube`,
+    href: actions.yt.getCurrentTimestampLink(),
+  })
+
 // DOI
 actions.doi = {}
 actions.doi.providers = {}
@@ -1216,8 +1234,4 @@ actions.doi.getLink = (provider) => {
   return priv.doi_handler(doi)
 }
 
-//erommdtube
-actions.em = emActions
-//oreno3d
-actions.or = orActions
 export default actions
