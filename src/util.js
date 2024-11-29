@@ -1,6 +1,7 @@
 import { html } from "uhtml"
 import DOMPurify from "dompurify"
 
+import addonUtil from "./addon-util.js"
 import api from "./api.js"
 
 const { Hints, RUNTIME } = api
@@ -207,4 +208,4 @@ util.prettyDate = (date) => {
   }${count ? " ago" : ""}`
 }
 
-export default util
+export default { ...util, ...addonUtil }

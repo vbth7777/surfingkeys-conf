@@ -17,14 +17,19 @@ actions.nh.getIdFromUrl = (url) => {
 }
 actions.nh.createViewer = async (idGallery) => {
   const nhApi = await fetch(
-    "https://nhentai.net/api/gallery/" + idGallery,
+    `https://nhentai.net/api/gallery/${idGallery}`,
   ).then((res) => res.json())
   const mediaId = nhApi.media_id
   const types = nhApi.images.pages.map((e) => {
-    if (e.t == "j") {
-      return "jpg"
-    } else if (e.t == "p") {
-      return "png"
+    const hash = {
+      j: "jpg",
+      p: "png",
+      w: "webp",
+    }
+    for (const key in hash) {
+      if (e.t == key) {
+        return hash[key]
+      }
     }
   })
   const images = await (async () => {
@@ -51,9 +56,7 @@ actions.nh.createViewer = async (idGallery) => {
     })()
     return urls
   })()
-  const infomations = await (async () => {
-    return nhApi.tags
-  })()
+  const infomations = await (async () => nhApi.tags)()
   util.createComicViewer(
     images,
     50,
@@ -64,7 +67,7 @@ actions.nh.createViewer = async (idGallery) => {
       actions.nh.removeReaderArea = components.events.removeContainerBox
       const favoriteMethod = "favorite"
       const unfavoriteMethod = "unfavorite"
-      const favoriteBtn = components.favoriteBtn
+      const { favoriteBtn } = components
       favoriteBtn.onclick = () => {
         const state =
           favoriteBtn.innerHTML != favoriteMethod
@@ -74,7 +77,7 @@ actions.nh.createViewer = async (idGallery) => {
         favoriteBtn.style.opacity = 0.5
         favoriteBtn.style.cursor = "default"
 
-        fetch("https://nhentai.net/api/gallery/" + idGallery + "/" + state, {
+        fetch(`https://nhentai.net/api/gallery/${idGallery}/${state}`, {
           method: "post",
           headers: {
             "X-Csrftoken": document.cookie.replace(/.+=/g, ""),
@@ -89,8 +92,8 @@ actions.nh.createViewer = async (idGallery) => {
           favoriteBtn.style.cursor = "pointer"
         })
       }
-      //check state favorite
-      fetch("https://nhentai.net/g/" + idGallery)
+      // check state favorite
+      fetch(`https://nhentai.net/g/${idGallery}`)
         .then((res) => res.text())
         .then((data) => {
           const parser = new DOMParser()
@@ -103,7 +106,7 @@ actions.nh.createViewer = async (idGallery) => {
             : favoriteMethod
         })
       const server = [3, 5, 7]
-      let formatToggle = false
+      const formatToggle = false
       let counter = 0
 
       let retryCounter = 0
@@ -166,8 +169,7 @@ actions.nh.createViewer = async (idGallery) => {
               const newServer = server.indexOf(parseInt(currentServer))
               imgTemp.src = imgTemp.src.replace(
                 /\/\/t\d+/g,
-                "//t" +
-                server[newServer == server.length - 1 ? 0 : newServer + 1],
+                `//t${server[newServer == server.length - 1 ? 0 : newServer + 1]}`,
               )
             }
           }
@@ -183,8 +185,7 @@ actions.nh.createViewer = async (idGallery) => {
               const newServer = server.indexOf(parseInt(currentServer))
               img.src = img.src.replace(
                 /\/\/i\d+/g,
-                "//i" +
-                server[newServer == server.length - 1 ? 0 : newServer + 1],
+                `//i${server[newServer == server.length - 1 ? 0 : newServer + 1]}`,
               )
             }
           }
