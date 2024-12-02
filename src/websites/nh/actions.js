@@ -111,6 +111,7 @@ actions.nh.createViewer = async (idGallery) => {
 
       let retryCounter = 0
       let img
+      let imgTemp
       components.events.imageErrorEvent = (e) => {
         img.style.position = "absolute"
         imgTemp.style.position = "relative"

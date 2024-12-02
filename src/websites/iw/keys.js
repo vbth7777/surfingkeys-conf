@@ -15,7 +15,7 @@ export default [
     alias: PLAY_VIDEO_MPV_ALIAS,
     description: "Copy And View Video By MPV",
     callback: () => {
-      util.createHints("a[href*=\"/video/\"]", (el) => {
+      util.createHints('a[href*="/video/"]', (el) => {
         const id = webActions.getIdIwara(el.href)
         webActions.copyAndPlayVideo(id)
       })
@@ -78,7 +78,7 @@ export default [
     description: "Play All Videos On The Page By MPV",
     callback: () => {
       const vids = document.querySelectorAll(
-        ".videoTeaser__content a[href*=\"/video/\"]",
+        '.videoTeaser__content a[href*="/video/"]',
       )
       for (const vid of vids) {
         util.playWithMpv(vid.href, null, localStorage.accessToken)
@@ -143,7 +143,7 @@ export default [
       if (window.location.href.includes("profile")) {
         profileId = getProfileID(window.location.href)
       } else {
-        await util.createHints("a[href*=\"/profile/\"]", async (el) => {
+        await util.createHints('a[href*="/profile/"]', async (el) => {
           profileId = getProfileID(el.href)
         })
       }
@@ -156,7 +156,8 @@ export default [
         while (page != maxPage) {
           const url = `https://api.iwara.tv/videos?sort=date&page=${page++}&user=${idUser}`
           const json = await util.getJSON(url)
-          maxPage = maxPage !== true ? parseInt(json.count / json.limit) : maxPage
+          maxPage =
+            maxPage !== true ? parseInt(json.count / json.limit) : maxPage
           const videos = json.results
           for (const vid of videos) {
             webActions.copyAndPlayVideo(vid.id)
