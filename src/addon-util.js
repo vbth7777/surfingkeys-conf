@@ -3,7 +3,7 @@ import DOMPurify from "dompurify"
 
 import api from "./api.js"
 
-const { Hints, RUNTIME } = api
+const { Hints, RUNTIME, Front } = api
 Hints.style(
   "font-family: Arial;background: #fff;border-color: #000; color: #000; font-size:12px;",
 )
