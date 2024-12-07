@@ -4,6 +4,7 @@ import help from "./help.js"
 import priv from "./conf.priv.js"
 import util from "./util.js"
 
+import globalKeys from "./websites/global/keys.js"
 import iwKeys from "./websites/iw/keys.js"
 import nhKeys from "./websites/nh/keys.js"
 import ahKeys from "./websites/ah/keys.js"
@@ -298,6 +299,7 @@ maps.global = [
   //   description: "Open AWS service",
   //   callback:    actions.omnibar.aws,
   // },
+  ...globalKeys,
 ]
 
 maps["amazon.com"] = [
