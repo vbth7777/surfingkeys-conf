@@ -8,6 +8,8 @@ Hints.style(
   "font-family: Arial;background: #fff;border-color: #000; color: #000; font-size:12px;",
 )
 const util = {}
+util.getJSON = (url) => fetch(url).then((res) => res.json())
+
 util.convertToSHA1 = async (str) => {
   const encoder = new TextEncoder()
   const data = encoder.encode(str)

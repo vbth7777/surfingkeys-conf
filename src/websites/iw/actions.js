@@ -5,9 +5,34 @@ import priv from "../../conf.priv.js"
 import util from "../../util.js"
 import actions from "../global/actions.js"
 
-const {
-  tabOpenLink, Front, Hints, Normal, RUNTIME,
-} = api
+const { tabOpenLink, Front, Hints, Normal, RUNTIME } = api
+
+const changeColorForPlayingUrl = (id) => {
+  Array.from(document.querySelectorAll("div.videoTeaser>a")).forEach((el) => {
+    if (el.href.includes(id)) {
+      el.parentElement.style.backgroundColor = "blue"
+      el.parentElement.classList.add("playing")
+    }
+  })
+}
+
+async function autostart() {
+  if (window.location.href.includes("iwara.tv")) {
+    while (true) {
+      if (document.querySelector(".playing")) {
+        await util.sleep(1000)
+        continue
+      }
+      const urls = await util.getJSON("http://localhost:9789/running-urls")
+      console.log(urls)
+      for (const url of urls) {
+        changeColorForPlayingUrl(actions.iw.getIdIwara(url))
+      }
+      await util.sleep(1000)
+    }
+  }
+}
+autostart()
 
 actions.iw = {
   socket: null,
@@ -180,25 +205,21 @@ actions.iw.createCheckBoxes = (checkboxes, isIwara) => {
   // Add the container to the body
   document.body.appendChild(container)
 }
-actions.iw.getAccessTokenFromIwara = async () => await fetch("https://api.iwara.tv/user/token", {
-  method: "post",
-  headers: {
-    Authorization: `Bearer ${localStorage.token}`,
-  },
-})
-  .then((res) => res.json())
-  .then((data) => data.accessToken)
+actions.iw.getAccessTokenFromIwara = async () =>
+  await fetch("https://api.iwara.tv/user/token", {
+    method: "post",
+    headers: {
+      Authorization: `Bearer ${localStorage.token}`,
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => data.accessToken)
 
 actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
-  const changeColorForPlayingUrl = (id) => {
-    Array.from(document.querySelectorAll("div.videoTeaser>a")).forEach((el) => {
-      if (el.href.includes(id)) {
-        el.parentElement.style.backgroundColor = "blue"
-      }
-    })
-  }
-  const getFileId = (url) => url.match(/file\/.+\?/g)[0].replace(/file\/|\?/g, "")
-  const getExpire = (url) => url.match("expires=.+&")[0].replace(/expires=|&/g, "")
+  const getFileId = (url) =>
+    url.match(/file\/.+\?/g)[0].replace(/file\/|\?/g, "")
+  const getExpire = (url) =>
+    url.match("expires=.+&")[0].replace(/expires=|&/g, "")
   if (!actions.iw.getSocket()) {
     actions.iw.setSocket()
     const socket = actions.iw.getSocket()
@@ -223,14 +244,15 @@ actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
         return
       }
       if (
-        res.message
-        && (res?.message?.trim()?.toLowerCase()?.includes("notfound")
-          || res?.message?.trim()?.toLowerCase()?.includes("private"))
+        res.message &&
+        (res?.message?.trim()?.toLowerCase()?.includes("notfound") ||
+          res?.message?.trim()?.toLowerCase()?.includes("private"))
       ) {
         api.Front.showPopup(`${res.message} for ${id}`)
         api.Clipboard.write(`https://www.iwara.tv/${id}`)
         return
-      } if (res.message) {
+      }
+      if (res.message) {
         actions.iw.copyAndPlayVideo(id, index, isPlayWithMpv)
         return
       }
@@ -327,7 +349,7 @@ actions.iw.playUrlsInClipboardWithMpv = () => {
 }
 actions.iw.playUrlsOnPageWithMpv = () => {
   let index = 0
-  const urls = Array.from(document.querySelectorAll("a[href*=\"/video/\"]"))
+  const urls = Array.from(document.querySelectorAll('a[href*="/video/"]'))
     .map((a) => actions.iw.getIdIwara(a.href))
     .filter((item, pos, self) => self.indexOf(item) == pos)
   actions.iw.copyAndPlayVideo(urls[0])
@@ -392,7 +414,8 @@ actions.iw.GoToMmdFansVid = (title, config) => {
     window.open(openUrl)
   })
 }
-actions.iw.getVideoTitle = async (id) => await fetch(`https://api.iwara.tv/video/${id}`)
-  .then((response) => response.json())
-  .then((data) => data.title)
+actions.iw.getVideoTitle = async (id) =>
+  await fetch(`https://api.iwara.tv/video/${id}`)
+    .then((response) => response.json())
+    .then((data) => data.title)
 export default actions.iw

@@ -30,4 +30,13 @@ export default [
       })
     },
   },
+  {
+    leader: "",
+    alias: "oc",
+    category: categories.clipboard,
+    description: "View Video By MPV In Clipboard",
+    callback: () => {
+      actions.openUrlsInClipboardWithMpv()
+    },
+  },
 ]
