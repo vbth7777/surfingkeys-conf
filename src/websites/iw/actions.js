@@ -26,7 +26,19 @@ async function autostart() {
       const urls = await util.getJSON("http://localhost:9789/running-urls")
       console.log(urls)
       for (const url of urls) {
-        changeColorForPlayingUrl(actions.iw.getIdIwara(url))
+        const id = actions.iw.getIdIwara(url)
+        // changeColorForPlayingUrl(id)
+        if (!actions.iw.getSocket()) {
+          actions.iw.setSocket()
+          const socket = actions.iw.getSocket()
+          const handleOpen = () => {
+            changeColorForPlayingUrl(id)
+            socket.removeEventListener("open", handleOpen)
+          }
+          socket.addEventListener("open", handleOpen)
+        } else {
+          changeColorForPlayingUrl(id)
+        }
       }
       await util.sleep(1000)
     }
