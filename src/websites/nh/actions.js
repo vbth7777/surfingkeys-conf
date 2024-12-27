@@ -37,7 +37,7 @@ actions.nh.createViewer = async (idGallery) => {
       const images = []
       for (let i = 0; i < types.length; i++) {
         images.push(
-          `https://i7.nhentai.net/galleries/${mediaId}/${i + 1}.${types[i] || "png"}`,
+          `https://i1.nhentai.net/galleries/${mediaId}/${i + 1}.${types[i] || "png"}`,
         )
       }
       return images
@@ -49,7 +49,7 @@ actions.nh.createViewer = async (idGallery) => {
       const images = []
       for (let i = 0; i < types.length; i++) {
         images.push(
-          `https://t3.nhentai.net/galleries/${mediaId}/${i + 1}t.${types[i] || "png"}`,
+          `https://t1.nhentai.net/galleries/${mediaId}/${i + 1}t.${types[i] || "png"}`,
         )
       }
       return images
@@ -105,7 +105,7 @@ actions.nh.createViewer = async (idGallery) => {
             ? unfavoriteMethod
             : favoriteMethod
         })
-      const server = [3, 5, 7]
+      const server = [1, 2, 3, 4, 5, 7]
       const formatToggle = false
       let counter = 0
 
@@ -161,7 +161,8 @@ actions.nh.createViewer = async (idGallery) => {
       components.events.imageAddEvent = (img, imgTemp) => {
         let counter2 = 0
         const interval2 = setInterval(() => {
-          if (imgTemp.height > 100) {
+          // if (imgTemp.height > 100) {
+          if (imgTemp.complete) {
             clearInterval(interval2)
           } else {
             counter2++
@@ -177,7 +178,8 @@ actions.nh.createViewer = async (idGallery) => {
         }, 1000)
         let counter = 0
         const interval = setInterval(() => {
-          if (img.height > 100) {
+          // if (img.height > 100) {
+          if (img.complete) {
             clearInterval(interval)
           } else {
             counter++
