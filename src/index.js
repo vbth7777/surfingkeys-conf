@@ -128,6 +128,8 @@ const main = async () => {
     const { maps, aliases = {} } = keys
     registerKeys(maps, aliases, conf.siteleader)
   }
+
+  api.unmapAllExcept([], /hackerrank.com/)
 }
 
 if (typeof window !== "undefined") {
