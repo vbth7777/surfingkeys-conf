@@ -56,7 +56,7 @@ export default [
     alias: "f",
     description: "Favorite Comic",
     callback: () => {
-      let btn =
+      const btn =
         document.querySelector(".tth-favorite-btn") ||
         document.querySelector("#favorite")
       Front.showBanner(
