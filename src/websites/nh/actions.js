@@ -64,12 +64,14 @@ actions.nh.createViewer = async (idGallery) => {
   const widHei = nhApi.images.pages.map((e) => {
     return { width: e.w, height: e.h }
   })
-  const images = await (async () => {
-    const urls = (() => {
+  const images = await (() => {
+    const urls = (async () => {
       const images = []
       for (let i = 0; i < types.length; i++) {
+        let url = `https://i${originalServerNumber}.nhentai.net/galleries/${mediaId}/${i + 1}.${types[i] || "png"}`
+
         images.push({
-          url: `https://i${originalServerNumber}.nhentai.net/galleries/${mediaId}/${i + 1}.${types[i] || "png"}`,
+          url: url,
           width: widHei[i].width,
           height: widHei[i].height,
         })
@@ -241,7 +243,7 @@ actions.nh.createViewer = async (idGallery) => {
         Array.from(
           document.querySelectorAll(".tth-images-area div > img:nth-child(2)"),
         )
-          .filter((e) => !e.complete)
+          .filter((e) => !e.complete || e.width == 16)
           .forEach((img) => {
             const page = img.src.match(/galleries\/\d+\/(\d+)\.\w+/)[1]
             fetch(`https://nhentai.net/g/${idGallery}/${page}/`)
