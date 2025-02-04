@@ -32,13 +32,47 @@ actions.nh.createViewer = async (idGallery) => {
       }
     }
   })
+  let isFavorited = false
+  let originalServerNumberTemp = null
+  let originalServerNumber = null
+  // check state favorite
+  await fetch(`https://nhentai.net/g/${idGallery}/`)
+    .then((res) => res.text())
+    .then((data) => {
+      const parser = new DOMParser()
+      const dom = parser.parseFromString(data, "text/html")
+      originalServerNumberTemp = dom
+        .querySelector(
+          "#thumbnail-container > div > div:nth-child(1) > a > img",
+        )
+        .getAttribute("data-src")
+        .match(/https:\/\/t(\d)/)[1]
+      isFavorited = dom
+        .querySelector("#favorite")
+        .innerText.toLowerCase()
+        .includes("unfavorite")
+    })
+  await fetch(`https://nhentai.net/g/${idGallery}/1/`)
+    .then((res) => res.text())
+    .then((data) => {
+      const parser = new DOMParser()
+      const dom = parser.parseFromString(data, "text/html")
+      originalServerNumber = dom
+        .querySelector("#image-container > a > img")
+        .src.match(/https:\/\/i(\d)/)[1]
+    })
+  const widHei = nhApi.images.pages.map((e) => {
+    return { width: e.w, height: e.h }
+  })
   const images = await (async () => {
     const urls = (() => {
       const images = []
       for (let i = 0; i < types.length; i++) {
-        images.push(
-          `https://i1.nhentai.net/galleries/${mediaId}/${i + 1}.${types[i] || "png"}`,
-        )
+        images.push({
+          url: `https://i${originalServerNumber}.nhentai.net/galleries/${mediaId}/${i + 1}.${types[i] || "png"}`,
+          width: widHei[i].width,
+          height: widHei[i].height,
+        })
       }
       return images
     })()
@@ -48,9 +82,11 @@ actions.nh.createViewer = async (idGallery) => {
     const urls = (() => {
       const images = []
       for (let i = 0; i < types.length; i++) {
-        images.push(
-          `https://t1.nhentai.net/galleries/${mediaId}/${i + 1}t.${types[i] || "png"}`,
-        )
+        images.push({
+          url: `https://t${originalServerNumberTemp}.nhentai.net/galleries/${mediaId}/${i + 1}t.${types[i] || "png"}`,
+          width: widHei[i].width,
+          height: widHei[i].height,
+        })
       }
       return images
     })()
@@ -68,6 +104,7 @@ actions.nh.createViewer = async (idGallery) => {
       const favoriteMethod = "favorite"
       const unfavoriteMethod = "unfavorite"
       const { favoriteBtn } = components
+      favoriteBtn.innerHTML = isFavorited ? unfavoriteMethod : favoriteMethod
       favoriteBtn.onclick = () => {
         const state =
           favoriteBtn.innerHTML != favoriteMethod
@@ -92,19 +129,6 @@ actions.nh.createViewer = async (idGallery) => {
           favoriteBtn.style.cursor = "pointer"
         })
       }
-      // check state favorite
-      fetch(`https://nhentai.net/g/${idGallery}`)
-        .then((res) => res.text())
-        .then((data) => {
-          const parser = new DOMParser()
-          const dom = parser.parseFromString(data, "text/html")
-          favoriteBtn.innerHTML = dom
-            .querySelector("#favorite")
-            .innerText.toLowerCase()
-            .includes(unfavoriteMethod)
-            ? unfavoriteMethod
-            : favoriteMethod
-        })
       const server = [1, 2, 3, 4, 5, 7]
       const formatToggle = false
       let counter = 0
@@ -113,6 +137,7 @@ actions.nh.createViewer = async (idGallery) => {
       let img
       let imgTemp
       components.events.imageErrorEvent = (e) => {
+        return
         img.style.position = "absolute"
         imgTemp.style.position = "relative"
         // // if (counter >= 2 && format == 'jpg') {
@@ -139,6 +164,7 @@ actions.nh.createViewer = async (idGallery) => {
       retryCounter = 0
       counter = 0
       components.events.previewImageErrorEvent = (e) => {
+        return
         imgTemp.style.position = "absolute"
         img.style.position = "relative"
         // if (retryCounter >= 2) {
@@ -159,6 +185,7 @@ actions.nh.createViewer = async (idGallery) => {
         // }
       }
       components.events.imageAddEvent = (img, imgTemp) => {
+        return
         let counter2 = 0
         const interval2 = setInterval(() => {
           // if (imgTemp.height > 100) {
@@ -195,6 +222,42 @@ actions.nh.createViewer = async (idGallery) => {
         }, 1000)
       }
     },
+    (() => {
+      const moreButton = document.createElement("button")
+      moreButton.innerHTML = "Change Server"
+      moreButton.className = "tth-more-btn"
+      moreButton.style.backgroundColor = "#ED2553"
+      moreButton.style.border = "none"
+      moreButton.style.color = "#fff"
+      moreButton.style.fontSize = "1.5rem"
+      moreButton.style.fontWeight = "bold"
+      moreButton.style.borderRadius = "10px"
+      moreButton.style.padding = "0"
+      moreButton.style.cursor = "pointer"
+      moreButton.style.margin = "10px"
+      moreButton.style.padding = "10px"
+      moreButton.style.fontSize = "1.4rem"
+      moreButton.onclick = () => {
+        Array.from(
+          document.querySelectorAll(".tth-images-area div > img:nth-child(2)"),
+        )
+          .filter((e) => !e.complete)
+          .forEach((img) => {
+            const page = img.src.match(/galleries\/\d+\/(\d+)\.\w+/)[1]
+            fetch(`https://nhentai.net/g/${idGallery}/${page}/`)
+              .then((res) => res.text())
+              .then((data) => {
+                const parser = new DOMParser()
+                const dom = parser.parseFromString(data, "text/html")
+                const server = dom
+                  .querySelector("#image-container > a > img")
+                  .src.match(/https:\/\/i(\d)/)[1]
+                img.src = img.src.replace(/i\d/, `i${server}`)
+              })
+          })
+      }
+      return moreButton
+    })(),
   )
 }
 

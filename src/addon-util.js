@@ -38,6 +38,7 @@ util.createComicViewer = async (
   previewImages,
   infomations,
   callback,
+  moreButton = undefined,
 ) => {
   // infomations = {name, url, type}
   const urls = images
@@ -49,7 +50,8 @@ util.createComicViewer = async (
   }
 
   //   let sizePercent = 50;
-  let sizeImage = "50vw"
+  // let sizeImage = "50vw"
+  let sizeImage = window.innerWidth * 0.5
   let page = 1
   const totalPage = Math.ceil(urls.length / imagesPerPage)
   const containerBox = document.createElement("div")
@@ -150,6 +152,9 @@ util.createComicViewer = async (
   infoBox.appendChild(groupBox)
   infoBox.appendChild(parodyBox)
   infoBox.appendChild(tagBox)
+  if (moreButton) {
+    infoBox.appendChild(moreButton)
+  }
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
@@ -288,11 +293,15 @@ util.createComicViewer = async (
       div.style.position = "relative"
 
       const img = document.createElement("img")
-      img.src = urls[imagesNumber + i]
+      img.src = urls[imagesNumber + i].url
       img.style.position = "absolute"
       img.style.top = "0"
       img.style.left = "0"
       img.style.width = sizeImage // sizePercent + '%';
+      img.style.height =
+        (urls[imagesNumber + i].height * sizeImage) /
+          urls[imagesNumber + i].width +
+        "px"
       // img.style.height = 'auto';
       img.style.objectFit = "cover"
       // img.loading = 'lazy';
@@ -300,13 +309,16 @@ util.createComicViewer = async (
 
       const imgTemp = document.createElement("img")
       if (!previewImages) {
-        imgTemp.src = urls[imagesNumber + i]
+        imgTemp.src = urls[imagesNumber + i].url
       } else {
-        imgTemp.src = previewImages[imagesNumber + i]
+        imgTemp.src = previewImages[imagesNumber + i].url
       }
       imgTemp.onerror = events.previewImageErrorEvent
       imgTemp.style.width = sizeImage // sizePercent + '%';
-      imgTemp.style.height = "auto"
+      imgTemp.style.height =
+        (urls[imagesNumber + i].height * sizeImage) /
+          urls[imagesNumber + i].width +
+        "px"
       imgTemp.style.objectFit = "cover"
 
       img.onload = () => {

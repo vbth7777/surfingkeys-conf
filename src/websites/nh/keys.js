@@ -66,6 +66,15 @@ export default [
     },
   },
   {
+    alias: "t",
+    description: "Refresh Uncomplete Images",
+    callback: () => {
+      const btn = document.querySelector(".tth-more-btn")
+      Front.showBanner("Change Server Uncomplete Images")
+      btn.click()
+    },
+  },
+  {
     leader: "",
     alias: "q",
     description: "Quit Reader Box",
