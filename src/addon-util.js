@@ -291,17 +291,19 @@ util.createComicViewer = async (
       }
       const div = document.createElement("div")
       div.style.position = "relative"
+      div.style.position = window.innerWidth * 0.25
 
       const img = document.createElement("img")
       img.src = urls[imagesNumber + i].url
       img.style.position = "absolute"
       img.style.top = "0"
       img.style.left = "0"
-      img.style.width = sizeImage // sizePercent + '%';
+      img.style.width = sizeImage + "px" // sizePercent + '%';
       img.style.height =
-        (urls[imagesNumber + i].height * sizeImage) /
-          urls[imagesNumber + i].width +
-        "px"
+        Number(
+          (urls[imagesNumber + i].height * sizeImage) /
+            urls[imagesNumber + i].width,
+        ) + "px"
       // img.style.height = 'auto';
       img.style.objectFit = "cover"
       // img.loading = 'lazy';
@@ -314,11 +316,12 @@ util.createComicViewer = async (
         imgTemp.src = previewImages[imagesNumber + i].url
       }
       imgTemp.onerror = events.previewImageErrorEvent
-      imgTemp.style.width = sizeImage // sizePercent + '%';
+      imgTemp.style.width = sizeImage + "px" // sizePercent + '%';
       imgTemp.style.height =
-        (urls[imagesNumber + i].height * sizeImage) /
-          urls[imagesNumber + i].width +
-        "px"
+        Number(
+          (urls[imagesNumber + i].height * sizeImage) /
+            urls[imagesNumber + i].width,
+        ) + "px"
       imgTemp.style.objectFit = "cover"
 
       img.onload = () => {

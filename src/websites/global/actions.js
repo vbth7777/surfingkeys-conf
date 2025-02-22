@@ -4,9 +4,7 @@ import api from "../../api.js"
 import priv from "../../conf.priv.js"
 import util from "../../util.js"
 
-const {
-  tabOpenLink, Front, Hints, Normal, RUNTIME,
-} = api
+const { tabOpenLink, Front, Hints, Normal, RUNTIME } = api
 
 const actions = {}
 
@@ -60,7 +58,8 @@ actions.dispatchMouseEvents = actions.dispatchEvents.bind(undefined, [
 
 actions.scrollToHash = (hash = null) => {
   const h = (hash || document.location.hash).replace("#", "")
-  const e = document.getElementById(h) || document.querySelector(`[name="${h}"]`)
+  const e =
+    document.getElementById(h) || document.querySelector(`[name="${h}"]`)
   if (!e) {
     return
   }
@@ -80,7 +79,7 @@ actions.openUrlsInClipboardWithMpv = async () => {
             console.log(err)
             return
           }
-          const urlIw = htmlDocument.querySelector("[href*=\"iwara.tv\"]")
+          const urlIw = htmlDocument.querySelector('[href*="iwara.tv"]')
           const id = actions.iw.getIdIwara(urlIw.href)
           actions.iw.copyAndPlayVideo(id)
         })
@@ -121,9 +120,10 @@ actions.getDnsInfoUrl = ({
   hostname = window.location.hostname,
   all = false,
 } = {}) =>
-  `${ddossierUrl}?dom_dns=true&addr=${hostname}${all
-    ? "?dom_whois=true&dom_dns=true&traceroute=true&net_whois=true&svc_scan=true"
-    : ""
+  `${ddossierUrl}?dom_dns=true&addr=${hostname}${
+    all
+      ? "?dom_whois=true&dom_dns=true&traceroute=true&net_whois=true&svc_scan=true"
+      : ""
   }`
 
 actions.getGoogleCacheUrl = ({ href = window.location.href } = {}) =>
@@ -179,7 +179,8 @@ actions.getDiscussionsUrl = ({ href = window.location.href } = {}) =>
 
 // Surfingkeys-specific actions
 // ----------------------------
-actions.openAnchor = ({ newTab = false, active = true, prop = "href" } = {}) =>
+actions.openAnchor =
+  ({ newTab = false, active = true, prop = "href" } = {}) =>
   (a) =>
     actions.openLink(a[prop], { newTab, active })
 
@@ -210,9 +211,10 @@ actions.togglePdfViewer = () =>
   //   }
   // })
 
-  actions.previewLink = () =>
+  (actions.previewLink = () =>
     util.createHints("a[href]", (a) =>
-      Front.showEditor(a.href, (url) => actions.openLink(url), "url"))
+      Front.showEditor(a.href, (url) => actions.openLink(url), "url"),
+    ))
 
 actions.scrollElement = (el, dir) => {
   actions.dispatchMouseEvents(el, "mousedown")
@@ -226,5 +228,47 @@ actions.fakeSpot = (url = window.location.href) =>
     newTab: true,
     active: false,
   })
+
+/**
+ * Downloads the given image URLs as a single ZIP file named "images.zip".
+ *
+ * @param {string[]} imageUrls - Array of image URLs.
+ */
+actions.downloadImagesAsZip = async (imageUrls) => {
+  // 1) Dynamically load zip.js from a CDN
+  const response = await fetch(
+    "https://unpkg.com/@zip.js/zip.js/dist/zip.min.js",
+  )
+  const zipJsCode = await response.text()
+
+  // 2) Evaluate it in the current context
+  eval(zipJsCode)
+  const { ZipWriter, BlobWriter, BlobReader } = window.zip
+  // Create a ZipWriter that outputs a blob
+  const writer = new ZipWriter(new BlobWriter("application/zip"))
+
+  // Fetch each image and add to the ZIP
+  for (let i = 0; i < imageUrls.length; i++) {
+    try {
+      const url = imageUrls[i]
+      const response = await fetch(url)
+      const blob = await response.blob()
+      await writer.add(`image_${i}.png`, new BlobReader(blob))
+    } catch (err) {
+      console.error("Failed to fetch image:", imageUrls[i], err)
+    }
+  }
+
+  // Finalize the ZIP and get it as a Blob
+  const zipBlob = await writer.close()
+
+  // Trigger a download in the browser
+  const tempLink = document.createElement("a")
+  tempLink.href = URL.createObjectURL(zipBlob)
+  tempLink.download = "images.zip"
+  document.body.appendChild(tempLink)
+  tempLink.click()
+  document.body.removeChild(tempLink)
+}
 
 export default actions

@@ -139,16 +139,14 @@ actions.nh.createViewer = async (idGallery) => {
       let img
       let imgTemp
       components.events.imageErrorEvent = (e) => {
-        return
-        img.style.position = "absolute"
-        imgTemp.style.position = "relative"
+        // img.style.position = "absolute"
+        // imgTemp.style.position = "relative"
         // // if (counter >= 2 && format == 'jpg') {
         // //   return;
         // // }
         // if (retryCounter >= 2) {
         //   return
         // }
-        //
         // img = e.srcElement
         // const changeServer = (serverNumber) => {
         //   return img.src.replace(/\/\/i\d+/g, "//i" + serverNumber)
@@ -187,38 +185,43 @@ actions.nh.createViewer = async (idGallery) => {
         // }
       }
       components.events.imageAddEvent = (img, imgTemp) => {
-        return
         let counter2 = 0
-        const interval2 = setInterval(() => {
-          // if (imgTemp.height > 100) {
-          if (imgTemp.complete) {
-            clearInterval(interval2)
-          } else {
-            counter2++
-            if (counter2 >= 2 || imgTemp.height == 16) {
-              const currentServer = img.src.match(/\/\/t(\d+)/)[1]
-              const newServer = server.indexOf(parseInt(currentServer))
-              imgTemp.src = imgTemp.src.replace(
-                /\/\/t\d+/g,
-                `//t${server[newServer == server.length - 1 ? 0 : newServer + 1]}`,
-              )
-            }
-          }
-        }, 1000)
+        // const interval2 = setInterval(() => {
+        //   if (imgTemp.width > 16) {
+        //     // if (imgTemp.complete) {
+        //     clearInterval(interval2)
+        //   } else {
+        //     counter2++
+        //     if (counter2 >= 2 || imgTemp.height == 16) {
+        //       // const currentServer = img.src.match(/\/\/t(\d+)/)[1]
+        //       // const newServer = server.indexOf(parseInt(currentServer))
+        //       // imgTemp.src = imgTemp.src.replace(
+        //       //   /\/\/t\d+/g,
+        //       //   `//t${server[newServer == server.length - 1 ? 0 : newServer + 1]}`,
+        //       // )
+        //       const temp = imgTemp.src
+        //       imgTemp.src = imgTemp.src.replace(/t\d/, `t9`)
+        //       imgTemp.src = temp
+        //     }
+        //   }
+        // }, 1000)
         let counter = 0
         const interval = setInterval(() => {
-          // if (img.height > 100) {
-          if (img.complete) {
+          if (img.width > 16) {
+            // if (img.complete) {
             clearInterval(interval)
           } else {
             counter++
             if (counter >= 5 || img.height == 16) {
-              const currentServer = img.src.match(/\/\/i(\d+)/)[1]
-              const newServer = server.indexOf(parseInt(currentServer))
-              img.src = img.src.replace(
-                /\/\/i\d+/g,
-                `//i${server[newServer == server.length - 1 ? 0 : newServer + 1]}`,
-              )
+              // const currentServer = img.src.match(/\/\/i(\d+)/)[1]
+              // const newServer = server.indexOf(parseInt(currentServer))
+              // img.src = img.src.replace(
+              //   /\/\/i\d+/g,
+              //   `//i${server[newServer == server.length - 1 ? 0 : newServer + 1]}`,
+              // )
+              const temp = img.src
+              img.src = img.src.replace(/t\d/, `t9`)
+              img.src = temp
             }
           }
         }, 1000)

@@ -82,4 +82,15 @@ export default [
       webActions.removeReaderArea()
     },
   },
+  {
+    alias: "d",
+    description: "Download comic",
+    callback: () => {
+      const imgs = Array.from(
+        document.querySelectorAll(".tth-images-area div>img:last-child"),
+      ).map((e) => e.src)
+      actions.downloadImagesAsZip(imgs)
+      Front.showBanner("Downloading The Reading Comic")
+    },
+  },
 ]
