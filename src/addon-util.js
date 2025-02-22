@@ -291,13 +291,19 @@ util.createComicViewer = async (
       }
       const div = document.createElement("div")
       div.style.position = "relative"
-      div.style.position = window.innerWidth * 0.25
+      // div.style.left = `-${Number(window.innerWidth * 0.25)}px`
 
       const img = document.createElement("img")
       img.src = urls[imagesNumber + i].url
-      img.style.position = "absolute"
-      img.style.top = "0"
-      img.style.left = "0"
+      if (!previewImages) {
+        img.style.backgroundImage = `url(${urls[imagesNumber + i].url})`
+      } else {
+        img.style.backgroundImage = `url(${previewImages[imagesNumber + i].url})`
+      }
+      img.style.backgroundSize = "cover"
+      // img.style.position = "absolute"
+      // img.style.top = "0"
+      // img.style.left = "0"
       img.style.width = sizeImage + "px" // sizePercent + '%';
       img.style.height =
         Number(
@@ -347,8 +353,8 @@ util.createComicViewer = async (
 
       events.imageAddEvent(img, imgTemp)
 
-      div.appendChild(imgTemp)
       div.appendChild(img)
+      // div.appendChild(imgTemp)
       imgBox.appendChild(div)
     }
     imgBox.appendChild(paginationBottom)
