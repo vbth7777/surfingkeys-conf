@@ -7,6 +7,7 @@ import util from "../../util.js"
 import { PLAY_VIDEO_MPV_ALIAS } from "../global/constants.js"
 
 const { categories } = help
+let isFullMode = false
 
 const { Clipboard, Front } = api
 export default [
@@ -32,7 +33,7 @@ export default [
     callback: () =>
       util.createHints('a[href*="/g/"]', (el) => {
         const id = webActions.getIdFromUrl(el.href)
-        webActions.createViewer(id)
+        webActions.createViewer(id, isFullMode)
       }),
   },
   {
@@ -49,7 +50,7 @@ export default [
     description: "Read Current Comic",
     callback: () => {
       const id = webActions.getIdFromUrl(window.location.href)
-      webActions.createViewer(id)
+      webActions.createViewer(id, isFullMode)
     },
   },
   {
@@ -91,6 +92,25 @@ export default [
       ).map((e) => e.src)
       actions.downloadImagesAsZip(imgs)
       Front.showBanner("Downloading The Reading Comic")
+    },
+  },
+  {
+    alias: "m",
+    description: "Full Mode Toggle",
+    callback: () => {
+      isFullMode = !isFullMode
+      Front.showBanner(`Full Mode: ${isFullMode}`)
+    },
+  },
+  {
+    alias: "h",
+    description: "Info Box Toggle",
+    callback: () => {
+      if (document.querySelector(".tth-hide-btn").style.display === "block") {
+        document.querySelector(".tth-hide-btn").click()
+      } else {
+        document.querySelector(".tth-show-btn").click()
+      }
     },
   },
 ]

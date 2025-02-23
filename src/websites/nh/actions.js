@@ -15,7 +15,7 @@ actions.nh.getIdFromUrl = (url) => {
   const match = url.match(/nhentai\.net\/g\/(\d+)/)
   return match ? match[1] : null
 }
-actions.nh.createViewer = async (idGallery) => {
+actions.nh.createViewer = async (idGallery, isFullMode = false) => {
   const nhApi = await fetch(
     `https://nhentai.net/api/gallery/${idGallery}`,
   ).then((res) => res.json())
@@ -96,6 +96,7 @@ actions.nh.createViewer = async (idGallery) => {
   })()
   const infomations = await (async () => nhApi.tags)()
   util.createComicViewer(
+    isFullMode ? 1 : 0.5,
     images,
     50,
     previewImages,

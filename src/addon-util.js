@@ -33,6 +33,7 @@ util.playAsyncWithMpv = (url) => {
 }
 util.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 util.createComicViewer = async (
+  sizePercent = 0.5,
   images,
   imagesPerPage,
   previewImages,
@@ -51,7 +52,7 @@ util.createComicViewer = async (
 
   //   let sizePercent = 50;
   // let sizeImage = "50vw"
-  let sizeImage = window.innerWidth * 0.5
+  let sizeImage = window.innerWidth * sizePercent
   let page = 1
   const totalPage = Math.ceil(urls.length / imagesPerPage)
   const containerBox = document.createElement("div")
@@ -112,6 +113,36 @@ util.createComicViewer = async (
   favoriteBtn.style.margin = "10px"
   favoriteBtn.style.padding = "10px"
   favoriteBtn.style.fontSize = "1.4rem"
+  const hideBtn = document.createElement("button")
+  hideBtn.classList = "tth-hide-btn"
+  hideBtn.innerHTML = "Hide"
+  hideBtn.style.backgroundColor = "#ED2553"
+  hideBtn.style.border = "none"
+  hideBtn.style.color = "#fff"
+  hideBtn.style.fontSize = "1.5rem"
+  hideBtn.style.fontWeight = "bold"
+  hideBtn.style.borderRadius = "10px"
+  hideBtn.style.padding = "0"
+  hideBtn.style.cursor = "pointer"
+  hideBtn.style.margin = "10px"
+  hideBtn.style.padding = "10px"
+  hideBtn.style.fontSize = "1.4rem"
+  const showBtn = document.createElement("button")
+  showBtn.classList = "tth-show-btn"
+  showBtn.innerHTML = "Show"
+  showBtn.style.backgroundColor = "#ED2553"
+  showBtn.style.border = "none"
+  showBtn.style.color = "#fff"
+  showBtn.style.fontSize = "1.5rem"
+  showBtn.style.fontWeight = "bold"
+  showBtn.style.borderRadius = "10px"
+  showBtn.style.padding = "0"
+  showBtn.style.cursor = "pointer"
+  showBtn.style.margin = "10px"
+  showBtn.style.padding = "10px"
+  showBtn.style.fontSize = "1.4rem"
+  showBtn.style.opacity = "0.2"
+  showBtn.style.display = "none"
 
   const createDetailInfoBox = (str) => {
     const textBox = document.createElement("div")
@@ -147,14 +178,31 @@ util.createComicViewer = async (
   const groupBox = createDetailInfoBox("group")
   const parodyBox = createDetailInfoBox("parody")
   const tagBox = createDetailInfoBox("tag")
-  infoBox.appendChild(favoriteBtn)
-  infoBox.appendChild(artistBox)
-  infoBox.appendChild(groupBox)
-  infoBox.appendChild(parodyBox)
-  infoBox.appendChild(tagBox)
-  if (moreButton) {
-    infoBox.appendChild(moreButton)
+  const listChild = [
+    favoriteBtn,
+    artistBox,
+    groupBox,
+    parodyBox,
+    tagBox,
+    hideBtn,
+    moreButton,
+    showBtn,
+  ]
+  showBtn.onclick = () => {
+    listChild.forEach((el) => {
+      if (el) el.style.display = "block"
+    })
+    showBtn.style.display = "none"
   }
+  hideBtn.onclick = () => {
+    listChild.forEach((el) => {
+      if (el) el.style.display = "none"
+    })
+    showBtn.style.display = "block"
+  }
+  listChild.forEach((el) => {
+    infoBox.appendChild(el)
+  })
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
