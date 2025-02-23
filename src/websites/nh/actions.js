@@ -49,8 +49,8 @@ actions.nh.createViewer = async (idGallery) => {
         .match(/https:\/\/t(\d)/)[1]
       isFavorited = dom
         .querySelector("#favorite")
-        .innerText.toLowerCase()
-        .includes("unfavorite")
+        ?.innerText?.toLowerCase()
+        ?.includes("unfavorite")
     })
   await fetch(`https://nhentai.net/g/${idGallery}/1/`)
     .then((res) => res.text())
