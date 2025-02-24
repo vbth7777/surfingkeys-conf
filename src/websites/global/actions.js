@@ -254,6 +254,7 @@ actions.downloadImagesAsZip = async (imageUrls) => {
       const response = await fetch(url)
       const blob = await response.blob()
       await writer.add(`image_${i}.png`, new BlobReader(blob))
+      Front.showBanner(`Added ${i + 1} image`)
     } catch (err) {
       console.error("Failed to fetch image:", imageUrls[i], err)
     }
