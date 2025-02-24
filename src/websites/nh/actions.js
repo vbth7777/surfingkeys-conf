@@ -244,9 +244,7 @@ actions.nh.createViewer = async (idGallery, isFullMode = false) => {
       moreButton.style.padding = "10px"
       moreButton.style.fontSize = "1.4rem"
       moreButton.onclick = () => {
-        Array.from(
-          document.querySelectorAll(".tth-images-area div > img:nth-child(2)"),
-        )
+        Array.from(document.querySelectorAll(".tth-images-area div > img"))
           .filter((e) => !e.complete || e.width == 16)
           .forEach((img) => {
             const page = img.src.match(/galleries\/\d+\/(\d+)\.\w+/)[1]
