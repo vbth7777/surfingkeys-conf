@@ -257,6 +257,7 @@ actions.nh.createViewer = async (idGallery, isFullMode = false) => {
                   .querySelector("#image-container > a > img")
                   .src.match(/https:\/\/i(\d)/)[1]
                 img.src = img.src.replace(/i\d/, `i${server}`)
+                Front.showBanner("Changed Server Uncomplete Images")
               })
           })
       }
