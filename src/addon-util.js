@@ -362,10 +362,13 @@ util.createComicViewer = async (
       img.style.objectFit = "cover"
       // img.loading = 'lazy';
       img.addEventListener("error", (e) => {
-        console.log("Reloading " + e.target.src)
-        const temp = e.target.src
-        e.target.src = "reloading"
-        e.target.src = temp
+        if (!img.isReloaded) {
+          img.isReloaded = true
+          console.log("Reloading " + e.target.src)
+          const temp = e.target.src
+          e.target.src = "reloading"
+          e.target.src = temp
+        }
       })
       img.onerror = events.imageErrorEvent
 
