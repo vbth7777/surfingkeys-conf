@@ -143,6 +143,20 @@ util.createComicViewer = async (
   showBtn.style.fontSize = "1.4rem"
   showBtn.style.opacity = "0.2"
   showBtn.style.display = "none"
+  const size100 = document.createElement("button")
+  size100.classList = "tth-size100-btn"
+  size100.innerHTML = "Size 100%"
+  size100.style.backgroundColor = "#ED2553"
+  size100.style.border = "none"
+  size100.style.color = "#fff"
+  size100.style.fontSize = "1.5rem"
+  size100.style.fontWeight = "bold"
+  size100.style.borderRadius = "10px"
+  size100.style.padding = "0"
+  size100.style.cursor = "pointer"
+  size100.style.margin = "10px"
+  size100.style.padding = "10px"
+  size100.style.fontSize = "1.4rem"
 
   const createDetailInfoBox = (str) => {
     const textBox = document.createElement("div")
@@ -186,8 +200,16 @@ util.createComicViewer = async (
     tagBox,
     hideBtn,
     moreButton,
+    size100,
     showBtn,
   ]
+  size100.onclick = () => {
+    sizePercent = 1
+    sizeImage = sizePercent * window.innerWidth
+    imgBox.innerHTML = ""
+    updateImgBox()
+  }
+
   showBtn.onclick = () => {
     listChild.forEach((el) => {
       if (el) el.style.display = "block"

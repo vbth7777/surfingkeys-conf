@@ -64,6 +64,7 @@ actions.nh.createViewer = async (idGallery, isFullMode = false) => {
   const widHei = nhApi.images.pages.map((e) => {
     return { width: e.w, height: e.h }
   })
+  originalServerNumber = 1 // test server number -- remove this line if you want to use original server
   const images = await (() => {
     const urls = (async () => {
       const images = []
