@@ -15,6 +15,21 @@ actions.nh.getIdFromUrl = (url) => {
   const match = url.match(/nhentai\.net\/g\/(\d+)/)
   return match ? match[1] : null
 }
+const refreshImage = async (img, idGallery) => {
+  const page = img.src.match(/galleries\/\d+\/(\d+)\.\w+/)[1]
+  Front.showBanner(`Changing Server for Page ${page}`)
+  await fetch(`https://nhentai.net/g/${idGallery}/${page}/`)
+    .then((res) => res.text())
+    .then((data) => {
+      const parser = new DOMParser()
+      const dom = parser.parseFromString(data, "text/html")
+      const server = dom
+        .querySelector("#image-container > a > img")
+        .src.match(/https:\/\/i(\d)/)[1]
+      img.src = img.src.replace(/i\d/, `i${server}`)
+      // Front.showBanner("Changed Server Uncomplete Images")
+    })
+}
 actions.nh.createViewer = async (idGallery, isFullMode = false) => {
   const nhApi = await fetch(
     `https://nhentai.net/api/gallery/${idGallery}`,
@@ -141,6 +156,7 @@ actions.nh.createViewer = async (idGallery, isFullMode = false) => {
       let img
       let imgTemp
       components.events.imageErrorEvent = (e) => {
+        refreshImage(e.srcElement, idGallery)
         // img.style.position = "absolute"
         // imgTemp.style.position = "relative"
         // // if (counter >= 2 && format == 'jpg') {
@@ -251,19 +267,7 @@ actions.nh.createViewer = async (idGallery, isFullMode = false) => {
         ).filter((e) => !e.complete || e.width == 16)
         console.log(pages)
         for (const img of pages) {
-          const page = img.src.match(/galleries\/\d+\/(\d+)\.\w+/)[1]
-          Front.showBanner(`Changing Server for Page ${page}`)
-          await fetch(`https://nhentai.net/g/${idGallery}/${page}/`)
-            .then((res) => res.text())
-            .then((data) => {
-              const parser = new DOMParser()
-              const dom = parser.parseFromString(data, "text/html")
-              const server = dom
-                .querySelector("#image-container > a > img")
-                .src.match(/https:\/\/i(\d)/)[1]
-              img.src = img.src.replace(/i\d/, `i${server}`)
-              // Front.showBanner("Changed Server Uncomplete Images")
-            })
+          refreshImage(img, idGallery)
         }
       }
       return moreButton
