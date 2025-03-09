@@ -5,14 +5,14 @@ import priv from "./conf.priv.js"
 import util from "./util.js"
 
 import globalKeys from "./websites/global/keys.js"
-import iwKeys from "./websites/iw/keys.js"
-import nhKeys from "./websites/nh/keys.js"
-import ahKeys from "./websites/ah/keys.js"
-import emKeys from "./websites/em/keys.js"
-import mfKeys from "./websites/mf/keys.js"
-import orKeys from "./websites/or/keys.js"
-import youtubeKeys from "./websites/youtube/keys.js"
-
+// import iwKeys from "./websites/iw/keys.js"
+// import nhKeys from "./websites/nh/keys.js"
+// import ahKeys from "./websites/ah/keys.js"
+// import emKeys from "./websites/em/keys.js"
+// import mfKeys from "./websites/mf/keys.js"
+// import orKeys from "./websites/or/keys.js"
+// import youtubeKeys from "./websites/youtube/keys.js"
+import websites from "./websites/index.js"
 const { categories } = help
 
 const { Clipboard, Front, Hints } = api
@@ -443,7 +443,7 @@ maps["www.yelp.com"] = [
   },
 ]
 
-maps["youtube.com"] = youtubeKeys
+// maps["youtube.com"] = youtubeKeys
 
 maps["vimeo.com"] = [
   {
@@ -1280,13 +1280,17 @@ maps["claude.ai"] = [
       ),
   },
 ]
+const registerWebsite = (domain, keys) => {
+  if (!maps[domain]) {
+    maps[domain] = []
+  }
+  maps[domain].push(...keys)
+}
+websites.forEach(({ domain, keys }) => {
+  if (!domain) return
+  maps[domain] = keys
+})
 
-maps["nhentai.net"] = nhKeys
-maps["anchira.to"] = ahKeys
-maps["iwara.tv"] = iwKeys
-maps["mmdfans.net"] = mfKeys
-maps["erommdtube.com"] = emKeys
-maps["oreno3d.com"] = orKeys
 const registerDOI = (
   domain,
   provider = actions.doi.providers.meta_citation_doi,

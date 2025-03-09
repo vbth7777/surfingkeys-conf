@@ -243,24 +243,28 @@ actions.nh.createViewer = async (idGallery, isFullMode = false) => {
       moreButton.style.cursor = "pointer"
       moreButton.style.margin = "10px"
       moreButton.style.padding = "10px"
+      moreButton.style.minWidth = "100px"
       moreButton.style.fontSize = "1.4rem"
-      moreButton.onclick = () => {
-        Array.from(document.querySelectorAll(".tth-images-area div > img"))
-          .filter((e) => !e.complete || e.width == 16)
-          .forEach((img) => {
-            const page = img.src.match(/galleries\/\d+\/(\d+)\.\w+/)[1]
-            fetch(`https://nhentai.net/g/${idGallery}/${page}/`)
-              .then((res) => res.text())
-              .then((data) => {
-                const parser = new DOMParser()
-                const dom = parser.parseFromString(data, "text/html")
-                const server = dom
-                  .querySelector("#image-container > a > img")
-                  .src.match(/https:\/\/i(\d)/)[1]
-                img.src = img.src.replace(/i\d/, `i${server}`)
-                Front.showBanner("Changed Server Uncomplete Images")
-              })
-          })
+      moreButton.onclick = async () => {
+        const pages = Array.from(
+          document.querySelectorAll(".tth-images-area div > img"),
+        ).filter((e) => !e.complete || e.width == 16)
+        console.log(pages)
+        for (const img of pages) {
+          const page = img.src.match(/galleries\/\d+\/(\d+)\.\w+/)[1]
+          Front.showBanner(`Changing Server for Page ${page}`)
+          await fetch(`https://nhentai.net/g/${idGallery}/${page}/`)
+            .then((res) => res.text())
+            .then((data) => {
+              const parser = new DOMParser()
+              const dom = parser.parseFromString(data, "text/html")
+              const server = dom
+                .querySelector("#image-container > a > img")
+                .src.match(/https:\/\/i(\d)/)[1]
+              img.src = img.src.replace(/i\d/, `i${server}`)
+              // Front.showBanner("Changed Server Uncomplete Images")
+            })
+        }
       }
       return moreButton
     })(),
