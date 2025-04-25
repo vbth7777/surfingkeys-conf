@@ -5,13 +5,6 @@ import priv from "./conf.priv.js"
 import util from "./util.js"
 
 import globalKeys from "./websites/global/keys.js"
-// import iwKeys from "./websites/iw/keys.js"
-// import nhKeys from "./websites/nh/keys.js"
-// import ahKeys from "./websites/ah/keys.js"
-// import emKeys from "./websites/em/keys.js"
-// import mfKeys from "./websites/mf/keys.js"
-// import orKeys from "./websites/or/keys.js"
-// import youtubeKeys from "./websites/youtube/keys.js"
 import websites from "./websites/index.js"
 const { categories } = help
 

@@ -67,15 +67,15 @@ actions.nh.createViewer = async (idGallery, isFullMode = false) => {
         ?.innerText?.toLowerCase()
         ?.includes("unfavorite")
     })
-  await fetch(`https://nhentai.net/g/${idGallery}/1/`)
-    .then((res) => res.text())
-    .then((data) => {
-      const parser = new DOMParser()
-      const dom = parser.parseFromString(data, "text/html")
-      originalServerNumber = dom
-        .querySelector("#image-container > a > img")
-        .src.match(/https:\/\/i(\d)/)[1]
-    })
+  // await fetch(`https://nhentai.net/g/${idGallery}/1/`)
+  //   .then((res) => res.text())
+  //   .then((data) => {
+  //     const parser = new DOMParser()
+  //     const dom = parser.parseFromString(data, "text/html")
+  //     originalServerNumber = dom
+  //       .querySelector("#image-container > a > img")
+  //       .src.match(/https:\/\/i(\d)/)[1]
+  //   })
   const widHei = nhApi.images.pages.map((e) => {
     return { width: e.w, height: e.h }
   })

@@ -8,6 +8,20 @@ Hints.style(
   "font-family: Arial;background: #fff;border-color: #000; color: #000; font-size:12px;",
 )
 const util = {}
+
+util.isRectVisibleInViewport = (rect) =>
+  rect.height > 0 &&
+  rect.width > 0 &&
+  rect.bottom >= 0 &&
+  rect.right >= 0 &&
+  rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
+  rect.left <= (window.innerWidth || document.documentElement.clientWidth)
+
+util.isElementInViewport = (e) =>
+  e.offsetHeight > 0 &&
+  e.offsetWidth > 0 &&
+  !e.getAttribute("disabled") &&
+  util.isRectVisibleInViewport(e.getBoundingClientRect())
 util.getJSON = (url) => fetch(url).then((res) => res.json())
 
 util.convertToSHA1 = async (str) => {
