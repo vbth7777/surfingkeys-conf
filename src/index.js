@@ -128,7 +128,7 @@ const main = async () => {
     const { maps, aliases = {} } = keys
     registerKeys(maps, aliases, conf.siteleader)
   }
-
+  //Except websites
   api.unmapAllExcept([], /hackerrank.com/)
 }
 
