@@ -5,6 +5,7 @@ import ahKeys from "./ah/keys.js"
 import emKeys from "./em/keys.js"
 import mfKeys from "./mf/keys.js"
 import orKeys from "./or/keys.js"
+import vhKeys from "./vh/keys.js"
 import youtubeKeys from "./youtube/keys.js"
 
 export default [
@@ -44,5 +45,9 @@ export default [
   {
     domain: "nhentai.net",
     keys: nhKeys,
+  },
+  {
+    domain: "vi-hentai.net",
+    keys: vhKeys,
   },
 ]
