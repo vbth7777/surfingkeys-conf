@@ -39,4 +39,15 @@ export default [
       actions.openUrlsInClipboardWithMpv()
     },
   },
+  {
+    leader: "",
+    alias: ";h",
+    description: "Mouse Over On Page",
+    callback: () => {
+      const event = new MouseEvent("mouseover", {
+        bubbles: true,
+      })
+      util.createHints("button, a, div", (el) => el.dispatchEvent(event))
+    },
+  },
 ]
