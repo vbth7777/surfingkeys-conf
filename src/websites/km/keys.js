@@ -19,9 +19,11 @@ export default [
       )
       const name = author.innerText.trim()
       const type = author.href
-        .match(/(\w+)\/creator/g)[0]
-        .replace("/creator", "")
-      const id = author.href.match(/creator\/(\d+)/g)[0].replace("creator/", "")
+        ?.match(/(\w+)\/creator/g)[0]
+        ?.replace("/creator", "")
+      const id = author.href
+        ?.match(/creator\/(\d+)/g)[0]
+        ?.replace("creator/", "")
       if (type == "patreon" || !type) {
         Clipboard.write(`${name} - ${author.href.match(/\d+$/)[0]}`)
         Front.showBanner("Copied Author Name - ID")
