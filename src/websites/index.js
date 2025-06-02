@@ -6,6 +6,7 @@ import emKeys from "./em/keys.js"
 import mfKeys from "./mf/keys.js"
 import orKeys from "./or/keys.js"
 import vhKeys from "./vh/keys.js"
+import kmKeys from "./km/keys.js"
 import youtubeKeys from "./youtube/keys.js"
 
 export default [
@@ -49,5 +50,9 @@ export default [
   {
     domain: "vi-hentai.net",
     keys: vhKeys,
+  },
+  {
+    domain: "kemono.su",
+    keys: kmKeys,
   },
 ]
