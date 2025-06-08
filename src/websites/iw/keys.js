@@ -135,6 +135,16 @@ export default [
     },
   },
   {
+    alias: "cu",
+    description: 'Copy Format "User Diplay (Username)"',
+    callback: async () => {
+      const userDisplay = document.querySelector(".username").innerText
+      const userName = document.location.href.match(/profile\/([^\/]*)/)[1]
+      await Clipboard.copy(`${userDisplay} (${userName})`)
+      api.Front.showBanner(`Copied "${userDisplay} (${userName})"`)
+    },
+  },
+  {
     alias: "u",
     description: "Play All Video Of User",
     callback: async () => {
