@@ -14,21 +14,12 @@ export default [
     alias: "c",
     description: "Copy Author Name - Type - ID",
     callback: () => {
-      const author = document.querySelector(
-        "html body div#root div.content-wrapper.shifted main#main.main section.site-section.site-section--user header.user-header div.user-header__info h1#user-header__info-top.user-header__name a.user-header__profile",
-      )
-      const name = author.innerText.trim()
+      const { name, type, id, author } = webActions.getAuthorInfo()
       if (author.href.includes("patreon.com")) {
         Clipboard.write(`${name} - ${author.href.match(/\d+$/)[0]}`)
         Front.showBanner("Copied Author Name - ID")
         return
       }
-      const type = author.href
-        ?.match(/(\w+)\/creator/g)[0]
-        ?.replace("/creator", "")
-      const id = author.href
-        ?.match(/creator\/(\d+)/g)[0]
-        ?.replace("creator/", "")
       if (type == "patreon" || !type) {
         Clipboard.write(`${name} - ${author.href.match(/\d+$/)[0]}`)
         Front.showBanner("Copied Author Name - ID")
