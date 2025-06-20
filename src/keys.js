@@ -1440,6 +1440,8 @@ const aliases = {
     "mathoverflow.net",
   ],
 }
+// Fix Error: Select All is not working
+api.iunmap("<Ctrl-a>")
 
 export default {
   unmaps,
