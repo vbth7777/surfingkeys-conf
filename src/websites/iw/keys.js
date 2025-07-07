@@ -140,7 +140,7 @@ export default [
     callback: async () => {
       const userDisplay = document.querySelector(".username").innerText
       const userName = document.location.href.match(/profile\/([^\/]*)/)[1]
-      await Clipboard.copy(`${userDisplay} (${userName})`)
+      await Clipboard.write(`${userDisplay} (${userName})`)
       api.Front.showBanner(`Copied "${userDisplay} (${userName})"`)
     },
   },

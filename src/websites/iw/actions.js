@@ -227,7 +227,7 @@ actions.iw.getAccessTokenFromIwara = async () =>
     .then((res) => res.json())
     .then((data) => data.accessToken)
 
-actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
+actions.iw.copyAndPlayVideo = async (id, index = 0, isPlayWithMpv = true) => {
   const getFileId = (url) =>
     url.match(/file\/.+\?/g)[0].replace(/file\/|\?/g, "")
   const getExpire = (url) =>
@@ -246,8 +246,7 @@ actions.iw.copyAndPlayVideo = (id, index = 0, isPlayWithMpv = true) => {
 
   const urlVideo = `https://www.iwara.tv/video/${id}`
   // api.Clipboard.write(urlVideo);
-  util.playWithMpv(urlVideo, null, localStorage.accessToken)
-  return
+  await util.playWithMpv(urlVideo, null, localStorage.accessToken)
   actions.iw.getJSON(
     `https://api.iwara.tv/video/${id}`,
     async (status, res) => {
