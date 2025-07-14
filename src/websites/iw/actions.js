@@ -247,6 +247,7 @@ actions.iw.copyAndPlayVideo = async (id, index = 0, isPlayWithMpv = true) => {
   const urlVideo = `https://www.iwara.tv/video/${id}`
   // api.Clipboard.write(urlVideo);
   await util.playWithMpv(urlVideo, null, localStorage.accessToken)
+  return
   actions.iw.getJSON(
     `https://api.iwara.tv/video/${id}`,
     async (status, res) => {
