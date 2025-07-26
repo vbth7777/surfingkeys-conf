@@ -34,13 +34,13 @@ util.convertToSHA1 = async (str) => {
 }
 util.playWithMpv = (url, pageUrl = null, accessToken = null) => {
   Front.showBanner(`Opening with mpv (${url})...`)
-  fetch("http://localhost:9789", {
+  fetch("http://localhost:9789/api", {
     method: "post",
     body: new URLSearchParams({ url, pageUrl, accessToken }),
   }).catch((err) => console.error(err))
 }
 util.playAsyncWithMpv = (url) => {
-  fetch("http://localhost:9789/async-run", {
+  fetch("http://localhost:9789/api/async-run", {
     method: "post",
     body: new URLSearchParams({ url }),
   })
