@@ -69,9 +69,9 @@ util.until = (check, test = (a) => a, maxAttempts = 50, interval = 50) =>
   })
 
 const localStorageFns = () => {
-  if (typeof browser !== "undefined") {
-    return [browser.storage.local.get, browser.storage.local.set]
-  }
+  // if (typeof browser !== "undefined") {
+  //   return [browser.storage.local.get, browser.storage.local.set]
+  // }
   if (typeof chrome !== "undefined") {
     return [
       localStorage.getItem,
