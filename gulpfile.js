@@ -224,10 +224,10 @@ task(
       const privNote = c.priv
         ? ' <a title="requires private API key" href="#optional-private-api-key-configuration">&#8727;</a>'
         : ""
-      const localNote = ""
-      // const localNote = c.local
-      //   ? ' <a title="requires local web server" href="#running-the-local-web-server">&#8224;</a>'
-      //   : ""
+      // const localNote = ""
+      const localNote = c.local
+        ? ' <a title="requires local web server" href="#running-the-local-web-server">&#8224;</a>'
+        : ""
 
       return `${acc1}
   <tr>
