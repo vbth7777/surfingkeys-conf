@@ -278,7 +278,7 @@ actions.iw.copyAndPlayVideo = async (id, index = 0, isPlayWithMpv = true) => {
         api.Front.showPopup("Not found requrement")
         return
       }
-      // console.log((fileId + '_' + getExpire(fileUrl) + '_5nFp9kmbNnHdAFhaqMvt'))
+      // console.log((fileId + '_' + getExpire(fileUrl) + '_mSvL05GfEmeEmsEYfGCnVpEjYgTJraJN'))
       actions.iw.getJSON(
         fileUrl,
         (status2, res2) => {
@@ -303,7 +303,7 @@ actions.iw.copyAndPlayVideo = async (id, index = 0, isPlayWithMpv = true) => {
           }
         },
         await util.convertToSHA1(
-          `${fileId}_${getExpire(fileUrl)}_5nFp9kmbNnHdAFhaqMvt`,
+          `${fileId}_${getExpire(fileUrl)}_mSvL05GfEmeEmsEYfGCnVpEjYgTJraJN`,
         ),
       )
     },
