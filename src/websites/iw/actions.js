@@ -23,7 +23,7 @@ async function autostart() {
         await util.sleep(1000)
         continue
       }
-      const urls = await util.getJSON("http://localhost:9789/running-urls")
+      const urls = await util.getJSON("http://localhost:9789/api/running-urls")
       console.log(urls)
       for (const url of urls) {
         const id = actions.iw.getIdIwara(url)
