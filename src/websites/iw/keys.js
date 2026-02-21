@@ -30,7 +30,7 @@ export default [
       util.playWithMpv(
         document.querySelector(".videoPlayer video").src,
         window.location.href,
-        localStorage.accessToken,
+        localStorage.token,
       )
     },
   },
@@ -81,7 +81,7 @@ export default [
         '.videoTeaser__content a[href*="/video/"]',
       )
       for (const vid of vids) {
-        util.playWithMpv(vid.href, null, localStorage.accessToken)
+        util.playWithMpv(vid.href, null, localStorage.token)
       }
     },
   },

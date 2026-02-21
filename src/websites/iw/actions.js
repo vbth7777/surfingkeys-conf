@@ -181,7 +181,7 @@ actions.iw.createCheckBoxes = (checkboxes, isIwara) => {
     if (isIwara) {
       checkboxContainer.addEventListener("mousedown", async () => {
         const method = checkbox.checked ? "delete" : "post"
-        const authorization = `Bearer ${localStorage.accessToken}`
+        const authorization = `Bearer ${localStorage.token}`
         console.log("TESTING: ", method, " ", authorization)
         fetch(`https://api.iwara.tv/video/${obj.idVideo}/like`, {
           method,
@@ -246,7 +246,7 @@ actions.iw.copyAndPlayVideo = async (id, index = 0, isPlayWithMpv = true) => {
 
   const urlVideo = `https://www.iwara.tv/video/${id}`
   // api.Clipboard.write(urlVideo);
-  await util.playWithMpv(urlVideo, null, localStorage.accessToken)
+  await util.playWithMpv(urlVideo, null, localStorage.token)
   return
   actions.iw.getJSON(
     `https://api.iwara.tv/video/${id}`,
@@ -313,19 +313,19 @@ actions.iw.likeCurrentVideo = (id) => {
   fetch(`https://api.iwara.tv/video/${id}/like`, {
     method: "post",
     headers: {
-      Authorization: `Bearer ${localStorage.accessToken}`,
+      Authorization: `Bearer ${localStorage.token}`,
     },
   })
 }
 actions.iw.showPlaylistMenu = () => {
   util.createHints("*[href*='video/']", async (element) => {
     let checkBoxes = []
-    localStorage.accessToken = await actions.iw.getAccessTokenFromIwara()
+    localStorage.token = await actions.iw.getAccessTokenFromIwara()
     const idVideo = actions.iw.getIdIwara(element.href)
     await fetch(`https://api.iwara.tv/light/playlists?id=${idVideo}`, {
       method: "get",
       headers: {
-        Authorization: `Bearer ${localStorage.accessToken}`,
+        Authorization: `Bearer ${localStorage.token}`,
       },
     })
       .then((res) => res.json())
