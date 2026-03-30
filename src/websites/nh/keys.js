@@ -31,9 +31,10 @@ export default [
     alias: "r",
     description: "Read Comic",
     callback: () =>
-      util.createHints('a[href*="/g/"]', (el) => {
-        const id = webActions.getIdFromUrl(el.href)
-        webActions.createViewer(id, isFullMode)
+      util.createHints('a[href*="/g/ button.tth-added"]', (el) => {
+        el.click()
+        // const id = webActions.getIdFromUrl(el.href)
+        // webActions.createViewer(id, isFullMode)
       }),
   },
   {
