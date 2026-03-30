@@ -42,8 +42,8 @@ export default [
     alias: "q",
     description: "Quit Comic",
     callback: () =>
-      util.createHints('a[href*="/g/"]', (el) => {
-        webActions?.removeReaderArea()
+      util.createHints(".tth-images-area + button", (el) => {
+        el.click()
       }),
   },
   {
